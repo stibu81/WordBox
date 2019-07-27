@@ -13,6 +13,7 @@ RoxygenNote: 6.1.1
 Imports: readr,
           dplyr,
           tidyr,
-          magrittr
+          magrittr,
+          shiny
 Suggests: 
     testthat (>= 2.1.0)
