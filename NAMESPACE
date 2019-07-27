@@ -2,6 +2,7 @@
 
 export(get_config)
 export(get_languages)
+export(get_wordlist_testfile)
 export(read_wordlist)
 export(write_wordlist)
 importFrom(magrittr,"%<>%")

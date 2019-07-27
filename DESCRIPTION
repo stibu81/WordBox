@@ -14,3 +14,5 @@ Imports: readr,
           dplyr,
           tidyr,
           magrittr
+Suggests: 
+    testthat (>= 2.1.0)

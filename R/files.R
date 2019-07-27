@@ -2,6 +2,10 @@
 #'
 #' @param file character indicating the name of the file
 #'
+#' @details
+#' \code{get_wordlist_testfile()} returns the file name of a wordlist
+#' file that can be used for tests.
+#'
 #' @return
 #' a wordlist object, which is a data frame with the
 #' following columns:
@@ -59,7 +63,7 @@ read_wordlist <- function(file) {
     wordlist <- raw
   } else {
     stop(file, " is not a valid wordlist file. ",
-         "It must have 3 or 7 columns.")
+         "It must have 3 or 9 columns.")
   }
 
   # set language attribute, rename first two columns
@@ -79,6 +83,15 @@ read_wordlist <- function(file) {
   class(wordlist) <- c("wordlist", class(wordlist))
 
   return(wordlist)
+}
+
+
+#' @rdname read_wordlist
+#' @export
+
+get_wordlist_testfile <- function() {
+  file <- file.path("testfiles", "wordlist.csv")
+  return(system.file(file, package = "WordBox"))
 }
 
 
