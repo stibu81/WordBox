@@ -79,6 +79,11 @@ read_wordlist <- function(file) {
                                        count2 = 0,
                                        date2 = as.Date("1900-01-01")))
 
+  # get configuration data
+  config <- get_config(dirname(file))
+
+  # set attributes
+  attr(wordlist, "config") <- config
   attr(wordlist, "languages") <- languages
   class(wordlist) <- c("wordlist", class(wordlist))
 
@@ -202,4 +207,28 @@ get_config <- function(dir) {
 
 read_config <- function(file) {
   return (NULL)
+}
+
+#' Obtain configuration from wordlist
+#'
+#' @param wl a \code{wordlist} object
+#'
+#' @export
+
+cfg_boxes <- function(wl) {
+  return(attr(wl, "config")$boxes)
+}
+
+#' @rdname cfg_boxes
+#' @export
+
+cfg_counts <- function(wl) {
+  return(attr(wl, "config")$counts)
+}
+
+#' @rdname cfg_boxes
+#' @export
+
+cfg_days <- function(wl) {
+  return(attr(wl, "config")$days)
 }

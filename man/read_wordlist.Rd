@@ -2,9 +2,12 @@
 % Please edit documentation in R/files.R
 \name{read_wordlist}
 \alias{read_wordlist}
+\alias{get_wordlist_testfile}
 \title{Read a word list file}
 \usage{
 read_wordlist(file)
+
+get_wordlist_testfile()
 }
 \arguments{
 \item{file}{character indicating the name of the file}
@@ -31,4 +34,8 @@ and can be obtaines using \code{get_languages}.
 }
 \description{
 Read a word list file
+}
+\details{
+\code{get_wordlist_testfile()} returns the file name of a wordlist
+file that can be used for tests.
 }
