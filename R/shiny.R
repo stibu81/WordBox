@@ -54,7 +54,7 @@ server <- function(input, output, session) {
     state <- reactiveValues(running = FALSE,
                             wl = NULL,
                             quiz = NULL,
-                            question = 0,
+                            question = NULL,
                             i_exercise = 0,
                             show_answer = FALSE,
                             n_correct = 0,
@@ -72,33 +72,18 @@ server <- function(input, output, session) {
         }
     })
 
-    output$current_box <- renderText({
-        if (state$running) state$question$box
-    })
-
-    output$question <- renderText({
-        if (state$running) state$question$question
-    })
-
-    output$current_group <- renderText({
-        if (state$running) state$question$group
-    })
-
-    output$n_correct <- renderText({
-        if (state$running) state$n_correct
-    })
-
-    output$n_wrong <- renderText({
-        if (state$running) state$n_wrong
-    })
-
+    output$current_box <- renderText(state$question$box)
+    output$question <- renderText(state$question$question)
+    output$current_group <- renderText(state$question$group)
+    output$n_correct <- renderText(state$n_correct)
+    output$n_wrong <- renderText(state$n_wrong)
 
     # start the exercise
     observeEvent(input$run,
         if (!state$running) {
             state$running <- TRUE
             cat("running exercise with",
-                input$direction, "and mode", input$mode)
+                input$direction, "and mode", input$mode, "\n")
             direction <- gsub("direction", "", input$direction) %>%
                             as.numeric()
             state$quiz <- prepare_quiz(state$wl, direction)
@@ -112,7 +97,7 @@ server <- function(input, output, session) {
         if (input$mode == "written") {
             tagList(
                 textInput("solution_in", "Übersetzung"),
-                actionButton("check_written", "Prüfen"),
+                actionButton("check", "Prüfen"),
                 br(), br(),
                 strong("Lösung"),
                 textOutput("solution"),
@@ -139,21 +124,31 @@ server <- function(input, output, session) {
         }
     })
 
-    # button check: show the solution
-    observeEvent(input$check,
-        if (state$running) state$show_answer <- TRUE)
-    output$solution <- renderText({
-        if (state$show_answer) {
-            state$question$answer
-        } else {
-            " "
+    # button check: show the solution in oral mode,
+    # check user input and show the solution in written mode
+    observeEvent(input$check, {
+        if (state$running) {
+            if (input$mode == "written") {
+                if (trimws(input$solution_in) == state$question$answer) {
+                    state$n_correct <- state$n_correct + 1
+                } else {
+                    state$n_wrong <- state$n_wrong + 1
+                }
+            }
+            state$show_answer <- TRUE
         }
+    })
+    output$solution <- renderText({
+        if (state$show_answer) state$question$answer
     })
 
     # buttons next, correct, wrong
     observeEvent(input$gonext, {
-        state$show_answer <- FALSE
-        state$i_exercise <- state$i_exercise + 1
+        if (state$show_answer) {
+            state$show_answer <- FALSE
+            state$i_exercise <- state$i_exercise + 1
+            updateTextInput(session, "solution_in", value = "")
+        }
     })
     observeEvent(input$correct, {
         state$show_answer <- FALSE
