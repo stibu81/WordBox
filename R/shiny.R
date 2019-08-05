@@ -6,12 +6,14 @@ ui <- fluidPage(
     # Sidebar with inputs
     sidebarLayout(
         sidebarPanel(
-            fileInput("wordlist_file",
-                      "W\u00f6rterliste laden",
-                      width = "300px",
-                      accept = ".csv",
-                      buttonLabel = "Suche...",
-                      placeholder = "keine W\u00f6rterliste geladen"),
+            selectInput("wordlist_file",
+                       "W\u00f6rterliste laden",
+                       "kein Verzeichnis ausgew\u00e4hlt",
+                       width = "300px"),
+            actionButton("load",
+                         "Laden",
+                         width = "100px"),
+            br(), br(),
             selectInput("direction",
                         "Richtung ausw\u00e4hlen",
                         "keine W\u00f6rterliste geladen",
@@ -52,6 +54,7 @@ server <- function(input, output, session) {
 
     # create an object to track the state of the application
     state <- reactiveValues(running = FALSE,
+                            wl_file = NULL,
                             wl = NULL,
                             quiz = NULL,
                             question = NULL,
@@ -60,21 +63,29 @@ server <- function(input, output, session) {
                             n_correct = 0,
                             n_wrong = 0)
 
+    # read in file names in the directory
+    updateSelectInput(session, "wordlist_file",
+                      choices = list.files(getOption("wordbox_dir"),
+                                           ".csv$"))
+
     # load a file
-    observe({
-        file <- input$wordlist_file
-        if (!is.null(file)) {
-            state$wl <- read_wordlist(file$datapath)
-            langs <- get_languages(state$wl)
-            choices <- magrittr::set_names(paste0("direction", 1:2),
-                                           paste0(langs, " > ", rev(langs)))
-            updateSelectInput(session, "direction", choices = choices)
+    observeEvent(input$load,
+        if (!state$running) {
+            state$wl_file <- file.path(getOption("wordbox_dir"),
+                                       input$wordlist_file)
+            if (file.exists(state$wl_file)) {
+                state$wl <- read_wordlist(state$wl_file)
+                langs <- get_languages(state$wl)
+                choices <- magrittr::set_names(paste0("direction", 1:2),
+                                               paste0(langs, " > ", rev(langs)))
+                updateSelectInput(session, "direction", choices = choices)
+            }
         }
-    })
+    )
 
     # start the quiz
     observeEvent(input$run,
-        if (!state$running) {
+        if (!is.null(state$wl) && !state$running) {
             state$running <- TRUE
             cat("running exercise with",
                 input$direction, "and mode", input$mode, "\n")
@@ -90,19 +101,19 @@ server <- function(input, output, session) {
         if (!state$running) return(NULL)
         if (input$mode == "written") {
             tagList(
-                textInput("solution_in", "Übersetzung"),
-                actionButton("check", "Prüfen"),
+                textInput("solution_in", "\u00dcbersetzung"),
+                actionButton("check", "Pr\u00fcfen"),
                 br(), br(),
-                strong("Lösung"),
+                strong("L\u00f6sung"),
                 textOutput("solution"),
                 br(),
                 actionButton("gonext", "Weiter")
             )
         } else {
             tagList(
-                actionButton("check", "Prüfen"),
+                actionButton("check", "Pr\u00fcfen"),
                 br(), br(),
-                strong("Lösung"),
+                strong("L\u00f6sung"),
                 textOutput("solution"),
                 br(),
                 actionButton("correct", "Richtig"),
@@ -188,8 +199,16 @@ server <- function(input, output, session) {
 
 #' Run the application
 #'
+#' @param dir character indicating a directory where wordlist
+#'  files (csv) are stored. All the csv files in that directory
+#'  will be available to be loaded in the application.
+#'
 #' @export
 
-run_wordbox <- function() {
+run_wordbox <- function(dir = NULL) {
+    if (is.null(dir) || !dir.exists(dir)) {
+        stop("an existing directory must be provided.")
+    }
+    options(wordbox_dir = dir)
     shiny::shinyApp(ui = ui, server = server)
 }

@@ -1,7 +1,7 @@
 Package: WordBox
 Type: Package
 Title: A simple word trainer
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <lanz.stefan@gmx.ch>
 Description: More about what it does (maybe more than one line)

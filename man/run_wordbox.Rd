@@ -4,7 +4,12 @@
 \alias{run_wordbox}
 \title{Run the application}
 \usage{
-run_wordbox()
+run_wordbox(dir = NULL)
+}
+\arguments{
+\item{dir}{character indicating a directory where wordlist
+files (csv) are stored. All the csv files in that directory
+will be available to be loaded in the application.}
 }
 \description{
 Run the application
