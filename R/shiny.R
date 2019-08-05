@@ -72,13 +72,7 @@ server <- function(input, output, session) {
         }
     })
 
-    output$current_box <- renderText(state$question$box)
-    output$question <- renderText(state$question$question)
-    output$current_group <- renderText(state$question$group)
-    output$n_correct <- renderText(state$n_correct)
-    output$n_wrong <- renderText(state$n_wrong)
-
-    # start the exercise
+    # start the quiz
     observeEvent(input$run,
         if (!state$running) {
             state$running <- TRUE
@@ -91,7 +85,7 @@ server <- function(input, output, session) {
         }
     )
 
-    # create the UI when the exercise is started
+    # create the UI when the quiz is started
     output$exerciseUI <- renderUI({
         if (!state$running) return(NULL)
         if (input$mode == "written") {
@@ -117,7 +111,8 @@ server <- function(input, output, session) {
         }
     })
 
-    # initialise a new exercise
+    # initialise a new quiz whenever the counter i_exercise
+    # is incremented
     observeEvent(state$i_exercise, {
         if (state$running) {
             state$question <- draw_question(state$quiz, state$wl)
@@ -130,16 +125,24 @@ server <- function(input, output, session) {
         if (state$running) {
             if (input$mode == "written") {
                 if (trimws(input$solution_in) == state$question$answer) {
+                    # mark the word in the wordlist and remove from quiz
+                    state$wl <- mark_word(state$question,
+                                          state$quiz,
+                                          state$wl,
+                                          success = TRUE)
+                    state$quiz <- state$quiz[-state$question$i_quiz, ]
                     state$n_correct <- state$n_correct + 1
                 } else {
+                    # mark the word in the wordlist, leave in quiz
+                    state$wl <- mark_word(state$question,
+                                          state$quiz,
+                                          state$wl,
+                                          success = FALSE)
                     state$n_wrong <- state$n_wrong + 1
                 }
             }
             state$show_answer <- TRUE
         }
-    })
-    output$solution <- renderText({
-        if (state$show_answer) state$question$answer
     })
 
     # buttons next, correct, wrong
@@ -152,17 +155,35 @@ server <- function(input, output, session) {
     })
     observeEvent(input$correct, {
         state$show_answer <- FALSE
+        # mark the word in the wordlist and remove from quiz
+        state$wl <- mark_word(state$question,
+                                          state$quiz,
+                                          state$wl,
+                                          success = TRUE)
+        state$quiz <- state$quiz[-state$question$i_quiz, ]
         state$n_correct <- state$n_correct + 1
         state$i_exercise <- state$i_exercise + 1
     })
     observeEvent(input$wrong, {
         state$show_answer <- FALSE
+        # mark the word in the wordlist, leave in quiz
+        state$wl <- mark_word(state$question,
+                                          state$quiz,
+                                          state$wl,
+                                          success = FALSE)
         state$n_wrong <- state$n_wrong + 1
         state$i_exercise <- state$i_exercise + 1
     })
 
-
-
+    # text outputs
+    output$current_box <- renderText(state$question$box)
+    output$question <- renderText(state$question$question)
+    output$current_group <- renderText(state$question$group)
+    output$n_correct <- renderText(state$n_correct)
+    output$n_wrong <- renderText(state$n_wrong)
+    output$solution <- renderText({
+        if (state$show_answer) state$question$answer
+    })
 }
 
 #' Run the application

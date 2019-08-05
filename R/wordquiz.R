@@ -54,7 +54,8 @@ draw_question <- function(quiz, wl) {
 
   # create the wordquestion object
   cols <- get_quiz_cols(quiz)
-  question <- list(i_wl = i_wl,
+  question <- list(i_quiz = i,
+                   i_wl = i_wl,
                    question = wl[i_wl, cols$question, drop = TRUE],
                    answer = wl[i_wl, cols$answer, drop = TRUE],
                    group = wl[i_wl, "group", drop = TRUE],
