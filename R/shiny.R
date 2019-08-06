@@ -55,6 +55,8 @@ server <- function(input, output, session) {
     # create an object to track the state of the application
     state <- reactiveValues(running = FALSE,
                             wl_file = NULL,
+                            mode = NULL,
+                            direction = NULL,
                             wl = NULL,
                             quiz = NULL,
                             question = NULL,
@@ -89,9 +91,10 @@ server <- function(input, output, session) {
             state$running <- TRUE
             cat("running exercise with",
                 input$direction, "and mode", input$mode, "\n")
-            direction <- gsub("direction", "", input$direction) %>%
-                            as.numeric()
-            state$quiz <- prepare_quiz(state$wl, direction)
+            state$direction <- gsub("direction", "", input$direction) %>%
+                                as.numeric()
+            state$mode <- input$mode
+            state$quiz <- prepare_quiz(state$wl, state$direction)
             state$i_exercise <- state$i_exercise + 1
         }
     )
@@ -99,7 +102,7 @@ server <- function(input, output, session) {
     # create the UI when the quiz is started
     output$exerciseUI <- renderUI({
         if (!state$running) return(NULL)
-        if (input$mode == "written") {
+        if (state$mode == "written") {
             tagList(
                 textInput("solution_in", "\u00dcbersetzung"),
                 actionButton("check", "Pr\u00fcfen"),
@@ -127,6 +130,7 @@ server <- function(input, output, session) {
     observeEvent(state$i_exercise, {
         if (state$running) {
             state$question <- draw_question(state$quiz, state$wl)
+            write_wordlist(state$wl, state$wl_file, TRUE)
         }
     })
 
