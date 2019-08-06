@@ -47,6 +47,9 @@ prepare_quiz <- function(wl, direction) {
 
 draw_question <- function(quiz, wl) {
 
+  # if the quiz contains no questions, return NULL
+  if (nrow(quiz) == 0) return (NULL)
+
   # draw an index according to the weight,
   # find the appropriate index for the wordlist
   i <- sample(1:nrow(quiz), 1, prob = quiz$weight)

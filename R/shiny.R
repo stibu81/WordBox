@@ -131,13 +131,23 @@ server <- function(input, output, session) {
         if (state$running) {
             state$question <- draw_question(state$quiz, state$wl)
             write_wordlist(state$wl, state$wl_file, TRUE)
+            if (is.null(state$question)) {
+                showModal(
+                    modalDialog("Du hast alle Fragen beantwortet!",
+                                titel = "Information")
+                )
+                stopApp()
+            }
         }
     })
 
     # button check: show the solution in oral mode,
     # check user input and show the solution in written mode
+    # if the button is clicked a second time, the check should not
+    # be redone! This is achieved by not running the check, if the
+    # answer is shown.
     observeEvent(input$check, {
-        if (state$running) {
+        if (state$running && !state$show_answer) {
             if (input$mode == "written") {
                 if (trimws(input$solution_in) == state$question$answer) {
                     # mark the word in the wordlist and remove from quiz
