@@ -202,13 +202,17 @@ server <- function(input, output, session) {
 #' @param dir character indicating a directory where wordlist
 #'  files (csv) are stored. All the csv files in that directory
 #'  will be available to be loaded in the application.
+#' @param launch.browser logical, if \code{TRUE}, the application
+#'  is opened in the system's default browser.
 #'
 #' @export
 
-run_wordbox <- function(dir = NULL) {
+run_wordbox <- function(dir = NULL, launch.browser = FALSE) {
     if (is.null(dir) || !dir.exists(dir)) {
         stop("an existing directory must be provided.")
     }
     options(wordbox_dir = dir)
-    shiny::shinyApp(ui = ui, server = server)
+    opts <- if (launch.browser) list(launch.browser = TRUE) else list()
+    shiny::shinyApp(ui = ui, server = server,
+                    options = opts)
 }

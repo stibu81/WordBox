@@ -4,12 +4,15 @@
 \alias{run_wordbox}
 \title{Run the application}
 \usage{
-run_wordbox(dir = NULL)
+run_wordbox(dir = NULL, launch.browser = FALSE)
 }
 \arguments{
 \item{dir}{character indicating a directory where wordlist
 files (csv) are stored. All the csv files in that directory
 will be available to be loaded in the application.}
+
+\item{launch.browser}{logical, if \code{TRUE}, the application
+is opened in the system's default browser.}
 }
 \description{
 Run the application
