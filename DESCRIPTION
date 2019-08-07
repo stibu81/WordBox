@@ -15,6 +15,7 @@ Imports: readr,
           tidyr,
           magrittr,
           shiny,
-          rlang
+          rlang,
+          ggplot2
 Suggests: 
     testthat (>= 2.1.0)

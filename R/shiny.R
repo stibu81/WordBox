@@ -31,23 +31,35 @@ ui <- fluidPage(
 
         # main panel
         mainPanel(
-             "Anzahl richtige Antworten: ",
-            div(style = "display:inline-block", textOutput("n_correct")),
-            br(), "Anzahl falsche Antworten: ",
-            div(style = "display:inline-block", textOutput("n_wrong")),
-            br(), br(),
-            "Fach: ",
-            div(style = "display:inline-block", textOutput("current_box")),
-            br(), "Gruppe: ",
-            div(style = "display:inline-block", textOutput("current_group")),
-            br(), br(),
-            strong("Aufgabe"),
-            textOutput("question"),
-            br(),
-            uiOutput("exerciseUI")
+            fluidRow(
+                column(8,
+                    "Anzahl richtige Antworten: ",
+                    div(style = "display:inline-block",
+                        textOutput("n_correct")),
+                    br(), "Anzahl falsche Antworten: ",
+                    div(style = "display:inline-block",
+                        textOutput("n_wrong")),
+                    br(), br(),
+                    "Fach: ",
+                    div(style = "display:inline-block",
+                        textOutput("current_box")),
+                    br(), "Gruppe: ",
+                    div(style = "display:inline-block",
+                        textOutput("current_group")),
+                    br(), br()),
+                column(4, plotOutput("dot", height = "200px"))
+            ),
+            fluidRow(
+                strong("Aufgabe"),
+                textOutput("question"),
+                br(),
+                uiOutput("exerciseUI")
+            )
         )
     )
 )
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
@@ -63,7 +75,8 @@ server <- function(input, output, session) {
                             i_exercise = 0,
                             show_answer = FALSE,
                             n_correct = 0,
-                            n_wrong = 0)
+                            n_wrong = 0,
+                            dot_colour = "white")
 
     # read in file names in the directory
     updateSelectInput(session, "wordlist_file",
@@ -156,6 +169,7 @@ server <- function(input, output, session) {
                                           state$wl,
                                           success = TRUE)
                     state$quiz <- state$quiz[-state$question$i_quiz, ]
+                    state$dot_colour <- "green"
                     state$n_correct <- state$n_correct + 1
                 } else {
                     # mark the word in the wordlist, leave in quiz
@@ -163,6 +177,7 @@ server <- function(input, output, session) {
                                           state$quiz,
                                           state$wl,
                                           success = FALSE)
+                    state$dot_colour <- "red"
                     state$n_wrong <- state$n_wrong + 1
                 }
             }
@@ -186,6 +201,7 @@ server <- function(input, output, session) {
                                           state$wl,
                                           success = TRUE)
         state$quiz <- state$quiz[-state$question$i_quiz, ]
+        state$dot_colour <- "green"
         state$n_correct <- state$n_correct + 1
         state$i_exercise <- state$i_exercise + 1
     })
@@ -197,6 +213,7 @@ server <- function(input, output, session) {
                                           state$wl,
                                           success = FALSE)
         state$n_wrong <- state$n_wrong + 1
+        state$dot_colour <- "red"
         state$i_exercise <- state$i_exercise + 1
     })
 
@@ -209,6 +226,18 @@ server <- function(input, output, session) {
     output$solution <- renderText({
         if (state$show_answer) state$question$answer
     })
+
+    # render the coloured dot
+    output$dot <- renderPlot({
+        ggplot2::ggplot() +
+            ggplot2::annotate("polygon",
+                              x = c(0, 2*pi), y =  c(1, 1),
+                              fill = rep(state$dot_colour, 2)) +
+            ggplot2::coord_polar() +
+            ggplot2::scale_y_continuous(limits = c(0, 1)) +
+            ggplot2::theme_void()
+    })
+
 }
 
 #' Run the application
