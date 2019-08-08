@@ -33,7 +33,10 @@ ui <- fluidPage(
         mainPanel(
             fluidRow(
                 column(8,
-                    "Anzahl richtige Antworten: ",
+                    "Anzahl verbleibende W\u00f6rter:",
+                    div(style = "display:inline-block",
+                        textOutput("n_words")),
+                    br(), "Anzahl richtige Antworten: ",
                     div(style = "display:inline-block",
                         textOutput("n_correct")),
                     br(), "Anzahl falsche Antworten: ",
@@ -221,6 +224,9 @@ server <- function(input, output, session) {
     output$current_box <- renderText(state$question$box)
     output$question <- renderText(state$question$question)
     output$current_group <- renderText(state$question$group)
+    output$n_words <- renderText({
+        if (is.null(state$quiz)) 0 else nrow(state$quiz)
+    })
     output$n_correct <- renderText(state$n_correct)
     output$n_wrong <- renderText(state$n_wrong)
     output$solution <- renderText({
