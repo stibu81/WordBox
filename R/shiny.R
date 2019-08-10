@@ -19,7 +19,8 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL) {
     options(wordbox_dir = dir)
     appDir <- system.file("shinyApp", package = "WordBox")
     if (appDir == "") {
-      stop("Could not find example directory. Try re-installing `mypackage`.", call. = FALSE)
+      stop("Could not find example directory. Try re-installing `WordBox`.",
+           call. = FALSE)
     }
 
     if (is.null(launch.browser)) {
