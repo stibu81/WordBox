@@ -2,8 +2,8 @@ ui <- fluidPage(
 
     titlePanel("WordBox Vokabeltrainer"),
 
-    # Sidebar with inputs
     sidebarLayout(
+        # Sidebar with inputs ######
         sidebarPanel(
             selectInput("wordlist_file",
                        "W\u00f6rterliste laden",
@@ -23,12 +23,17 @@ ui <- fluidPage(
                           "m\u00fcndlich" = "oral"),
                         selected = "written",
                         width = "300px"),
+            checkboxInput("training", "Trainingsmodus"),
+            selectInput("group",
+                        "Gruppe ausw\u00e4hlen",
+                        "keine W\u00f6rterliste geladen",
+                        width = "300px"),
             actionButton("run",
                          "Start",
                          width = "100px")
         ),
 
-        # main panel
+        # main panel #####
         mainPanel(
             fluidRow(
                 column(8,

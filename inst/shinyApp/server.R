@@ -1,9 +1,13 @@
+library(magrittr)
+
 server <- function(input, output, session) {
 
     # create an object to track the state of the application
     state <- reactiveValues(running = FALSE,
                             wl_file = NULL,
                             mode = NULL,
+                            training = NULL,
+                            group = NULL,
                             direction = NULL,
                             wl = NULL,
                             quiz = NULL,
@@ -30,6 +34,8 @@ server <- function(input, output, session) {
                 choices <- magrittr::set_names(paste0("direction", 1:2),
                                                paste0(langs, " > ", rev(langs)))
                 updateSelectInput(session, "direction", choices = choices)
+                updateSelectInput(session, "group",
+                                  choices = c("alle", get_groups(state$wl)))
             }
         }
     )
@@ -38,13 +44,19 @@ server <- function(input, output, session) {
     observeEvent(input$run,
         if (!is.null(state$wl) && !state$running) {
             state$running <- TRUE
-            cat("running exercise with",
-                input$direction, "and mode", input$mode, "\n")
             state$direction <- gsub("direction", "", input$direction) %>%
                                 as.numeric()
             state$mode <- input$mode
+            state$training <- input$training
+            state$group <- input$group
             state$quiz <- prepare_quiz(state$wl, state$direction)
             state$i_exercise <- state$i_exercise + 1
+            cat("running exercise from file", state$wl_file,
+                "with the following settings:",
+                "\nDirection:", state$direction,
+                "\nMode:", state$mode,
+                "\nTraining:", state$training,
+                "\nGroup:", state$group, "\n")
         }
     )
 
