@@ -6,7 +6,7 @@
 \alias{WordBox-package}
 \title{WordBox: a Simple Vocabulary Trainer}
 \description{
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+This package provides a simple vocabulary trainer
+ in the form of a shiny app. Wordlists are provided as csv files.
 }
 \keyword{internal}

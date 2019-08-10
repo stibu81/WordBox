@@ -1,5 +1,36 @@
 #' Register Success or Failure for a Word in a wordlist
 #'
+#' After a word has been quizzed, the wordlist must be
+#' changed.
+#'
+#' @param question the \code{\link{wordquestion}} object that
+#'  has been quizzed.
+#' @param quiz the \code{\link{wordquiz}} from which the question
+#'  was taken.
+#' @param wl the \code{\link{wordlist}}, on which the quiz is
+#'  based and which will be modified.
+#' @param success logical indicating whether the question was
+#'  answered correctly or not.
+#'
+#' @details
+#' After a word has been quizzed, its entry in the \code{wordlist}
+#' must be modified. The modifications affect the columns
+#' \code{box}, \code{count}, and \code{date} that belong to
+#' the direction that was quizzed.
+#'
+#' In case of a correct answer, \code{count} is increased by one.
+#' If the limit of counts is reached, the word is moved to the
+#' next box by increasing \code{box} by one. \code{count} is
+#' reset to zero. \code{date}, which indicates the date of the
+#' last correct answer, is set to the current date.
+#'
+#' In case of a wrong answer, \code{count} is set to zero and
+#' the word is moved on box back by decreasing \code{box}
+#' by one. \code{date} is left unchanged.
+#'
+#' @return
+#' a \code{\link{wordlist}} object
+#'
 #' @export
 
 mark_word <- function(question, quiz, wl, success) {

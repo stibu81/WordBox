@@ -2,6 +2,7 @@
 % Please edit documentation in R/wordquiz.R
 \name{prepare_quiz}
 \alias{prepare_quiz}
+\alias{wordquiz}
 \title{Prepare an Quiz from a Wordlist}
 \usage{
 prepare_quiz(wl, direction, training = FALSE, groups = NULL)

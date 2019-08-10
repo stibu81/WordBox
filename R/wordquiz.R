@@ -15,6 +15,8 @@
 #' @return
 #'  a \code{wordquiz} object
 #'
+#' @aliases wordquiz
+#'
 #' @export
 
 prepare_quiz <- function(wl, direction, training = FALSE,
@@ -66,6 +68,22 @@ prepare_quiz <- function(wl, direction, training = FALSE,
 }
 
 #' Draw a Question from a wordquiz
+#'
+#' Draw a question from a quiz.
+#'
+#' @param quiz the \code{\link{wordquiz}} object from which the
+#'  question is drawn.
+#' @param wl the \code{\link{wordlist}} object on which the quiz
+#'  is based.
+#'
+#' @details
+#' One of the questions in the quiz is selected based on
+#' the weights that are computed in \code{\link{prepare_quiz}}.
+#'
+#' @return
+#' a \code{wordquestion} object
+#'
+#' @aliases wordquestion
 #'
 #' @export
 

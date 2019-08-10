@@ -2,10 +2,25 @@
 % Please edit documentation in R/wordquiz.R
 \name{draw_question}
 \alias{draw_question}
+\alias{wordquestion}
 \title{Draw a Question from a wordquiz}
 \usage{
 draw_question(quiz, wl)
 }
+\arguments{
+\item{quiz}{the \code{\link{wordquiz}} object from which the
+question is drawn.}
+
+\item{wl}{the \code{\link{wordlist}} object on which the quiz
+is based.}
+}
+\value{
+a \code{wordquestion} object
+}
 \description{
-Draw a Question from a wordquiz
+Draw a question from a quiz.
+}
+\details{
+One of the questions in the quiz is selected based on
+the weights that are computed in \code{\link{prepare_quiz}}.
 }

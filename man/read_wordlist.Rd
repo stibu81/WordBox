@@ -2,6 +2,7 @@
 % Please edit documentation in R/wordlist.R
 \name{read_wordlist}
 \alias{read_wordlist}
+\alias{wordlist}
 \alias{get_wordlist_testfile}
 \title{Read a word list file}
 \usage{

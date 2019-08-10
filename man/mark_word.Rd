@@ -6,6 +6,39 @@
 \usage{
 mark_word(question, quiz, wl, success)
 }
+\arguments{
+\item{question}{the \code{\link{wordquestion}} object that
+has been quizzed.}
+
+\item{quiz}{the \code{\link{wordquiz}} from which the question
+was taken.}
+
+\item{wl}{the \code{\link{wordlist}}, on which the quiz is
+based and which will be modified.}
+
+\item{success}{logical indicating whether the question was
+answered correctly or not.}
+}
+\value{
+a \code{\link{wordlist}} object
+}
 \description{
-Register Success or Failure for a Word in a wordlist
+After a word has been quizzed, the wordlist must be
+changed.
+}
+\details{
+After a word has been quizzed, its entry in the \code{wordlist}
+must be modified. The modifications affect the columns
+\code{box}, \code{count}, and \code{date} that belong to
+the direction that was quizzed.
+
+In case of a correct answer, \code{count} is increased by one.
+If the limit of counts is reached, the word is moved to the
+next box by increasing \code{box} by one. \code{count} is
+reset to zero. \code{date}, which indicates the date of the
+last correct answer, is set to the current date.
+
+In case of a wrong answer, \code{count} is set to zero and
+the word is moved on box back by decreasing \code{box}
+by one. \code{date} is left unchanged.
 }

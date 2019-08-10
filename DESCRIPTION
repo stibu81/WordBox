@@ -1,11 +1,11 @@
 Package: WordBox
 Type: Package
-Title: A simple word trainer
+Title: A simple vocabulary trainer
 Version: 0.0.0.9002
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <lanz.stefan@gmx.ch>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package provides a simple vocabulary trainer
+ in the form of a shiny app. Wordlists are provided as csv files.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

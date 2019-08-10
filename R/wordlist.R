@@ -25,6 +25,9 @@
 #'
 #' The full names of the two languages are returned as attribut
 #' and can be obtaines using \code{get_languages}.
+#'
+#' @aliases wordlist
+#'
 #' @export
 
 read_wordlist <- function(file) {
