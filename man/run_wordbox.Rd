@@ -4,7 +4,7 @@
 \alias{run_wordbox}
 \title{Run the application}
 \usage{
-run_wordbox(dir = NULL, launch.browser = FALSE)
+run_wordbox(dir = NULL, launch.browser = NULL)
 }
 \arguments{
 \item{dir}{character indicating a directory where wordlist
@@ -12,7 +12,10 @@ files (csv) are stored. All the csv files in that directory
 will be available to be loaded in the application.}
 
 \item{launch.browser}{logical, if \code{TRUE}, the application
-is opened in the system's default browser.}
+is opened in the system's default browser, if \code{FALSE},
+no browser is started. If the argument is omitted, the value
+according to the option \code{shiny.launch.browser} is used,
+which in RStudio opens the internal shiny viewer.}
 }
 \description{
 Run the application
