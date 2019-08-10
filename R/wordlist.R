@@ -141,12 +141,31 @@ get_languages <- function(wl) {
 }
 
 
+#' Extract the Names of All the Groups in a Wordlist
+#'
+#' Extract the names of all the groups that are contained
+#' in a \code{wordlist}.
+#'
+#' @param wl a \code{wordlist} object
+#'
+#' @return
+#' a character vector giving the names of the groups.
+#' Each name is unique and the vector is sorted.
+#'
+#' @export
+
+get_groups <- function(wl) {
+  return(sort(unique(wl$group)))
+}
+
+
 # Get the expected names of a wordlist object
 get_wordlist_names <- function() {
   c("language1", "language2", "group",
     "box1", "count1", "date1",
     "box2", "count2", "date2")
 }
+
 
 
 #' Obtain configuration from wordlist
