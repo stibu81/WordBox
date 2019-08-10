@@ -1,7 +1,7 @@
 Package: WordBox
 Type: Package
 Title: A simple word trainer
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <lanz.stefan@gmx.ch>
 Description: More about what it does (maybe more than one line)
@@ -15,6 +15,7 @@ Imports: readr,
           tidyr,
           magrittr,
           shiny,
+          shinyjs,
           rlang,
           ggplot2
 Suggests: 

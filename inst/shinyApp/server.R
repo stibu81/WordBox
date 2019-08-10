@@ -39,6 +39,7 @@ server <- function(input, output, session) {
                    updateSelectInput(session, "direction", choices = choices)
                    updateSelectInput(session, "group",
                                      choices = c("alle", get_groups(state$wl)))
+                   shinyjs::enable("run")
                  }
                }
   )
@@ -57,6 +58,8 @@ server <- function(input, output, session) {
                  state$i_exercise <- state$i_exercise + 1
                  state$n_correct <- 0
                  state$n_wrong <- 0
+                 shinyjs::disable("run")
+                 shinyjs::disable("load")
                  cat("running exercise from file", state$wl_file,
                      "with the following settings:",
                      "\nDirection:", state$direction,
@@ -66,7 +69,7 @@ server <- function(input, output, session) {
                }
   )
 
-  # create the UI when the quiz is started
+  # dynamic UI for the quiz ######
   output$exerciseUI <- renderUI({
     if (!state$running) return(NULL)
     if (state$mode == "written") {
@@ -77,7 +80,7 @@ server <- function(input, output, session) {
         strong("L\u00f6sung"),
         textOutput("solution"),
         br(),
-        actionButton("gonext", "Weiter")
+        shinyjs::disabled(actionButton("gonext", "Weiter"))
       )
     } else {
       tagList(
@@ -86,14 +89,14 @@ server <- function(input, output, session) {
         strong("L\u00f6sung"),
         textOutput("solution"),
         br(),
-        actionButton("correct", "Richtig"),
-        actionButton("wrong", "Falsch")
+        shinyjs::disabled(actionButton("correct", "Richtig")),
+        shinyjs::disabled(actionButton("wrong", "Falsch"))
       )
     }
   })
 
-  # initialise a new quiz whenever the counter i_exercise
-  # is incremented
+  # draw a new question #####
+  # this is triggered by incrementing i_exercise
   observeEvent(state$i_exercise, {
     if (state$running) {
       state$question <- draw_question(state$quiz, state$wl)
@@ -108,6 +111,7 @@ server <- function(input, output, session) {
         # reset to original state
         state$wl <- NULL
         state$running <- FALSE
+        shinyjs::enable("load")
         updateSelectInput(session, "direction",
                           choices = "keine W\u00f6rterliste geladen")
         updateSelectInput(session, "group",
@@ -116,7 +120,8 @@ server <- function(input, output, session) {
     }
   })
 
-  # button check: show the solution in oral mode,
+  # click on actionButton check ######
+  # show the solution in oral mode,
   # check user input and show the solution in written mode
   # if the button is clicked a second time, the check should not
   # be redone! This is achieved by not running the check, if the
@@ -142,44 +147,86 @@ server <- function(input, output, session) {
           state$dot_colour <- "red"
           state$n_wrong <- state$n_wrong + 1
         }
+        shinyjs::enable("gonext")
+      } else {
+        shinyjs::enable("correct")
+        shinyjs::enable("wrong")
       }
       state$show_answer <- TRUE
     }
   })
 
-  # buttons next, correct, wrong
+  # click on actionButton gonext #####
   observeEvent(input$gonext, {
     if (state$show_answer) {
       state$show_answer <- FALSE
       state$i_exercise <- state$i_exercise + 1
       updateTextInput(session, "solution_in", value = "")
+      shinyjs::disable("gonext")
     }
   })
+
+  # if Enter is pressed while the text input is active
+  # either check or gonext are clicked
+  shinyjs::onevent("keyup", "solution_in", function(e) {
+        if (e$keyCode == 13) {
+          if (!state$show_answer) {
+            shinyjs::click("check")
+          } else {
+            shinyjs::click("gonext")
+          }
+        }
+      })
+
+  # click on actionButton correct & wrong #####
+  # both buttons only work, if the answer is shown
   observeEvent(input$correct, {
-    state$show_answer <- FALSE
-    # mark the word in the wordlist and remove from quiz
-    state$wl <- mark_word(state$question,
-                          state$quiz,
-                          state$wl,
-                          success = TRUE)
-    state$quiz <- state$quiz[-state$question$i_quiz, ]
-    state$dot_colour <- "green"
-    state$n_correct <- state$n_correct + 1
-    state$i_exercise <- state$i_exercise + 1
+    if (state$show_answer) {
+      state$show_answer <- FALSE
+      # mark the word in the wordlist and remove from quiz
+      state$wl <- mark_word(state$question,
+                            state$quiz,
+                            state$wl,
+                            success = TRUE)
+      state$quiz <- state$quiz[-state$question$i_quiz, ]
+      state$dot_colour <- "green"
+      state$n_correct <- state$n_correct + 1
+      state$i_exercise <- state$i_exercise + 1
+      shinyjs::disable("correct")
+      shinyjs::disable("wrong")
+    }
   })
   observeEvent(input$wrong, {
-    state$show_answer <- FALSE
-    # mark the word in the wordlist, leave in quiz
-    state$wl <- mark_word(state$question,
-                          state$quiz,
-                          state$wl,
-                          success = FALSE)
-    state$n_wrong <- state$n_wrong + 1
-    state$dot_colour <- "red"
-    state$i_exercise <- state$i_exercise + 1
+    if (state$show_answer) {
+      state$show_answer <- FALSE
+      # mark the word in the wordlist, leave in quiz
+      state$wl <- mark_word(state$question,
+                            state$quiz,
+                            state$wl,
+                            success = FALSE)
+      state$n_wrong <- state$n_wrong + 1
+      state$dot_colour <- "red"
+      state$i_exercise <- state$i_exercise + 1
+      shinyjs::disable("correct")
+      shinyjs::disable("wrong")
+    }
   })
 
-  # text outputs
+  # if the button check is selected, the buttons
+  # correct and wrong can be clicked by pressing
+  # r (correct) and f (wrong)
+  shinyjs::onevent("keyup", "check", function(e) {
+      if (state$mode == "oral" && state$show_answer) {
+        if (e$key == "r") {
+          shinyjs::click("correct")
+        }
+        if (e$key == "f") {
+          shinyjs::click("wrong")
+        }
+      }
+    })
+
+  # text outputs #####
   output$current_box <- renderText(state$question$box)
   output$question <- renderText(state$question$question)
   output$current_group <- renderText(state$question$group)
@@ -192,7 +239,7 @@ server <- function(input, output, session) {
     if (state$show_answer) state$question$answer
   })
 
-  # render the coloured dot
+  # render the coloured dot #####
   output$dot <- renderPlot({
     ggplot2::ggplot() +
       ggplot2::annotate("polygon",

@@ -1,5 +1,7 @@
 ui <- fluidPage(
 
+  shinyjs::useShinyjs(),
+
   titlePanel("WordBox Vokabeltrainer"),
 
   sidebarLayout(
@@ -28,9 +30,11 @@ ui <- fluidPage(
                   "Gruppe ausw\u00e4hlen",
                   "keine W\u00f6rterliste geladen",
                   width = "300px"),
-      actionButton("run",
-                   "Start",
-                   width = "100px")
+      shinyjs::disabled(
+        actionButton("run",
+                     "Start",
+                     width = "100px")
+      )
     ),
 
     # main panel #####
