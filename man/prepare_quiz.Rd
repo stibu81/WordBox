@@ -4,17 +4,26 @@
 \alias{prepare_quiz}
 \title{Prepare an Quiz from a Wordlist}
 \usage{
-prepare_quiz(wl, direction)
+prepare_quiz(wl, direction, training = FALSE, groups = NULL)
 }
 \arguments{
 \item{wl}{a \code{wordlist} object}
 
 \item{direction}{an integer indicating the direction to be
- queried. \code{1} stands for Language1 to Language2 and
- \code{2} for the opposite direction.
+queried. \code{1} stands for Language1 to Language2 and
+\code{2} for the opposite direction.}
 
- @return
- a \code{wordquiz} object}
+\item{training}{logical indicating whether this is a quiz
+in training mode or not. In training mode, all words are
+included with equal weight. Otherwise, words are only quizzed,
+if their last success is old enough and the probability is
+weighed by age and box.}
+
+\item{groups}{character vector indicating the groups to
+be quizzed. If omitted, all groups are included in the quiz.}
+}
+\value{
+a \code{wordquiz} object
 }
 \description{
 Prepare an Quiz from a Wordlist

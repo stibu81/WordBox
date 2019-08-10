@@ -4,13 +4,21 @@
 #' @param direction an integer indicating the direction to be
 #'  queried. \code{1} stands for Language1 to Language2 and
 #'  \code{2} for the opposite direction.
+#' @param training logical indicating whether this is a quiz
+#'  in training mode or not. In training mode, all words are
+#'  included with equal weight. Otherwise, words are only quizzed,
+#'  if their last success is old enough and the probability is
+#'  weighed by age and box.
+#' @param groups character vector indicating the groups to
+#'  be quizzed. If omitted, all groups are included in the quiz.
 #'
-#'  @return
+#' @return
 #'  a \code{wordquiz} object
 #'
 #' @export
 
-prepare_quiz <- function(wl, direction) {
+prepare_quiz <- function(wl, direction, training = FALSE,
+                         groups = NULL) {
 
   direction <- as.numeric(direction[1])
   if (!direction %in% 1:2) {
@@ -25,14 +33,30 @@ prepare_quiz <- function(wl, direction) {
                     date     = paste0("date", direction))
 
   # create the wordquiz object
-  quiz <- dplyr::tibble(index = 1:nrow(wl),
-                        filter_date = wl[[quiz_cols$date]] +
-                                        cfg_days(wl)[wl[[quiz_cols$box]]],
-                        weight = compute_weight(wl[[quiz_cols$date]],
-                                                wl[[quiz_cols$box]],
-                                                wl)) %>%
-          dplyr::filter(.data$filter_date < Sys.Date()) %>%
-          dplyr::select(-"filter_date")
+  # in training mode, all words are included with equal weight,
+  # otherwise they are weighed by age and words that had recent
+  # success are not quizzed.
+  if (training) {
+    quiz <- dplyr::tibble(index = 1:nrow(wl),
+                          weight = 1,
+                          group = wl$group)
+  } else {
+    quiz <- dplyr::tibble(index = 1:nrow(wl),
+                          filter_date = wl[[quiz_cols$date]] +
+                                          cfg_days(wl)[wl[[quiz_cols$box]]],
+                          weight = compute_weight(wl[[quiz_cols$date]],
+                                                  wl[[quiz_cols$box]],
+                                                  wl),
+                          group = wl$group) %>%
+            dplyr::filter(.data$filter_date < Sys.Date()) %>%
+            dplyr::select(-"filter_date")
+  }
+
+  # filter by groups, if requested
+  if (!is.null(groups)) {
+    quiz %<>% dplyr::filter(.data$group %in% groups)
+  }
+  quiz %<>% dplyr::select(-"group")
 
   # add column names as attribute
   attr(quiz, "cols") <- quiz_cols

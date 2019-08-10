@@ -1,4 +1,5 @@
 library(magrittr)
+library(WordBox)
 
 server <- function(input, output, session) {
 
@@ -48,8 +49,9 @@ server <- function(input, output, session) {
                                 as.numeric()
             state$mode <- input$mode
             state$training <- input$training
-            state$group <- input$group
-            state$quiz <- prepare_quiz(state$wl, state$direction)
+            state$group <- if (input$group == "alle") NULL else input$group
+            state$quiz <- prepare_quiz(state$wl, state$direction,
+                                       state$training, state$group)
             state$i_exercise <- state$i_exercise + 1
             cat("running exercise from file", state$wl_file,
                 "with the following settings:",
@@ -91,13 +93,14 @@ server <- function(input, output, session) {
     observeEvent(state$i_exercise, {
         if (state$running) {
             state$question <- draw_question(state$quiz, state$wl)
-            write_wordlist(state$wl, state$wl_file, TRUE)
+            # save wordlist only if not in training mode
+            if (!state$training)
+              write_wordlist(state$wl, state$wl_file, TRUE)
             if (is.null(state$question)) {
                 showModal(
                     modalDialog("Du hast alle Fragen beantwortet!",
                                 titel = "Information")
                 )
-                stopApp()
             }
         }
     })
