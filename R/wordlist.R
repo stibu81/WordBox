@@ -74,16 +74,8 @@ read_wordlist <- function(file) {
                 magrittr::set_names(paste0("language", 1:2))
   names(wordlist)[1:2] <- names(languages)
 
-  # fill in missing values
-  wordlist %<>% tidyr::replace_na(list(box1 = 1,
-                                       count1 = 0,
-                                       date1 = as.Date("1900-01-01"),
-                                       box2 = 1,
-                                       count2 = 0,
-                                       date2 = as.Date("1900-01-01")))
-
-  # get configuration data
   config <- get_config(dirname(file))
+  wordlist %<>% fix_wordlist(config)
 
   # set attributes
   attr(wordlist, "config") <- config
@@ -193,4 +185,32 @@ cfg_counts <- function(wl) {
 
 cfg_days <- function(wl) {
   return(attr(wl, "config")$days)
+}
+
+
+# Make a wordlist compatible with the configuration
+
+fix_wordlist <- function(wl, config) {
+
+  # fill in missing values
+  wl %<>% tidyr::replace_na(list(box1 = 1,
+                                 count1 = 0,
+                                 date1 = as.Date("1900-01-01"),
+                                 box2 = 1,
+                                 count2 = 0,
+                                 date2 = as.Date("1900-01-01")))
+
+  # fix boxes
+  wl %<>% dplyr::mutate(box1 = pmin(.data$box1, config$boxes),
+                        box2 = pmin(.data$box2, config$boxes)) %>%
+  # fix count
+    dplyr::group_by(box1) %>%
+    dplyr::mutate(count1 = pmin(.data$count1, config$counts[.data$box1])) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(box2) %>%
+    dplyr::mutate(count2 = pmin(.data$count2, config$counts[.data$box2])) %>%
+    dplyr::ungroup()
+
+  return(wl)
+
 }

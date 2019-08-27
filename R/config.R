@@ -29,7 +29,7 @@ get_config <- function(dir) {
     cfg <- read_config(cfg_home)
   } else {
     cfg <- list(boxes = 4,
-                counts = c(4, 3, 3, Inf),
+                counts = c(3, 2, 2, Inf),
                 days = c(1, 7, 30, 90)
                 )
   }
