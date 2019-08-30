@@ -1,7 +1,7 @@
 Package: WordBox
 Type: Package
 Title: A simple vocabulary trainer
-Version: 0.1.0.9000
+Version: 0.1.0.9001
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <lanz.stefan@gmx.ch>
 Description: This package provides a simple vocabulary trainer

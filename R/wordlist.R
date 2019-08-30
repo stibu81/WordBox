@@ -203,13 +203,14 @@ fix_wordlist <- function(wl, config) {
   # fix boxes
   wl %<>% dplyr::mutate(box1 = pmin(.data$box1, config$boxes),
                         box2 = pmin(.data$box2, config$boxes)) %>%
-  # fix count
-    dplyr::group_by(box1) %>%
-    dplyr::mutate(count1 = pmin(.data$count1, config$counts[.data$box1])) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(box2) %>%
-    dplyr::mutate(count2 = pmin(.data$count2, config$counts[.data$box2])) %>%
-    dplyr::ungroup()
+  # fix count: move to next box, if count has reached limit
+    dplyr::mutate(inc1 = .data$count1 >= config$counts[.data$box1],
+                  inc2 = .data$count2 >= config$counts[.data$box2],
+                  box1 = .data$box1 + .data$inc1,
+                  box2 = .data$box2 + .data$inc2,
+                  count1 = .data$count1 * !.data$inc1,
+                  count2 = .data$count2 * !.data$inc2) %>%
+    dplyr::select(-"inc1", -"inc2")
 
   return(wl)
 

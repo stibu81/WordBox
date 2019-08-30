@@ -45,7 +45,7 @@ mark_word <- function(question, quiz, wl, success) {
   if (success) {
     wl[i_wl, cols$count] %<>% magrittr::add(1)
     wl[i_wl, cols$date] <- Sys.Date()
-    if (wl[i_wl, cols$count] > count) {
+    if (wl[i_wl, cols$count] >= count) {
       if (question$box < boxes) {
         wl[i_wl, cols$box] %<>% magrittr::add(1)
         wl[i_wl, cols$count] <- 0
