@@ -212,6 +212,10 @@ fix_wordlist <- function(wl, config) {
                   count2 = .data$count2 * !.data$inc2) %>%
     dplyr::select(-"inc1", -"inc2")
 
+  # if the date columns are numeric, convert to date
+  if (is.numeric(wl$date1)) wl$date1 %<>% as.Date(origin = "1970-01-01")
+  if (is.numeric(wl$date2)) wl$date2 %<>% as.Date(origin = "1970-01-01")
+
   return(wl)
 
 }
