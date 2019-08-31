@@ -22,7 +22,7 @@
 prepare_quiz <- function(wl, direction, training = FALSE,
                          groups = NULL) {
 
-  direction <- as.numeric(direction[1])
+  direction <- suppressWarnings(as.numeric(direction[1]))
   if (!direction %in% 1:2) {
     stop("Invalid input. direction must be 1 or 2.")
   }
@@ -53,6 +53,10 @@ prepare_quiz <- function(wl, direction, training = FALSE,
             dplyr::filter(.data$filter_date < Sys.Date()) %>%
             dplyr::select(-"filter_date")
   }
+
+  # add a column with the indices of all correct answers
+  qs <- wl[[quiz_cols$question]]
+  quiz$answers <- lapply(quiz$index, function(i) which(qs == qs[i]))
 
   # filter by groups, if requested
   if (!is.null(groups)) {
@@ -102,7 +106,7 @@ draw_question <- function(quiz, wl) {
   question <- list(i_quiz = i,
                    i_wl = i_wl,
                    question = wl[i_wl, cols$question, drop = TRUE],
-                   answer = wl[i_wl, cols$answer, drop = TRUE],
+                   answers = wl[quiz$answers[[i]], cols$answer, drop = TRUE],
                    group = wl[i_wl, "group", drop = TRUE],
                    box = wl[i_wl, cols$box, drop = TRUE])
 
@@ -123,4 +127,20 @@ compute_weight <- function(date, box, wl) {
 
 get_quiz_cols <- function(quiz) {
   return(attr(quiz, "cols"))
+}
+
+
+#' Check the Answer To a Question
+#'
+#' @param answer character string giving the answer to the question
+#' @param question the \code{\link{wordquestion}} object that was
+#'  queried.
+#'
+#' @return
+#' a logical indicating whether the answer is correct
+#'
+#' @export
+
+correct_answer <- function(answer, question) {
+  trimws(answer) %in% question$answers
 }

@@ -3,6 +3,7 @@
 export(cfg_boxes)
 export(cfg_counts)
 export(cfg_days)
+export(correct_answer)
 export(draw_question)
 export(get_config)
 export(get_groups)

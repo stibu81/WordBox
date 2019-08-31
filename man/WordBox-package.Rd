@@ -8,5 +8,6 @@
 \description{
 This package provides a simple vocabulary trainer
  in the form of a shiny app. Wordlists are provided as csv files.
+ The interface is in German.
 }
 \keyword{internal}

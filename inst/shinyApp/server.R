@@ -129,7 +129,7 @@ server <- function(input, output, session) {
   observeEvent(input$check, {
     if (state$running && !state$show_answer) {
       if (input$mode == "written") {
-        if (trimws(input$solution_in) == state$question$answer) {
+        if (correct_answer(input$solution_in, state$question)) {
           # mark the word in the wordlist and remove from quiz
           state$wl <- mark_word(state$question,
                                 state$quiz,
@@ -236,7 +236,7 @@ server <- function(input, output, session) {
   output$n_correct <- renderText(state$n_correct)
   output$n_wrong <- renderText(state$n_wrong)
   output$solution <- renderText({
-    if (state$show_answer) state$question$answer
+    if (state$show_answer) paste(state$question$answers, collapse = "; ")
   })
 
   # render the coloured dot #####
