@@ -28,10 +28,7 @@ get_config <- function(dir) {
   } else if (file.exists(cfg_home)) {
     cfg <- read_config(cfg_home)
   } else {
-    cfg <- list(boxes = 4,
-                counts = c(3, 2, 2, Inf),
-                days = c(1, 7, 30, 90)
-                )
+    cfg <- read_config(system.file("config/wordbox.cfg", package = "WordBox"))
   }
 
   return (cfg)
@@ -55,5 +52,38 @@ get_config <- function(dir) {
 #' @keywords internal
 
 read_config <- function(file) {
-  return (NULL)
+
+  if (!file.exists(file)) {
+    stop("The config file ", file, " does not exist.")
+  }
+
+  cfg <- jsonlite::fromJSON(file)
+
+  # check field names, reorder
+  cfg_names <- c("boxes", "counts", "days")
+  if (!setequal(names(cfg), cfg_names)) {
+    stop("The config file ", file, " is invalid.",
+         "It must contain the fields 'boxes', 'counts', and 'days'.")
+  }
+  cfg <- cfg[cfg_names]
+
+  # boxes must be numeric of length one
+  if (!is.numeric(cfg$boxes) || length(cfg$boxes) != 1) {
+    stop("boxes must be a single integer")
+  }
+  cfg$boxes <- floor(cfg$boxes)
+
+  # counts must be numeric of length boxes - 1
+  if (!is.numeric(cfg$counts) || length(cfg$counts) != cfg$boxes - 1) {
+    stop("counts must be an integer vector with length boxes - 1")
+  }
+  cfg$counts <- c(floor(cfg$counts), Inf)
+
+  # days must be numeric of length boxes
+  if (!is.numeric(cfg$days) || length(cfg$days) != cfg$boxes) {
+    stop("days must be an integer vector with length boxes")
+  }
+  cfg$days <- floor(cfg$days)
+
+  return(cfg)
 }
