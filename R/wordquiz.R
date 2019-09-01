@@ -50,7 +50,7 @@ prepare_quiz <- function(wl, direction, training = FALSE,
                                                   wl[[quiz_cols$box]],
                                                   wl),
                           group = wl$group) %>%
-            dplyr::filter(.data$filter_date < Sys.Date()) %>%
+            dplyr::filter(.data$filter_date <= Sys.Date()) %>%
             dplyr::select(-"filter_date")
   }
 
