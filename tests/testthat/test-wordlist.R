@@ -2,7 +2,7 @@
 
 wl_file <- get_wordlist_testfile()
 languages <- c(language1 = "Deutsch",
-               language2 = "Französisch")
+               language2 = "Englisch")
 
 test_that("check that test file exists", {
   expect_true(file.exists(wl_file))
@@ -11,8 +11,9 @@ test_that("check that test file exists", {
 wl <- read_wordlist(wl_file)
 
 test_that("read a wordlist file", {
-  expect_identical(ncol(wl), 9L)
   expect_is(wl, "wordlist")
+  expect_identical(ncol(wl), 9L)
+  expect_identical(nrow(wl), 8L)
 })
 
 test_that("properties of a wordlist", {
