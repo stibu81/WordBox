@@ -35,8 +35,9 @@ following columns:
 \item{\code{date2}}{the date of the last success in the mode 2 > 1}
 }
 
-The full names of the two languages are returned as attribut
-and can be obtaines using \code{get_languages}.
+The full names of the two languages are returned as attribute of
+the word list and can be obtained using
+\code{\link{get_languages}}.
 }
 \description{
 Read a word list file
