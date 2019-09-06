@@ -6,12 +6,17 @@
 \alias{get_wordlist_testfile}
 \title{Read a word list file}
 \usage{
-read_wordlist(file)
+read_wordlist(file, config_file = NULL)
 
 get_wordlist_testfile()
 }
 \arguments{
-\item{file}{character indicating the name of the file}
+\item{file}{character with the full path to the word list file}
+
+\item{config_file}{character giving the full path to the
+configuration file. If omitted, the default configuration is
+used. See \code{\link{read_config}} for details
+on the config file.}
 }
 \value{
 a wordlist object, which is a data frame with the

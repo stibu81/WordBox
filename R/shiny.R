@@ -8,10 +8,15 @@
 #'  no browser is started. If the argument is omitted, the value
 #'  according to the option \code{shiny.launch.browser} is used,
 #'  which in RStudio opens the internal shiny viewer.
+#' @param config_file character giving the full path to the
+#'  configuration file. If omitted, the default configuration is
+#'  used. See \code{\link{read_config}} for details
+#'  on the config file.
 #'
 #' @export
 
-run_wordbox <- function(dir = NULL, launch.browser = NULL) {
+run_wordbox <- function(dir = NULL, launch.browser = NULL,
+                        config_file = NULL) {
 
     if (is.null(dir) || !dir.exists(dir)) {
         stop("an existing directory must be provided.")
@@ -22,6 +27,7 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL) {
       stop("Could not find example directory. Try re-installing `WordBox`.",
            call. = FALSE)
     }
+    options(wordbox_cfg_file = config_file)
 
     if (is.null(launch.browser)) {
         launch.browser <- getOption("shiny.launch.browser", interactive())

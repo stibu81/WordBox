@@ -1,51 +1,32 @@
-#' Get Configuration Data
-#'
-#' Read a configuration data from a file or use default values.
-#'
-#' @param dir character giving a directory path. If
-#'  a file called \code{wordbox.cfg} is found in that
-#'  folder it is read.
-#'
-#' @details
-#' The function looks for a file called \code{wordbox.cfg}
-#' first in the folder indicated by \code{dir} and, if the
-#' file is not found, in the user's home. If no config file
-#' is found in both locatings, default values are used.
-#'
-#' @return
-#' a list containing the configuration data.
-#'
-#' @export
-
-get_config <- function(dir) {
-
-  cfg_name <- "wordbox.cfg"
-  cfg_dir <- file.path(dir, cfg_name)
-  cfg_home <- file.path("~", cfg_name)
-
-  if (file.exists(cfg_dir)) {
-    cfg <- read_config(cfg_dir)
-  } else if (file.exists(cfg_home)) {
-    cfg <- read_config(cfg_home)
-  } else {
-    cfg <- read_config(system.file(file.path("config", "wordbox.cfg"),
-                                   package = "WordBox"))
-  }
-
-  return (cfg)
-}
-
-
 #' Read a Configuration File
 #'
-#' Read a configuration data from a file or use default values.
+#' Read WordBox configuration from a file.
 #'
 #' @param file character giving the path to the file
 #'
 #' @details
-#' The configuration file must contain three lines
-#' beginning with the keywords \code{BOXES},
-#' \code{COUNTS} and \code{DAYS}.
+#' The configuration file must be a JSON file containing a
+#' single object with three fields:
+#' \describe{
+#'   \item{\code{"boxes"}}{a single integer indicating the number of
+#'    boxes to be used.}
+#'   \item{\code{"counts"}}{an integer array with one less elements
+#'    than there are boxes. The numbers indicate for each box, how
+#'    often the word must be correctly answered before it is moved
+#'    to the next box. For the last box, the value is automatically
+#'    set to \code{Inf}, since a word cannot be moved further than
+#'    the last box.}
+#'   \item{\code{"days"}}{an integer array with one element per box.
+#'    For each box, this gives the number of days that a word is not
+#'    quizzed, after it has been correctly answered.}
+#' }
+#'
+#' \code{get_default_config_file()} returns the path to the
+#' default configuration file. To look at its contents, run
+#'
+#' \preformatted{
+#' file.show(get_default_config_file())
+#' }
 #'
 #' @return
 #' a list containing the configuration data.
@@ -87,4 +68,13 @@ read_config <- function(file) {
   cfg$days <- floor(cfg$days)
 
   return(cfg)
+}
+
+
+#' @rdname read_config
+#' @export
+
+get_default_config_file <- function() {
+  system.file(file.path("config", "wordbox.cfg"),
+              package = "WordBox")
 }

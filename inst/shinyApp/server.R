@@ -32,7 +32,11 @@ server <- function(input, output, session) {
                                             paste0(input$wordlist_file,
                                                    ".csv"))
                  if (file.exists(state$wl_file)) {
-                   state$wl <- read_wordlist(state$wl_file)
+                   cfg_file <- getOption("wordbox_cfg_file")
+                   cat("reading wordlist file", state$wl_file,
+                       "\nwith", if (is.null(cfg_file)) "default",
+                       "config file", cfg_file, "\n")
+                   state$wl <- read_wordlist(state$wl_file, cfg_file)
                    langs <- get_languages(state$wl)
                    choices <- magrittr::set_names(paste0("direction", 1:2),
                                                   paste0(langs, " > ", rev(langs)))

@@ -4,7 +4,7 @@
 \alias{run_wordbox}
 \title{Run the application}
 \usage{
-run_wordbox(dir = NULL, launch.browser = NULL)
+run_wordbox(dir = NULL, launch.browser = NULL, config_file = NULL)
 }
 \arguments{
 \item{dir}{character indicating a directory where wordlist
@@ -16,6 +16,11 @@ is opened in the system's default browser, if \code{FALSE},
 no browser is started. If the argument is omitted, the value
 according to the option \code{shiny.launch.browser} is used,
 which in RStudio opens the internal shiny viewer.}
+
+\item{config_file}{character giving the full path to the
+configuration file. If omitted, the default configuration is
+used. See \code{\link{read_config}} for details
+on the config file.}
 }
 \description{
 Run the application

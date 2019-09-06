@@ -2,9 +2,12 @@
 % Please edit documentation in R/config.R
 \name{read_config}
 \alias{read_config}
+\alias{get_default_config_file}
 \title{Read a Configuration File}
 \usage{
 read_config(file)
+
+get_default_config_file()
 }
 \arguments{
 \item{file}{character giving the path to the file}
@@ -13,11 +16,30 @@ read_config(file)
 a list containing the configuration data.
 }
 \description{
-Read a configuration data from a file or use default values.
+Read WordBox configuration from a file.
 }
 \details{
-The configuration file must contain three lines
-beginning with the keywords \code{BOXES},
-\code{COUNTS} and \code{DAYS}.
+The configuration file must be a JSON file containing a
+single object with three fields:
+\describe{
+  \item{\code{"boxes"}}{a single integer indicating the number of
+   boxes to be used.}
+  \item{\code{"counts"}}{an integer array with one less elements
+   than there are boxes. The numbers indicate for each box, how
+   often the word must be correctly answered before it is moved
+   to the next box. For the last box, the value is automatically
+   set to \code{Inf}, since a word cannot be moved further than
+   the last box.}
+  \item{\code{"days"}}{an integer array with one element per box.
+   For each box, this gives the number of days that a word is not
+   quizzed, after it has been correctly answered.}
+}
+
+\code{get_default_config_file()} returns the path to the
+default configuration file. To look at its contents, run
+
+\preformatted{
+file.show(get_default_config_file())
+}
 }
 \keyword{internal}

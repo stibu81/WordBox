@@ -1,6 +1,10 @@
 #' Read a word list file
 #'
-#' @param file character indicating the name of the file
+#' @param file character with the full path to the word list file
+#' @param config_file character giving the full path to the
+#'  configuration file. If omitted, the default configuration is
+#'  used. See \code{\link{read_config}} for details
+#'  on the config file.
 #'
 #' @details
 #' \code{get_wordlist_testfile()} returns the file name of a wordlist
@@ -30,7 +34,7 @@
 #'
 #' @export
 
-read_wordlist <- function(file) {
+read_wordlist <- function(file, config_file = NULL) {
 
   if (!file.exists(file))
     stop("The file '", file, "' does not exist.")
@@ -74,7 +78,15 @@ read_wordlist <- function(file) {
                 magrittr::set_names(paste0("language", 1:2))
   names(wordlist)[1:2] <- names(languages)
 
-  config <- get_config(dirname(file))
+  if (is.null(config_file)) {
+    config_file <- get_default_config_file()
+  }
+  if (!file.exists(config_file)) {
+    warning("File ", config_file, " does not exists. ",
+            "Falling back to default.")
+    config_file <- get_default_config_file()
+  }
+  config <- read_config(config_file)
   wordlist %<>% fix_wordlist(config)
 
   # set attributes
