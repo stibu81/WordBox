@@ -28,7 +28,8 @@ get_config <- function(dir) {
   } else if (file.exists(cfg_home)) {
     cfg <- read_config(cfg_home)
   } else {
-    cfg <- read_config(system.file("config/wordbox.cfg", package = "WordBox"))
+    cfg <- read_config(system.file(file.path("config", "wordbox.cfg"),
+                                   package = "WordBox"))
   }
 
   return (cfg)
