@@ -28,7 +28,7 @@ test_that("test quiz preparation", {
 })
 
 test_that("test quiz preparation with options", {
-  quiz3 <- prepare_quiz(wl, "1", training = TRUE)
+  quiz3 <- prepare_quiz(wl, "1", quiztype = "training")
   expect_is(quiz3, "wordquiz")
   expect_identical(ncol(quiz3), 3L)
   expect_identical(quiz3$index, 1:8)

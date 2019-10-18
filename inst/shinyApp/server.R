@@ -7,7 +7,7 @@ server <- function(input, output, session) {
   state <- reactiveValues(running = FALSE,
                           wl_file = NULL,
                           mode = NULL,
-                          training = NULL,
+                          quiztype = NULL,
                           group = NULL,
                           direction = NULL,
                           wl = NULL,
@@ -55,10 +55,10 @@ server <- function(input, output, session) {
                  state$direction <- gsub("direction", "", input$direction) %>%
                    as.numeric()
                  state$mode <- input$mode
-                 state$training <- input$training
+                 state$quiztype <- input$quiztype
                  state$group <- if (input$group == "alle") NULL else input$group
                  state$quiz <- prepare_quiz(state$wl, state$direction,
-                                            state$training, state$group)
+                                            state$quiztype, state$group)
                  state$i_exercise <- state$i_exercise + 1
                  state$n_correct <- 0
                  state$n_wrong <- 0
@@ -68,7 +68,7 @@ server <- function(input, output, session) {
                      "with the following settings:",
                      "\nDirection:", state$direction,
                      "\nMode:", state$mode,
-                     "\nTraining:", state$training,
+                     "\nQuiztype:", state$quiztype,
                      "\nGroup:", state$group, "\n")
                }
   )
@@ -105,7 +105,7 @@ server <- function(input, output, session) {
     if (state$running) {
       state$question <- draw_question(state$quiz, state$wl)
       # save wordlist only if not in training mode
-      if (!state$training)
+      if (state$quiztype == "standard")
         write_wordlist(state$wl, state$wl_file, TRUE)
       if (is.null(state$question)) {
         showModal(

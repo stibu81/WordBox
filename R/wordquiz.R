@@ -4,13 +4,28 @@
 #' @param direction an integer indicating the direction to be
 #'  queried. \code{1} stands for Language1 to Language2 and
 #'  \code{2} for the opposite direction.
-#' @param training logical indicating whether this is a quiz
-#'  in training mode or not. In training mode, all words are
-#'  included with equal weight. Otherwise, words are only quizzed,
-#'  if their last success is old enough and the probability is
-#'  weighed by age and box.
+#' @param quiztype character indicating the type of quiz to be run.
+#'  See 'details'.
 #' @param groups character vector indicating the groups to
 #'  be quizzed. If omitted, all groups are included in the quiz.
+#'
+#' @details
+#' Three types of quizzes can be generated:
+#' \describe{
+#'   \item{standard}{Words from all boxes are included in the quiz,
+#'    if the last correct answer is old enough. How old a correct
+#'    answer must be for the word to be quizzed again depends on
+#'    the box that it is in. The probability that a word is
+#'    quizzed depends on the time that passed since the last
+#'    correct answer and the box that it is in. Words in lower
+#'    boxes or where the correct answer is further in the past
+#'    are quizzed more often.}
+#'   \item{training}{All words from all boxes are included in the
+#'    quiz with equal probability weight.}
+#'   \item{newwords}{safd}
+#' }
+#' The type of the quiz can be chosen by passing the appropriate
+#' value to \code{quiztype}.
 #'
 #' @return
 #'  a \code{wordquiz} object
@@ -19,13 +34,15 @@
 #'
 #' @export
 
-prepare_quiz <- function(wl, direction, training = FALSE,
+prepare_quiz <- function(wl, direction,
+                         quiztype = c("standard", "training", "newwords"),
                          groups = NULL) {
 
   direction <- suppressWarnings(as.numeric(direction[1]))
   if (!direction %in% 1:2) {
     stop("Invalid input. direction must be 1 or 2.")
   }
+  quiztype <- match.arg(quiztype)
 
   # prepare the column names that are relevant for the quiz
   quiz_cols <- list(question = paste0("language", direction),
@@ -38,11 +55,11 @@ prepare_quiz <- function(wl, direction, training = FALSE,
   # in training mode, all words are included with equal weight,
   # otherwise they are weighed by age and words that had recent
   # success are not quizzed.
-  if (training) {
+  if (quiztype == "training") {
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           weight = 1,
                           group = wl$group)
-  } else {
+  } else if (quiztype == "standard") {
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           filter_date = wl[[quiz_cols$date]] +
                                           cfg_days(wl)[wl[[quiz_cols$box]]],
