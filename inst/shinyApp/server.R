@@ -38,7 +38,7 @@ server <- function(input, output, session) {
                    langs <- get_languages(state$wl)
                    choices <- magrittr::set_names(paste0("direction", 1:2),
                                                   paste0(langs, " > ", rev(langs)))
-                   updateSelectInput(session, "direction", choices = choices)
+                   updateRadioButtons(session, "direction", choices = choices)
                    updateSelectInput(session, "group",
                                      choices = c("alle", get_groups(state$wl)))
                    shinyjs::enable("run")
