@@ -4,7 +4,7 @@
 #' @param direction an integer indicating the direction to be
 #'  queried. \code{1} stands for Language1 to Language2 and
 #'  \code{2} for the opposite direction.
-#' @param quiztype character indicating the type of quiz to be run.
+#' @param quiz_type character indicating the type of quiz to be run.
 #'  See 'details'.
 #' @param groups character vector indicating the groups to
 #'  be quizzed. If omitted, all groups are included in the quiz.
@@ -25,7 +25,7 @@
 #'   \item{newwords}{safd}
 #' }
 #' The type of the quiz can be chosen by passing the appropriate
-#' value to \code{quiztype}.
+#' value to \code{quiz_type}.
 #'
 #' @return
 #'  a \code{wordquiz} object
@@ -35,14 +35,14 @@
 #' @export
 
 prepare_quiz <- function(wl, direction,
-                         quiztype = c("standard", "training", "newwords"),
+                         quiz_type = c("standard", "training", "newwords"),
                          groups = NULL) {
 
   direction <- suppressWarnings(as.numeric(direction[1]))
   if (!direction %in% 1:2) {
     stop("Invalid input. direction must be 1 or 2.")
   }
-  quiztype <- match.arg(quiztype)
+  quiz_type <- match.arg(quiz_type)
 
   # prepare the column names that are relevant for the quiz
   quiz_cols <- list(question = paste0("language", direction),
@@ -55,11 +55,11 @@ prepare_quiz <- function(wl, direction,
   # in training mode, all words are included with equal weight,
   # otherwise they are weighed by age and words that had recent
   # success are not quizzed.
-  if (quiztype == "training") {
+  if (quiz_type == "training") {
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           weight = 1,
                           group = wl$group)
-  } else if (quiztype == "standard") {
+  } else if (quiz_type == "standard") {
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           filter_date = wl[[quiz_cols$date]] +
                                           cfg_days(wl)[wl[[quiz_cols$box]]],
@@ -81,8 +81,9 @@ prepare_quiz <- function(wl, direction,
   }
   quiz %<>% dplyr::select(-"group")
 
-  # add column names as attribute
+  # add column names and quiz_type as attribute
   attr(quiz, "cols") <- quiz_cols
+  attr(quiz, "type") <- quiz_type
 
   class(quiz) <- c("wordquiz", class(quiz))
   return(quiz)
@@ -141,9 +142,25 @@ compute_weight <- function(date, box, wl) {
 }
 
 # Extract wordlist column names from a wordquiz object
+#' Extract Attributes From a wordquiz Object
+#'
+#' Extract the column names that are used for the quiz
+#' (\code{quiz_cols}) and the quiz type (\code{quiz_type})
+#' from a \code{wordquiz} object.
+#'
+#' @param quiz a \code{\link{wordquiz}} object
+#'
+#' @export
 
 get_quiz_cols <- function(quiz) {
   return(attr(quiz, "cols"))
+}
+
+#' @rdname get_quiz_cols
+#' @export
+
+get_quiz_type <- function(quiz) {
+  return(attr(quiz, "type"))
 }
 
 

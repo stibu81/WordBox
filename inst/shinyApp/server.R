@@ -7,9 +7,7 @@ server <- function(input, output, session) {
   state <- reactiveValues(running = FALSE,
                           wl_file = NULL,
                           mode = NULL,
-                          quiztype = NULL,
                           group = NULL,
-                          direction = NULL,
                           wl = NULL,
                           quiz = NULL,
                           question = NULL,
@@ -52,13 +50,12 @@ server <- function(input, output, session) {
   observeEvent(input$run,
                if (!is.null(state$wl) && !state$running) {
                  state$running <- TRUE
-                 state$direction <- gsub("direction", "", input$direction) %>%
+                 direction <- gsub("direction", "", input$direction) %>%
                    as.numeric()
                  state$mode <- input$mode
-                 state$quiztype <- input$quiztype
                  state$group <- if (input$group == "alle") NULL else input$group
-                 state$quiz <- prepare_quiz(state$wl, state$direction,
-                                            state$quiztype, state$group)
+                 state$quiz <- prepare_quiz(state$wl, direction,
+                                            input$quiztype, state$group)
                  state$i_exercise <- state$i_exercise + 1
                  state$n_correct <- 0
                  state$n_wrong <- 0
@@ -66,9 +63,9 @@ server <- function(input, output, session) {
                  shinyjs::disable("load")
                  cat("running exercise from file", state$wl_file,
                      "with the following settings:",
-                     "\nDirection:", state$direction,
+                     "\nDirection:", direction,
                      "\nMode:", state$mode,
-                     "\nQuiztype:", state$quiztype,
+                     "\nQuiztype:", get_quiz_type(state$quiz),
                      "\nGroup:", state$group, "\n")
                }
   )
@@ -105,7 +102,7 @@ server <- function(input, output, session) {
     if (state$running) {
       state$question <- draw_question(state$quiz, state$wl)
       # save wordlist only if not in training mode
-      if (state$quiztype == "standard")
+      if (get_quiz_type(state$quiz) == "standard")
         write_wordlist(state$wl, state$wl_file, TRUE)
       if (is.null(state$question)) {
         showModal(

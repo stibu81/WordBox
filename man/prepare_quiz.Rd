@@ -5,7 +5,7 @@
 \alias{wordquiz}
 \title{Prepare an Quiz from a Wordlist}
 \usage{
-prepare_quiz(wl, direction, quiztype = c("standard", "training",
+prepare_quiz(wl, direction, quiz_type = c("standard", "training",
   "newwords"), groups = NULL)
 }
 \arguments{
@@ -15,7 +15,7 @@ prepare_quiz(wl, direction, quiztype = c("standard", "training",
 queried. \code{1} stands for Language1 to Language2 and
 \code{2} for the opposite direction.}
 
-\item{quiztype}{character indicating the type of quiz to be run.
+\item{quiz_type}{character indicating the type of quiz to be run.
 See 'details'.}
 
 \item{groups}{character vector indicating the groups to
@@ -43,5 +43,5 @@ Three types of quizzes can be generated:
   \item{newwords}{safd}
 }
 The type of the quiz can be chosen by passing the appropriate
-value to \code{quiztype}.
+value to \code{quiz_type}.
 }
