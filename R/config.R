@@ -19,6 +19,12 @@
 #'   \item{\code{"days"}}{an integer array with one element per box.
 #'    For each box, this gives the number of days that a word is not
 #'    quizzed, after it has been correctly answered.}
+#'   \item{\code{"counts_new"}}{a single integer. Words in box 1 with
+#'    count less than \code{counts_new} are considered to be new and
+#'    are thus quized when \code{quiz_type = "newwords"} is used
+#'    in \code{\link{prepare_quiz}}.}
+#'   \item{\code{"n_new"}}{a single integer that defines how many
+#'    words are quizzed at a time when \code{quiz_type = "newwords"}.}
 #' }
 #'
 #' \code{get_default_config_file()} returns the path to the
@@ -42,10 +48,11 @@ read_config <- function(file) {
   cfg <- jsonlite::fromJSON(file)
 
   # check field names, reorder
-  cfg_names <- c("boxes", "counts", "days")
+  cfg_names <- c("boxes", "counts", "days", "counts_new", "n_new")
   if (!setequal(names(cfg), cfg_names)) {
     stop("The config file ", file, " is invalid.",
-         "It must contain the fields 'boxes', 'counts', and 'days'.")
+         "It must contain the fields 'boxes', 'counts', 'days' ",
+         "'counts_new' and 'n_new'.")
   }
   cfg <- cfg[cfg_names]
 
@@ -66,6 +73,18 @@ read_config <- function(file) {
     stop("days must be an integer vector with length boxes")
   }
   cfg$days <- floor(cfg$days)
+
+  # counts_new must be numeric of length one
+  if (!is.numeric(cfg$counts_new) || length(cfg$counts_new) != 1) {
+    stop("counts_new must be a single integer")
+  }
+  cfg$counts_new <- floor(cfg$counts_new)
+
+  # n_new must be numeric of length one
+  if (!is.numeric(cfg$n_new) || length(cfg$n_new) != 1) {
+    stop("n_new must be a single integer")
+  }
+  cfg$n_new <- floor(cfg$n_new)
 
   return(cfg)
 }

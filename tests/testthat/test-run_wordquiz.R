@@ -31,7 +31,7 @@ test_that("test mark_word()", {
   expect_equal(wl2$count2[i_wl], 1)
   expect_equal(wl2$date2[i_wl], Sys.Date())
   expect_equal(wl2$box2[i_wl], 1)
-  for (i in 1:2) {
+  for (i in 1:3) {
     wl2 <- mark_word(draw_question(quiz, wl2), quiz, wl2, TRUE)
   }
   expect_equal(wl2$count2[i_wl], 0)

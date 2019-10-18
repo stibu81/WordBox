@@ -4,6 +4,8 @@
 \alias{cfg_boxes}
 \alias{cfg_counts}
 \alias{cfg_days}
+\alias{cfg_counts_new}
+\alias{cfg_n_new}
 \title{Obtain configuration from wordlist}
 \usage{
 cfg_boxes(wl)
@@ -11,6 +13,10 @@ cfg_boxes(wl)
 cfg_counts(wl)
 
 cfg_days(wl)
+
+cfg_counts_new(wl)
+
+cfg_n_new(wl)
 }
 \arguments{
 \item{wl}{a \code{wordlist} object}
