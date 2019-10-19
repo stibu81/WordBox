@@ -63,3 +63,17 @@ test_that("check quiz preparation that doesn't include all words", {
   expect_equal(quiz5$weight, rep(1.75, 4))
   expect_identical(get_quiz_cols(quiz5), ref_qc1)
 })
+
+
+test_that("check quiz preparation with type newwords", {
+  wl3 <- wl
+  wl3$box1[7:8] <- 2
+  wl3$count1[3:7] <- c(1, 1, 1, 2, 2)
+  quiz6 <- prepare_quiz(wl3, 1, quiz_type = "newwords")
+  expect_is(quiz6, "wordquiz")
+  expect_identical(ncol(quiz6), 3L)
+  expect_identical(quiz6$index, 1:5)
+  expect_equal(sum(quiz6$weight), 3)
+  expect_identical(get_quiz_cols(quiz6), ref_qc1)
+  expect_identical(get_quiz_type(quiz6), "newwords")
+})

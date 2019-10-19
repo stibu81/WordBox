@@ -51,15 +51,15 @@ prepare_quiz <- function(wl, direction,
                     count    = paste0("count", direction),
                     date     = paste0("date", direction))
 
-  # create the wordquiz object
-  # in training mode, all words are included with equal weight,
-  # otherwise they are weighed by age and words that had recent
-  # success are not quizzed.
+  # create the wordquiz object depending on quiz_type
   if (quiz_type == "training") {
+    # in training mode, all words are included with equal weight
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           weight = 1,
                           group = wl$group)
   } else if (quiz_type == "standard") {
+    # in standard mode, words with recent sucess are not quizzed
+    # the other words are weighed depending on age and box
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           filter_date = wl[[quiz_cols$date]] +
                                           cfg_days(wl)[wl[[quiz_cols$box]]],
@@ -69,6 +69,16 @@ prepare_quiz <- function(wl, direction,
                           group = wl$group) %>%
             dplyr::filter(.data$filter_date <= Sys.Date()) %>%
             dplyr::select(-"filter_date")
+  } else if (quiz_type == "newwords") {
+    # in newwords mode, all words in box 1 with counts < counts_new
+    # are included.
+    quiz <- dplyr::tibble(index = 1:nrow(wl),
+                          box = wl[[quiz_cols$box]],
+                          count = wl[[quiz_cols$count]],
+                          weight = 0,
+                          group = wl$group) %>%
+            dplyr::filter(.data$box == 1, .data$count < cfg_counts_new(wl)) %>%
+            dplyr::select(-"box", -"count")
   }
 
   # add a column with the indices of all correct answers
@@ -80,6 +90,23 @@ prepare_quiz <- function(wl, direction,
     quiz %<>% dplyr::filter(.data$group %in% groups)
   }
   quiz %<>% dplyr::select(-"group")
+
+  # set the weights if quiz_type is newwords: n_new words
+  # must get weight 1 such that they are quizzed first
+  # this can't be done before, because filtering for groups
+  # must happen first
+  if (quiz_type == "newwords") {
+    n_new <- cfg_n_new(wl)
+    n_quiz <- nrow(quiz)
+    if (n_quiz == 0) {
+      i <- integer(0)
+    } else if (n_quiz <= n_new) {
+      i <- 1:n_quiz
+    } else {
+      i <- sample(1:n_quiz, n_new)
+    }
+    quiz$weight[i] <- 1
+  }
 
   # add column names and quiz_type as attribute
   attr(quiz, "cols") <- quiz_cols
@@ -141,7 +168,7 @@ compute_weight <- function(date, box, wl) {
   return(weight)
 }
 
-# Extract wordlist column names from a wordquiz object
+
 #' Extract Attributes From a wordquiz Object
 #'
 #' Extract the column names that are used for the quiz

@@ -102,7 +102,7 @@ server <- function(input, output, session) {
     if (state$running) {
       state$question <- draw_question(state$quiz, state$wl)
       # save wordlist only if not in training mode
-      if (get_quiz_type(state$quiz) == "standard")
+      if (get_quiz_type(state$quiz) != "training")
         write_wordlist(state$wl, state$wl_file, TRUE)
       if (is.null(state$question)) {
         showModal(
@@ -130,24 +130,19 @@ server <- function(input, output, session) {
   observeEvent(input$check, {
     if (state$running && !state$show_answer) {
       if (input$mode == "written") {
-        if (correct_answer(input$solution_in, state$question)) {
-          # mark the word in the wordlist and remove from quiz
-          state$wl <- mark_word(state$question,
+        success <- correct_answer(input$solution_in, state$question)
+        # mark the word in the wordlist and the quiz
+        state$wl <- mark_word(state$question,
+                              state$quiz,
+                              state$wl,
+                              success)
+        state$quiz <- update_quiz(state$question,
                                 state$quiz,
                                 state$wl,
-                                success = TRUE)
-          state$quiz <- state$quiz[-state$question$i_quiz, ]
-          state$dot_colour <- "green"
-          state$n_correct <- state$n_correct + 1
-        } else {
-          # mark the word in the wordlist, leave in quiz
-          state$wl <- mark_word(state$question,
-                                state$quiz,
-                                state$wl,
-                                success = FALSE)
-          state$dot_colour <- "red"
-          state$n_wrong <- state$n_wrong + 1
-        }
+                                success)
+        state$dot_colour <- c("red", "green")[success + 1]
+        state$n_correct <- state$n_correct + success
+        state$n_wrong <- state$n_wrong + !success
         shinyjs::enable("gonext")
       } else {
         shinyjs::enable("correct")
@@ -189,7 +184,10 @@ server <- function(input, output, session) {
                             state$quiz,
                             state$wl,
                             success = TRUE)
-      state$quiz <- state$quiz[-state$question$i_quiz, ]
+      state$quiz <- update_quiz(state$question,
+                              state$quiz,
+                              state$wl,
+                              success = TRUE)
       state$dot_colour <- "green"
       state$n_correct <- state$n_correct + 1
       state$i_exercise <- state$i_exercise + 1
@@ -200,7 +198,7 @@ server <- function(input, output, session) {
   observeEvent(input$wrong, {
     if (state$show_answer) {
       state$show_answer <- FALSE
-      # mark the word in the wordlist, leave in quiz
+      # mark the word in the wordlist, leave the quiz unchanged
       state$wl <- mark_word(state$question,
                             state$quiz,
                             state$wl,
