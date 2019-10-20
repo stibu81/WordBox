@@ -5,7 +5,8 @@
 \alias{wordquiz}
 \title{Prepare an Quiz from a Wordlist}
 \usage{
-prepare_quiz(wl, direction, training = FALSE, groups = NULL)
+prepare_quiz(wl, direction, quiz_type = c("standard", "training",
+  "newwords"), groups = NULL)
 }
 \arguments{
 \item{wl}{a \code{wordlist} object}
@@ -14,11 +15,8 @@ prepare_quiz(wl, direction, training = FALSE, groups = NULL)
 queried. \code{1} stands for Language1 to Language2 and
 \code{2} for the opposite direction.}
 
-\item{training}{logical indicating whether this is a quiz
-in training mode or not. In training mode, all words are
-included with equal weight. Otherwise, words are only quizzed,
-if their last success is old enough and the probability is
-weighed by age and box.}
+\item{quiz_type}{character indicating the type of quiz to be run.
+See 'details'.}
 
 \item{groups}{character vector indicating the groups to
 be quizzed. If omitted, all groups are included in the quiz.}
@@ -28,4 +26,22 @@ a \code{wordquiz} object
 }
 \description{
 Prepare an Quiz from a Wordlist
+}
+\details{
+Three types of quizzes can be generated:
+\describe{
+  \item{standard}{Words from all boxes are included in the quiz,
+   if the last correct answer is old enough. How old a correct
+   answer must be for the word to be quizzed again depends on
+   the box that it is in. The probability that a word is
+   quizzed depends on the time that passed since the last
+   correct answer and the box that it is in. Words in lower
+   boxes or where the correct answer is further in the past
+   are quizzed more often.}
+  \item{training}{All words from all boxes are included in the
+   quiz with equal probability weight.}
+  \item{newwords}{safd}
+}
+The type of the quiz can be chosen by passing the appropriate
+value to \code{quiz_type}.
 }

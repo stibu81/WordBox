@@ -19,8 +19,10 @@ test_that("read a wordlist file", {
 test_that("properties of a wordlist", {
   expect_identical(get_languages(wl), languages)
   expect_identical(cfg_boxes(wl), 4)
-  expect_identical(cfg_counts(wl), c(3, 2, 2, Inf))
+  expect_identical(cfg_counts(wl), c(4, 2, 2, Inf))
   expect_identical(cfg_days(wl), c(1, 7, 30, 90))
+  expect_identical(cfg_counts_new(wl), 2)
+  expect_identical(cfg_n_new(wl), 3)
 })
 
 

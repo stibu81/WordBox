@@ -61,3 +61,62 @@ mark_word <- function(question, quiz, wl, success) {
 
   return(wl)
 }
+
+#' Update Quiz After Question Was Answered
+#'
+#' After a question from a quiz was answered, the
+#' \code{wordquiz} object must be updated. This function
+#' performs the update depending on the success of the answer
+#' and the type of the quiz.
+#'
+#' @param quiz the \code{\link{wordquiz}} from which the question
+#'  was taken and which will be modified.
+#' @param wl the \code{\link{wordlist}}, on which the quiz is
+#'  based.
+#' @inheritParams mark_word
+#'
+#' @details
+#' If an wrong answer was given, the \code{wordquiz} object
+#' is returned unchanged. If the answer was correct, the
+#' word that has been quizzed is removed from the quiz.
+#'
+#' If the quiz type is \code{"newwords"}, a word is only
+#' removed from the quiz once it has reached a count of 2.
+#' Also, when a word is removed, the weights are adapted,
+#' such that an additional word is included into the quiz.
+#'
+#' @export
+
+update_quiz <- function(question, quiz, wl, success) {
+
+  # in case of failure, the quiz is alwoys returned unchanged
+  if (!success) return(quiz)
+
+  cols <- get_quiz_cols(quiz)
+  type <- get_quiz_type(quiz)
+
+  # two basic situations:
+  # if type is "newwords", words are only removed if
+  # counts is larger than new_counts, and the number of
+  # words with non-vanishing probability is always n_new.
+  # Otherwise, words are simply removed from the quiz, if
+  # a correct answer was given
+  if (type == "newwords") {
+    if (wl[[cols$count]][question$i_wl] >= cfg_counts_new(wl)) {
+      quiz <- quiz[-question$i_quiz, ]
+      i_cand <- which(quiz$weight == 0)
+      # important: the case where i_cand is a single number
+      # MUST be treated separately, because for n a single
+      # integer, sample(n, m) = sample(1:n, m)
+      if (length(i_cand) > 1) {
+        quiz$weight[sample(i_cand, 1)] <- 1
+      } else if (length(i_cand) == 1) {
+        quiz$weight[i_cand] <- 1
+      }
+    }
+  } else {
+    quiz <- quiz[-question$i_quiz, ]
+  }
+
+  return(quiz)
+}

@@ -200,6 +200,20 @@ cfg_days <- function(wl) {
   return(attr(wl, "config")$days)
 }
 
+#' @rdname cfg_boxes
+#' @export
+
+cfg_counts_new <- function(wl) {
+  return(attr(wl, "config")$counts_new)
+}
+
+#' @rdname cfg_boxes
+#' @export
+
+cfg_n_new <- function(wl) {
+  return(attr(wl, "config")$n_new)
+}
+
 
 # Make a wordlist compatible with the configuration
 
