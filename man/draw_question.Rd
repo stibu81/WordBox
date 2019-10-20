@@ -5,7 +5,7 @@
 \alias{wordquestion}
 \title{Draw a Question from a wordquiz}
 \usage{
-draw_question(quiz, wl)
+draw_question(quiz, wl, previous = NULL)
 }
 \arguments{
 \item{quiz}{the \code{\link{wordquiz}} object from which the
@@ -13,6 +13,11 @@ question is drawn.}
 
 \item{wl}{the \code{\link{wordlist}} object on which the quiz
 is based.}
+
+\item{previous}{the \code{wordquestion} object that was queried
+last. If at least two words are left in the quiz, this
+question will not be drawn. This can be used to avoid
+asking the same question multiple times in a row.}
 }
 \value{
 a \code{wordquestion} object

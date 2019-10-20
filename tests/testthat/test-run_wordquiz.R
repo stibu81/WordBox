@@ -24,6 +24,21 @@ test_that("draw and answer a question", {
 })
 
 
+test_that("drawing questions using previous", {
+  question <- draw_question(quiz2, wl)
+  qs <- replicate(100, draw_question(quiz2, wl)$i_wl)
+  expect_true(all(quiz2$index[quiz2$weight == 1] %in% qs))
+  qs2 <- replicate(100, draw_question(quiz2, wl, question)$i_wl)
+  expect_true(!question$i_wl %in% qs2)
+  quiz3 <- quiz2[-which(quiz2$weight == 1)[1], ]
+  question <- draw_question(quiz3, wl)
+  qs2 <- replicate(50, draw_question(quiz3, wl, question)$i_wl)
+  expect_true(!question$i_wl %in% qs2)
+  question <- draw_question(quiz, wl)
+  expect_equal(draw_question(quiz, wl, question), question)
+})
+
+
 test_that("test mark_word()", {
   question <- draw_question(quiz, wl)
   i_wl <- question$i_wl

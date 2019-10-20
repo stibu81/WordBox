@@ -100,7 +100,7 @@ server <- function(input, output, session) {
   # this is triggered by incrementing i_exercise
   observeEvent(state$i_exercise, {
     if (state$running) {
-      state$question <- draw_question(state$quiz, state$wl)
+      state$question <- draw_question(state$quiz, state$wl, state$question)
       # save wordlist only if not in training mode
       if (get_quiz_type(state$quiz) != "training")
         write_wordlist(state$wl, state$wl_file, TRUE)

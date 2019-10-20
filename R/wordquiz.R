@@ -124,6 +124,10 @@ prepare_quiz <- function(wl, direction,
 #'  question is drawn.
 #' @param wl the \code{\link{wordlist}} object on which the quiz
 #'  is based.
+#' @param previous the \code{wordquestion} object that was queried
+#'  last. If at least two words are left in the quiz, this
+#'  question will not be drawn. This can be used to avoid
+#'  asking the same question multiple times in a row.
 #'
 #' @details
 #' One of the questions in the quiz is selected based on
@@ -136,14 +140,28 @@ prepare_quiz <- function(wl, direction,
 #'
 #' @export
 
-draw_question <- function(quiz, wl) {
+draw_question <- function(quiz, wl, previous = NULL) {
 
   # if the quiz contains no questions, return NULL
-  if (nrow(quiz) == 0) return (NULL)
+  if (nrow(quiz) == 0) return(NULL)
+
+  # a new question is drawn from all the words left
+  # in the quiz with the appropriate weights.
+  # prepare the indices and remove the index corresponding
+  # to the previous question, if it is specified and if
+  # there are at least two words left
+  i_draw <- 1:nrow(quiz)
+  if (!is.null(previous) && nrow(quiz) > 1) {
+    i_draw <- i_draw[-previous$i_quiz]
+  }
 
   # draw an index according to the weight,
   # find the appropriate index for the wordlist
-  i <- sample(1:nrow(quiz), 1, prob = quiz$weight)
+  if (length(i_draw) > 1) {
+    i <- sample(i_draw, 1, prob = quiz$weight[i_draw])
+  } else {
+    i <- i_draw
+  }
   i_wl <- quiz$index[i]
 
   # create the wordquestion object
