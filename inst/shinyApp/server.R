@@ -235,7 +235,9 @@ server <- function(input, output, session) {
   output$n_correct <- renderText(state$n_correct)
   output$n_wrong <- renderText(state$n_wrong)
   output$solution <- renderText({
-    if (state$show_answer) paste(state$question$answers, collapse = "; ")
+    if (state$show_answer) {
+      paste(unique(state$question$answers), collapse = "; ")
+    }
   })
 
   # render the coloured dot #####
