@@ -52,7 +52,7 @@ read_wordlist <- function(file, config_file = NULL) {
 
   if (ncol(raw) == 3) {
     if (names(raw)[3] != get_wordlist_names()[3])
-      stop(file, "is not a valid wordlist file. ",
+      stop(file, " is not a valid wordlist file. ",
            "The third columns must be called group.")
     na_date <- as.Date(NA_character_, origin = "1970-01-01")
     wordlist <- dplyr::mutate(raw,

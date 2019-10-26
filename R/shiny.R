@@ -12,11 +12,14 @@
 #'  configuration file. If omitted, the default configuration is
 #'  used. See \code{\link{read_config}} for details
 #'  on the config file.
+#' @param show_errors should the UI show the number of errors
+#'  that were made during a quiz.
 #'
 #' @export
 
 run_wordbox <- function(dir = NULL, launch.browser = NULL,
-                        config_file = NULL) {
+                        config_file = NULL,
+                        show_errors = TRUE) {
 
     if (is.null(dir) || !dir.exists(dir)) {
         stop("an existing directory must be provided.")
@@ -27,7 +30,8 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL,
       stop("Could not find example directory. Try re-installing `WordBox`.",
            call. = FALSE)
     }
-    options(wordbox_cfg_file = config_file)
+    options(wordbox_cfg_file = config_file,
+            wordbox_show_errors = show_errors)
 
     if (is.null(launch.browser)) {
         launch.browser <- getOption("shiny.launch.browser", interactive())

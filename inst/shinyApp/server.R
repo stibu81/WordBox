@@ -13,17 +13,17 @@ server <- function(input, output, session) {
                           question = NULL,
                           i_exercise = 0,
                           show_answer = FALSE,
-                          n_correct = 0,
-                          n_wrong = 0,
+                          n_correct = NULL,
+                          n_wrong = NULL,
                           dot_colour = "white")
 
-  # read in file names in the directory
+  # read in file names in the directory #####
   updateSelectInput(session, "wordlist_file",
                     choices = getOption("wordbox_dir") %>%
                                 list.files(".csv$") %>%
                                 gsub(".csv$", "", .))
 
-  # load a file
+  # load a file #####
   observeEvent(input$load,
                if (!state$running) {
                  state$wl_file <- file.path(getOption("wordbox_dir"),
@@ -46,7 +46,7 @@ server <- function(input, output, session) {
                }
   )
 
-  # start the quiz
+  # start the quiz #####
   observeEvent(input$run,
                if (!is.null(state$wl) && !state$running) {
                  state$running <- TRUE
@@ -229,11 +229,11 @@ server <- function(input, output, session) {
   output$current_box <- renderText(state$question$box)
   output$question <- renderText(state$question$question)
   output$current_group <- renderText(state$question$group)
-  output$n_words <- renderText({
-    if (is.null(state$quiz)) 0 else nrow(state$quiz)
-  })
+  output$n_words <- renderText({nrow(state$quiz)})
   output$n_correct <- renderText(state$n_correct)
-  output$n_wrong <- renderText(state$n_wrong)
+  output$n_wrong <- renderText({
+    if (getOption("wordbox_show_errors")) state$n_wrong
+  })
   output$solution <- renderText({
     if (state$show_answer) {
       paste(unique(state$question$answers), collapse = "; ")

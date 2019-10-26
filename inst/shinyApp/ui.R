@@ -49,7 +49,11 @@ ui <- fluidPage(
                br(), "Anzahl richtige Antworten: ",
                div(style = "display:inline-block",
                    textOutput("n_correct")),
-               br(), "Anzahl falsche Antworten: ",
+               br(),
+               # only show the wrong answers if set by option
+               if (getOption("wordbox_show_errors")) {
+                 "Anzahl falsche Antworten: "
+                 },
                div(style = "display:inline-block",
                    textOutput("n_wrong")),
                br(), br(),

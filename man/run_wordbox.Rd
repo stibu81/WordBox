@@ -4,7 +4,8 @@
 \alias{run_wordbox}
 \title{Run the application}
 \usage{
-run_wordbox(dir = NULL, launch.browser = NULL, config_file = NULL)
+run_wordbox(dir = NULL, launch.browser = NULL, config_file = NULL,
+  show_errors = TRUE)
 }
 \arguments{
 \item{dir}{character indicating a directory where wordlist
@@ -21,6 +22,9 @@ which in RStudio opens the internal shiny viewer.}
 configuration file. If omitted, the default configuration is
 used. See \code{\link{read_config}} for details
 on the config file.}
+
+\item{show_errors}{should the UI show the number of errors
+that were made during a quiz.}
 }
 \description{
 Run the application
