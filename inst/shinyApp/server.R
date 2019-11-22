@@ -231,7 +231,7 @@ server <- function(input, output, session) {
   # text outputs #####
   output$current_box <- renderText(state$question$box)
   output$question <- renderText(state$question$question)
-  output$current_group <- renderText(state$question$groups)
+  output$current_group <- renderText(state$question$group)
   output$n_words <- renderText({nrow(state$quiz)})
   output$n_correct <- renderText(state$n_correct)
   output$n_wrong <- renderText({
