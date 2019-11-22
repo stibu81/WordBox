@@ -4,13 +4,20 @@
 \alias{correct_answer}
 \title{Check the Answer To a Question}
 \usage{
-correct_answer(answer, question)
+correct_answer(answer, question, rm_trailing_chars = "")
 }
 \arguments{
 \item{answer}{character string giving the answer to the question}
 
 \item{question}{the \code{\link{wordquestion}} object that was
 queried.}
+
+\item{rm_trailing_chars}{a character of length one containing
+characters that should be removed if they appear at the
+end of an answer. This can be used to omit rejecting answers
+because a key next to Return is hit by accident. For a
+swiss keyboard, \code{rm_trailing_chars = "$"}
+is an appropriate choice.}
 }
 \value{
 a logical indicating whether the answer is correct

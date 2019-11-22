@@ -14,12 +14,14 @@
 #'  on the config file.
 #' @param show_errors should the UI show the number of errors
 #'  that were made during a quiz.
+#' @inheritParams correct_answer
 #'
 #' @export
 
 run_wordbox <- function(dir = NULL, launch.browser = NULL,
                         config_file = NULL,
-                        show_errors = TRUE) {
+                        show_errors = TRUE,
+                        rm_trailing_chars = "") {
 
     if (is.null(dir) || !dir.exists(dir)) {
         stop("an existing directory must be provided.")
@@ -31,7 +33,8 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL,
            call. = FALSE)
     }
     options(wordbox_cfg_file = config_file,
-            wordbox_show_errors = show_errors)
+            wordbox_show_errors = show_errors,
+            wordbox_rm_trailing_chars = rm_trailing_chars)
 
     if (is.null(launch.browser)) {
         launch.browser <- getOption("shiny.launch.browser", interactive())

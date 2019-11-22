@@ -214,12 +214,39 @@ get_quiz_type <- function(quiz) {
 #' @param answer character string giving the answer to the question
 #' @param question the \code{\link{wordquestion}} object that was
 #'  queried.
+#' @param rm_trailing_chars a character of length one containing
+#'  characters that should be removed if they appear at the
+#'  end of an answer. This can be used to omit rejecting answers
+#'  because a key next to Return is hit by accident. For a
+#'  swiss keyboard, \code{rm_trailing_chars = "$"}
+#'  is an appropriate choice.
 #'
 #' @return
 #' a logical indicating whether the answer is correct
 #'
 #' @export
 
-correct_answer <- function(answer, question) {
-  trimws(answer) %in% question$answers
+correct_answer <- function(answer, question,
+                           rm_trailing_chars = "") {
+
+  answers <- question$answers
+
+  # prepare answer:
+  # if requested, remove certain characters from the end
+  # note that some characters must be escaped
+  # (regex pattern is taken from Hmisc::escapeRegex
+  if (rm_trailing_chars != "") {
+    pattern <- strsplit(rm_trailing_chars, "")[[1]] %>%
+               gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", .) %>%
+                {paste0("(", paste(., collapse = "|"), paste0(") *$"))}
+    answer <- gsub(pattern, "", answer)
+    answers <- gsub(pattern, "", answers)
+  }
+
+  # trim whitespace and collapse multiple whitespace
+  answer <- gsub(" +", " ", answer) %>%
+                trimws()
+  answers <- gsub(" +", " ", answers) %>%
+                trimws()
+  answer %in% answers
 }

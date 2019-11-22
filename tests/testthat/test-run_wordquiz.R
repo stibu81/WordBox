@@ -24,6 +24,16 @@ test_that("draw and answer a question", {
 })
 
 
+test_that("check answers ", {
+  question <- draw_question(quiz, wl)
+  expect_true(correct_answer("Dattel", question, rm_trailing_chars = "!$"))
+  expect_true(correct_answer("Dattel$", question, rm_trailing_chars = "!$"))
+  expect_true(correct_answer("Dattel!", question, rm_trailing_chars = "!$"))
+  expect_true(correct_answer(" Dattel  $ ", question, rm_trailing_chars = "!$"))
+  expect_false(correct_answer("!Dattel", question, rm_trailing_chars = "!$"))
+})
+
+
 test_that("drawing questions using previous", {
   question <- draw_question(quiz2, wl)
   qs <- replicate(100, draw_question(quiz2, wl)$i_wl)
