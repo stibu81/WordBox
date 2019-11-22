@@ -1,10 +1,10 @@
 Package: WordBox
 Type: Package
 Title: A Simple Vocabulary Trainer
-Version: 0.2.1
+Version: 0.2.1.9000
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <slanz1137@gmail.com>
-Description:  A simple vocabulary trainer in the form of a shiny app.
+Description: A simple vocabulary trainer in the form of a shiny app.
  The user can create his own word lists in the form of csv-files.
  The interface is in German.
 License: MIT + file LICENSE

@@ -113,8 +113,10 @@ server <- function(input, output, session) {
         state$wl <- NULL
         state$running <- FALSE
         shinyjs::enable("load")
-        updateSelectInput(session, "direction",
-                          choices = "keine W\u00f6rterliste geladen")
+        updateRadioButtons(session,
+                           "direction",
+                            choices = c(">" = "direction1",
+                                        "<" = "direction2"))
         updateSelectInput(session, "group",
                           choices = "keine W\u00f6rterliste geladen")
       }
