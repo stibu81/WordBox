@@ -5,8 +5,12 @@
 \alias{wordquiz}
 \title{Prepare an Quiz from a Wordlist}
 \usage{
-prepare_quiz(wl, direction, quiz_type = c("standard", "training",
-  "newwords"), groups = NULL)
+prepare_quiz(
+  wl,
+  direction,
+  quiz_type = c("standard", "training", "newwords"),
+  groups = NULL
+)
 }
 \arguments{
 \item{wl}{a \code{wordlist} object}

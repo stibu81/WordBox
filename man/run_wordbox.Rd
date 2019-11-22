@@ -4,8 +4,12 @@
 \alias{run_wordbox}
 \title{Run the application}
 \usage{
-run_wordbox(dir = NULL, launch.browser = NULL, config_file = NULL,
-  show_errors = TRUE)
+run_wordbox(
+  dir = NULL,
+  launch.browser = NULL,
+  config_file = NULL,
+  show_errors = TRUE
+)
 }
 \arguments{
 \item{dir}{character indicating a directory where wordlist
