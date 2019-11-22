@@ -28,9 +28,10 @@ ui <- fluidPage(
                    choices = c("Normal" = "standard",
                                "Training" = "training",
                                "Neue W\u00f6rter" = "newwords")),
-      selectInput("group",
-                  "Gruppe ausw\u00e4hlen",
-                  "keine W\u00f6rterliste geladen",
+      selectInput("groups",
+                  "Gruppen ausw\u00e4hlen",
+                  choices = NULL,
+                  multiple = TRUE,
                   width = "300px"),
       shinyjs::disabled(
         actionButton("run",

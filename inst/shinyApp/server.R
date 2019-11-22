@@ -7,7 +7,7 @@ server <- function(input, output, session) {
   state <- reactiveValues(running = FALSE,
                           wl_file = NULL,
                           mode = NULL,
-                          group = NULL,
+                          groups = NULL,
                           wl = NULL,
                           quiz = NULL,
                           question = NULL,
@@ -39,8 +39,8 @@ server <- function(input, output, session) {
                    choices <- magrittr::set_names(paste0("direction", 1:2),
                                                   paste0(langs, " > ", rev(langs)))
                    updateRadioButtons(session, "direction", choices = choices)
-                   updateSelectInput(session, "group",
-                                     choices = c("alle", get_groups(state$wl)))
+                   updateSelectInput(session, "groups",
+                                     choices = get_groups(state$wl))
                    shinyjs::enable("run")
                  }
                }
@@ -53,9 +53,9 @@ server <- function(input, output, session) {
                  direction <- gsub("direction", "", input$direction) %>%
                    as.numeric()
                  state$mode <- input$mode
-                 state$group <- if (input$group == "alle") NULL else input$group
+                 state$groups <- input$groups
                  state$quiz <- prepare_quiz(state$wl, direction,
-                                            input$quiztype, state$group)
+                                            input$quiztype, state$groups)
                  state$i_exercise <- state$i_exercise + 1
                  state$n_correct <- 0
                  state$n_wrong <- 0
@@ -66,7 +66,7 @@ server <- function(input, output, session) {
                      "\nDirection:", direction,
                      "\nMode:", state$mode,
                      "\nQuiztype:", get_quiz_type(state$quiz),
-                     "\nGroup:", state$group, "\n")
+                     "\nGroups:", state$groups, "\n")
                }
   )
 
@@ -118,7 +118,7 @@ server <- function(input, output, session) {
                             choices = c(">" = "direction1",
                                         "<" = "direction2"))
         updateSelectInput(session, "group",
-                          choices = "keine W\u00f6rterliste geladen")
+                          choices = NULL)
       }
     }
   })
@@ -230,7 +230,7 @@ server <- function(input, output, session) {
   # text outputs #####
   output$current_box <- renderText(state$question$box)
   output$question <- renderText(state$question$question)
-  output$current_group <- renderText(state$question$group)
+  output$current_group <- renderText(state$question$groups)
   output$n_words <- renderText({nrow(state$quiz)})
   output$n_correct <- renderText(state$n_correct)
   output$n_wrong <- renderText({
