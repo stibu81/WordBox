@@ -5,3 +5,5 @@
 #' @keywords internal
 
 "_PACKAGE"
+
+globalVariables(".")

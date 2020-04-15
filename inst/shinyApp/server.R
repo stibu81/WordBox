@@ -132,7 +132,8 @@ server <- function(input, output, session) {
   observeEvent(input$check, {
     if (state$running && !state$show_answer) {
       if (input$mode == "written") {
-        success <- correct_answer(input$solution_in, state$question)
+        success <- correct_answer(input$solution_in, state$question,
+              rm_trailing_chars = getOption("wordbox_rm_trailing_chars"))
         # mark the word in the wordlist and the quiz
         state$wl <- mark_word(state$question,
                               state$quiz,
@@ -230,7 +231,7 @@ server <- function(input, output, session) {
   # text outputs #####
   output$current_box <- renderText(state$question$box)
   output$question <- renderText(state$question$question)
-  output$current_group <- renderText(state$question$groups)
+  output$current_group <- renderText(state$question$group)
   output$n_words <- renderText({nrow(state$quiz)})
   output$n_correct <- renderText(state$n_correct)
   output$n_wrong <- renderText({

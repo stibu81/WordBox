@@ -8,7 +8,8 @@ run_wordbox(
   dir = NULL,
   launch.browser = NULL,
   config_file = NULL,
-  show_errors = TRUE
+  show_errors = TRUE,
+  rm_trailing_chars = ""
 )
 }
 \arguments{
@@ -29,6 +30,13 @@ on the config file.}
 
 \item{show_errors}{should the UI show the number of errors
 that were made during a quiz.}
+
+\item{rm_trailing_chars}{a character of length one containing
+characters that should be removed if they appear at the
+end of an answer. This can be used to omit rejecting answers
+because a key next to Return is hit by accident. For a
+swiss keyboard, \code{rm_trailing_chars = "$"}
+is an appropriate choice.}
 }
 \description{
 Run the application
