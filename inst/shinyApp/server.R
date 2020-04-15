@@ -253,4 +253,9 @@ server <- function(input, output, session) {
       ggplot2::theme_void()
   })
 
+  # stop app when session ends
+  session$onSessionEnded(function() {
+        stopApp()
+    })
+
 }
