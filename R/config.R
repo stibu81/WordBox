@@ -50,7 +50,7 @@ read_config <- function(file) {
   # check field names, reorder
   cfg_names <- c("boxes", "counts", "days", "counts_new", "n_new")
   if (!setequal(names(cfg), cfg_names)) {
-    stop("The config file ", file, " is invalid.",
+    stop("The config file ", file, " is invalid. ",
          "It must contain the fields 'boxes', 'counts', 'days' ",
          "'counts_new' and 'n_new'.")
   }
