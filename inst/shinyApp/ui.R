@@ -33,6 +33,12 @@ ui <- fluidPage(
                   choices = NULL,
                   multiple = TRUE,
                   width = "300px"),
+      sliderInput("n_words",
+                  "Anzahl W\u00f6rter",
+                  min = 5,
+                  max = 95,
+                  step = 5,
+                  value = getOption("wordbox_n_words_default")),
       shinyjs::disabled(
         actionButton("run",
                      "Start",

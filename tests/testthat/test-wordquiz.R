@@ -77,3 +77,13 @@ test_that("check quiz preparation with type newwords", {
   expect_identical(get_quiz_cols(quiz6), ref_qc1)
   expect_identical(get_quiz_type(quiz6), "newwords")
 })
+
+
+test_that("check quiz preparation with word limit", {
+  quiz7 <- prepare_quiz(wl, 1, n_words = 10)
+  expect_equal(quiz7$index, 1:8)
+  quiz8 <- prepare_quiz(wl, 1, n_words = 4)
+  expect_equal(nrow(quiz8), 4L)
+  quiz9 <- prepare_quiz(wl, 1, groups = "Unit2", n_words = 3)
+  expect_equal(nrow(quiz9), 3L)
+})

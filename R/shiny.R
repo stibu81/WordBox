@@ -14,6 +14,9 @@
 #'  on the config file.
 #' @param show_errors should the UI show the number of errors
 #'  that were made during a quiz.
+#' @param n_words_default integer indicating the default for the
+#'  number of words per quiz. This value must lie between 5
+#'  and 95.
 #' @inheritParams correct_answer
 #'
 #' @export
@@ -21,6 +24,7 @@
 run_wordbox <- function(dir = NULL, launch.browser = NULL,
                         config_file = NULL,
                         show_errors = TRUE,
+                        n_words_default = 30,
                         rm_trailing_chars = "") {
 
     if (is.null(dir) || !dir.exists(dir)) {
@@ -32,9 +36,17 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL,
       stop("Could not find example directory. Try re-installing `WordBox`.",
            call. = FALSE)
     }
+
+    # check: n_words_default must be between 5 and 95
+    if (!dplyr::between(n_words_default, 5, 95)) {
+      stop("n_words_default must lie between 5 and 95")
+    }
+    n_words_default <- floor(n_words_default)
+
     options(wordbox_cfg_file = config_file,
             wordbox_show_errors = show_errors,
-            wordbox_rm_trailing_chars = rm_trailing_chars)
+            wordbox_rm_trailing_chars = rm_trailing_chars,
+            wordbox_n_words_default = n_words_default)
 
     if (is.null(launch.browser)) {
         launch.browser <- getOption("shiny.launch.browser", interactive())

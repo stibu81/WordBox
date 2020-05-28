@@ -6,6 +6,8 @@
 #'  \code{2} for the opposite direction.
 #' @param quiz_type character indicating the type of quiz to be run.
 #'  See 'details'.
+#' @param n_words numeric value giving the maximum number of words
+#'  to be included in the quiz.
 #' @param groups character vector indicating the groups to
 #'  be quizzed. If omitted, all groups are included in the quiz.
 #'
@@ -36,13 +38,18 @@
 
 prepare_quiz <- function(wl, direction,
                          quiz_type = c("standard", "training", "newwords"),
-                         groups = NULL) {
+                         groups = NULL,
+                         n_words = Inf) {
 
   direction <- suppressWarnings(as.numeric(direction[1]))
   if (!direction %in% 1:2) {
     stop("Invalid input. direction must be 1 or 2.")
   }
   quiz_type <- match.arg(quiz_type)
+
+  if (n_words < 1) {
+    stop("Invalid input. n_words must be larger than 0.")
+  }
 
   # prepare the column names that are relevant for the quiz
   quiz_cols <- list(question = paste0("language", direction),
@@ -106,6 +113,11 @@ prepare_quiz <- function(wl, direction,
       i <- sample(1:n_quiz, n_new)
     }
     quiz$weight[i] <- 1
+  }
+
+  # reduce the number of words in the quiz to the requested number
+  if (n_words < nrow(quiz)) {
+    quiz <- dplyr::sample_n(quiz, n_words, weight = quiz$weight)
   }
 
   # add column names and quiz_type as attribute

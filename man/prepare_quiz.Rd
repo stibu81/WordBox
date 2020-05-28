@@ -9,7 +9,8 @@ prepare_quiz(
   wl,
   direction,
   quiz_type = c("standard", "training", "newwords"),
-  groups = NULL
+  groups = NULL,
+  n_words = Inf
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ See 'details'.}
 
 \item{groups}{character vector indicating the groups to
 be quizzed. If omitted, all groups are included in the quiz.}
+
+\item{n_words}{numeric value giving the maximum number of words
+to be included in the quiz.}
 }
 \value{
 a \code{wordquiz} object

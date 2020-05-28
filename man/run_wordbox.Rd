@@ -9,6 +9,7 @@ run_wordbox(
   launch.browser = NULL,
   config_file = NULL,
   show_errors = TRUE,
+  n_words_default = 30,
   rm_trailing_chars = ""
 )
 }
@@ -30,6 +31,10 @@ on the config file.}
 
 \item{show_errors}{should the UI show the number of errors
 that were made during a quiz.}
+
+\item{n_words_default}{integer indicating the default for the
+number of words per quiz. This value must lie between 5
+and 95.}
 
 \item{rm_trailing_chars}{a character of length one containing
 characters that should be removed if they appear at the

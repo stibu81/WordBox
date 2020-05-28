@@ -8,6 +8,7 @@ server <- function(input, output, session) {
                           wl_file = NULL,
                           mode = NULL,
                           groups = NULL,
+                          n_words = NULL,
                           wl = NULL,
                           quiz = NULL,
                           question = NULL,
@@ -53,9 +54,12 @@ server <- function(input, output, session) {
                  direction <- gsub("direction", "", input$direction) %>%
                    as.numeric()
                  state$mode <- input$mode
+                 state$n_words <- input$n_words
                  state$groups <- input$groups
                  state$quiz <- prepare_quiz(state$wl, direction,
-                                            input$quiztype, state$groups)
+                                            quiz_type = input$quiztype,
+                                            groups = state$groups,
+                                            n_words = state$n_words)
                  state$i_exercise <- state$i_exercise + 1
                  state$n_correct <- 0
                  state$n_wrong <- 0
@@ -66,6 +70,7 @@ server <- function(input, output, session) {
                      "\nDirection:", direction,
                      "\nMode:", state$mode,
                      "\nQuiztype:", get_quiz_type(state$quiz),
+                     "\n# of words: ", state$n_words,
                      "\nGroups:", state$groups, "\n")
                }
   )
