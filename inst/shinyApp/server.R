@@ -25,54 +25,60 @@ server <- function(input, output, session) {
                                 gsub(".csv$", "", .))
 
   # load a file #####
-  observeEvent(input$load,
-               if (!state$running) {
-                 state$wl_file <- file.path(getOption("wordbox_dir"),
-                                            paste0(input$wordlist_file,
-                                                   ".csv"))
-                 if (file.exists(state$wl_file)) {
-                   cfg_file <- getOption("wordbox_cfg_file")
-                   cat("reading wordlist file", state$wl_file,
-                       "\nwith", if (is.null(cfg_file)) "default",
-                       "config file", cfg_file, "\n")
-                   state$wl <- read_wordlist(state$wl_file, cfg_file)
-                   langs <- get_languages(state$wl)
-                   choices <- magrittr::set_names(paste0("direction", 1:2),
-                                                  paste0(langs, " > ", rev(langs)))
-                   updateRadioButtons(session, "direction", choices = choices)
-                   updateSelectInput(session, "groups",
-                                     choices = get_groups(state$wl))
-                   shinyjs::enable("run")
-                 }
-               }
+  observeEvent(
+    input$load,
+    {
+      # on loading a file, stop the running quiz
+      state$running <- FALSE
+      state$show_answer <- FALSE
+      state$question <- NULL
+
+      state$wl_file <- file.path(getOption("wordbox_dir"),
+                                 paste0(input$wordlist_file,
+                                        ".csv"))
+      if (file.exists(state$wl_file)) {
+        cfg_file <- getOption("wordbox_cfg_file")
+        cat("reading wordlist file", state$wl_file,
+            "\nwith", if (is.null(cfg_file)) "default",
+            "config file", cfg_file, "\n")
+        state$wl <- read_wordlist(state$wl_file, cfg_file)
+        langs <- get_languages(state$wl)
+        choices <- magrittr::set_names(paste0("direction", 1:2),
+                                       paste0(langs, " > ", rev(langs)))
+        updateRadioButtons(session, "direction", choices = choices)
+        updateSelectInput(session, "groups",
+                          choices = get_groups(state$wl))
+        shinyjs::enable("run")
+      }
+    }
   )
 
   # start the quiz #####
-  observeEvent(input$run,
-               if (!is.null(state$wl) && !state$running) {
-                 state$running <- TRUE
-                 direction <- gsub("direction", "", input$direction) %>%
-                   as.numeric()
-                 state$mode <- input$mode
-                 state$n_words <- input$n_words
-                 state$groups <- input$groups
-                 state$quiz <- prepare_quiz(state$wl, direction,
-                                            quiz_type = input$quiztype,
-                                            groups = state$groups,
-                                            n_words = state$n_words)
-                 state$i_exercise <- state$i_exercise + 1
-                 state$n_correct <- 0
-                 state$n_wrong <- 0
-                 shinyjs::disable("run")
-                 shinyjs::disable("load")
-                 cat("running exercise from file", state$wl_file,
-                     "with the following settings:",
-                     "\nDirection:", direction,
-                     "\nMode:", state$mode,
-                     "\nQuiztype:", get_quiz_type(state$quiz),
-                     "\n# of words: ", state$n_words,
-                     "\nGroups:", state$groups, "\n")
-               }
+  observeEvent(
+    input$run,
+    if (!is.null(state$wl) && !state$running) {
+      state$running <- TRUE
+      direction <- gsub("direction", "", input$direction) %>%
+        as.numeric()
+      state$mode <- input$mode
+      state$n_words <- input$n_words
+      state$groups <- input$groups
+      state$quiz <- prepare_quiz(state$wl, direction,
+                                 quiz_type = input$quiztype,
+                                 groups = state$groups,
+                                 n_words = state$n_words)
+      state$i_exercise <- state$i_exercise + 1
+      state$n_correct <- 0
+      state$n_wrong <- 0
+      shinyjs::disable("run")
+      cat("running exercise from file", state$wl_file,
+          "with the following settings:",
+          "\nDirection:", direction,
+          "\nMode:", state$mode,
+          "\nQuiztype:", get_quiz_type(state$quiz),
+          "\n# of words: ", state$n_words,
+          "\nGroups:", state$groups, "\n")
+    }
   )
 
   # dynamic UI for the quiz ######
@@ -117,7 +123,6 @@ server <- function(input, output, session) {
         # reset to original state
         state$wl <- NULL
         state$running <- FALSE
-        shinyjs::enable("load")
         updateRadioButtons(session,
                            "direction",
                             choices = c(">" = "direction1",
