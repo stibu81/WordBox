@@ -4,19 +4,7 @@ library(WordBox)
 server <- function(input, output, session) {
 
   # create an object to track the state of the application
-  state <- reactiveValues(running = FALSE,
-                          wl_file = NULL,
-                          mode = NULL,
-                          groups = NULL,
-                          n_words = NULL,
-                          wl = NULL,
-                          quiz = NULL,
-                          question = NULL,
-                          i_exercise = 0,
-                          show_answer = FALSE,
-                          n_correct = NULL,
-                          n_wrong = NULL,
-                          dot_colour = "white")
+  state <- WordBox:::get_initial_state()
 
   # read in file names in the directory #####
   updateSelectInput(session, "wordlist_file",
@@ -37,18 +25,7 @@ server <- function(input, output, session) {
                                  paste0(input$wordlist_file,
                                         ".csv"))
       if (file.exists(state$wl_file)) {
-        cfg_file <- getOption("wordbox_cfg_file")
-        cat("reading wordlist file", state$wl_file,
-            "\nwith", if (is.null(cfg_file)) "default",
-            "config file", cfg_file, "\n")
-        state$wl <- read_wordlist(state$wl_file, cfg_file)
-        langs <- get_languages(state$wl)
-        choices <- magrittr::set_names(paste0("direction", 1:2),
-                                       paste0(langs, " > ", rev(langs)))
-        updateRadioButtons(session, "direction", choices = choices)
-        updateSelectInput(session, "groups",
-                          choices = get_groups(state$wl))
-        shinyjs::enable("run")
+        state$wl <- WordBox:::prepare_quiz_gui(session, state)
       }
     }
   )
@@ -71,41 +48,18 @@ server <- function(input, output, session) {
       state$n_correct <- 0
       state$n_wrong <- 0
       shinyjs::disable("run")
-      cat("running exercise from file", state$wl_file,
-          "with the following settings:",
-          "\nDirection:", direction,
-          "\nMode:", state$mode,
-          "\nQuiztype:", get_quiz_type(state$quiz),
-          "\n# of words: ", state$n_words,
-          "\nGroups:", state$groups, "\n")
+      message("running exercise from file ", state$wl_file,
+              " with the following settings:",
+              "\nDirection: ", direction,
+              "\nMode: ", state$mode,
+              "\nQuiztype: ", get_quiz_type(state$quiz),
+              "\n# of words: ", state$n_words,
+              "\nGroups :", state$groups, "\n")
     }
   )
 
   # dynamic UI for the quiz ######
-  output$exerciseUI <- renderUI({
-    if (!state$running) return(NULL)
-    if (state$mode == "written") {
-      tagList(
-        textInput("solution_in", "\u00dcbersetzung"),
-        actionButton("check", "Pr\u00fcfen"),
-        br(), br(),
-        strong("L\u00f6sung"),
-        textOutput("solution"),
-        br(),
-        shinyjs::disabled(actionButton("gonext", "Weiter"))
-      )
-    } else {
-      tagList(
-        actionButton("check", "Pr\u00fcfen"),
-        br(), br(),
-        strong("L\u00f6sung"),
-        textOutput("solution"),
-        br(),
-        shinyjs::disabled(actionButton("correct", "Richtig")),
-        shinyjs::disabled(actionButton("wrong", "Falsch"))
-      )
-    }
-  })
+  output$exerciseUI <- renderUI(WordBox:::create_quiz_ui(state))
 
   # draw a new question #####
   # this is triggered by incrementing i_exercise
@@ -175,18 +129,6 @@ server <- function(input, output, session) {
     }
   })
 
-  # if Enter is pressed while the text input is active
-  # either check or gonext are clicked
-  shinyjs::onevent("keyup", "solution_in", function(e) {
-        if (e$keyCode == 13) {
-          if (!state$show_answer) {
-            shinyjs::click("check")
-          } else {
-            shinyjs::click("gonext")
-          }
-        }
-      })
-
   # click on actionButton correct & wrong #####
   # both buttons only work, if the answer is shown
   observeEvent(input$correct, {
@@ -224,19 +166,8 @@ server <- function(input, output, session) {
     }
   })
 
-  # if the button check is selected, the buttons
-  # correct and wrong can be clicked by pressing
-  # r (correct) and f (wrong)
-  shinyjs::onevent("keyup", "check", function(e) {
-      if (state$mode == "oral" && state$show_answer) {
-        if (e$key == "r") {
-          shinyjs::click("correct")
-        }
-        if (e$key == "f") {
-          shinyjs::click("wrong")
-        }
-      }
-    })
+  # register keys for keyboard input
+  WordBox:::register_keys(state)
 
   # text outputs #####
   output$current_box <- renderText(state$question$box)
