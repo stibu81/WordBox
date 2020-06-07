@@ -1,5 +1,19 @@
 ui <- fluidPage(
 
+  # icon colours
+  tags$style(".fa-times-circle {color:#FF0000}"),
+  tags$style(".fa-check-circle {color:#00FF00}"),
+  tags$style(".fa-question-circle {color:#0000FF}"),
+  tags$style(".fa-exclamation-triangle {color:#FFFF00}"),
+
+  # function to set focus on an element
+  shinyjs::extendShinyjs(
+    text = "shinyjs.refocus = function(e_id) {
+              document.getElementById(e_id).focus();
+            }",
+    functions = "refocus"
+  ),
+
   shinyjs::useShinyjs(),
 
   titlePanel("WordBox Vokabeltrainer"),
@@ -70,8 +84,7 @@ ui <- fluidPage(
                br(), "Gruppe: ",
                div(style = "display:inline-block",
                    textOutput("current_group")),
-               br(), br()),
-        column(4, plotOutput("dot", height = "200px"))
+               br(), br())
       ),
       fluidRow(
         strong("Aufgabe"),

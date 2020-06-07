@@ -72,7 +72,8 @@ get_initial_state <- function() {
     show_answer = FALSE,
     n_correct = NULL,
     n_wrong = NULL,
-    dot_colour = "white"
+    icon = "",
+    refocus = 0
   )
 }
 
@@ -133,14 +134,15 @@ create_quiz_ui <- function(state) {
   if (!state$running) return(NULL)
 
   if (state$mode == "written") {
-      shiny::tagList(
-        shiny::textInput("solution_in", "\u00dcbersetzung"),
+    shiny::tagList(
+        shiny::tags$p(shiny::tags$b("Antwort")),
+        create_text_input_row("", "", state$icon),
         shiny::actionButton("check", "Pr\u00fcfen"),
         shiny::br(), shiny::br(),
         shiny::strong("L\u00f6sung"),
         shiny::textOutput("solution"),
         shiny::br(),
-        shinyjs::disabled(shiny::actionButton("gonext", "Weiter"))
+        shiny::actionButton("gonext", "Weiter")
       )
     } else {
       shiny::tagList(
@@ -149,8 +151,64 @@ create_quiz_ui <- function(state) {
         shiny::strong("L\u00f6sung"),
         shiny::textOutput("solution"),
         shiny::br(),
-        shinyjs::disabled(shiny::actionButton("correct", "Richtig")),
-        shinyjs::disabled(shiny::actionButton("wrong", "Falsch"))
+        shiny::actionButton("correct", "Richtig",
+                            icon = icon("check-circle")),
+        shiny::actionButton("wrong", "Falsch",
+                            icon = icon("times-circle"))
       )
     }
+}
+
+
+# Create a row with one or two text inputs
+create_text_input_row <- function(idx, pref = "", state = "") {
+
+  # length of idx determines the number of text boxes.
+  n <- length(idx)
+  if (!n %in% 1:2) stop("idx must have length 1 or 2")
+
+  # pref and state must be same length as ids
+  if (length(pref) < n) pref <- rep(pref, 2)
+  if (length(state) < n) state <- rep(state, 2)
+
+  # helper functions for the rows
+  fpref <- function(p) {
+    if (p == "") {
+      NULL
+    } else {
+      shiny::column(1, shiny::tags$p(p))
+    }
+  }
+  ftext <- function(i, p) {
+    width <- if (p == "") 5 else 4
+    id <- paste0("solution_in", i)
+    shiny::column(
+      width,
+      shiny::textInput(id, width = "100%", label = NULL)
+    )
+  }
+  ficon <- function(s) {
+    icon_name <- dplyr::case_when(
+      s == "ok" ~ "check-circle",
+      s == "nok" ~ "times-circle",
+      s == "ask" ~ "question-circle",
+      s == "retry" ~ "exclamation-triangle",
+      TRUE ~ ""
+    )
+    if (icon_name == "") {
+      NULL
+    } else {
+      shiny::column(1, shiny::icon(icon_name))
+    }
+  }
+
+  # create the fluid row
+  shiny::fluidRow(
+    fpref(pref[1]),
+    ftext(idx[1], pref[1]),
+    ficon(state[1]),
+    if (n == 2) fpref(pref[2]),
+    if (n == 2) ftext(idx[2], pref[2]),
+    if (n == 2) ficon(state[2]),
+  )
 }

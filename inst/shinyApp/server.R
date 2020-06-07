@@ -6,6 +6,11 @@ server <- function(input, output, session) {
   # create an object to track the state of the application
   state <- WordBox:::get_initial_state()
 
+  # create a variable that stores the name of the object
+  # where focus should go after all observers have finished
+  # executing.
+  refocus_to <- NULL
+
   # read in file names in the directory #####
   updateSelectInput(session, "wordlist_file",
                     choices = getOption("wordbox_dir") %>%
@@ -59,13 +64,17 @@ server <- function(input, output, session) {
   )
 
   # dynamic UI for the quiz ######
-  output$exerciseUI <- renderUI(WordBox:::create_quiz_ui(state))
+  output$exerciseUI <- renderUI({
+    refocus_to <<- "solution_in"
+    WordBox:::create_quiz_ui(state)
+  })
 
   # draw a new question #####
   # this is triggered by incrementing i_exercise
   observeEvent(state$i_exercise, {
     if (state$running) {
       state$question <- draw_question(state$quiz, state$wl, state$question)
+      state$icon <- "ask"
       # save wordlist only if not in training mode
       if (get_quiz_type(state$quiz) != "training")
         write_wordlist(state$wl, state$wl_file, TRUE)
@@ -107,7 +116,7 @@ server <- function(input, output, session) {
                                 state$quiz,
                                 state$wl,
                                 success)
-        state$dot_colour <- c("red", "green")[success + 1]
+        state$icon <- c("nok", "ok")[success + 1]
         state$n_correct <- state$n_correct + success
         state$n_wrong <- state$n_wrong + !success
         shinyjs::enable("gonext")
@@ -143,7 +152,6 @@ server <- function(input, output, session) {
                               state$quiz,
                               state$wl,
                               success = TRUE)
-      state$dot_colour <- "green"
       state$n_correct <- state$n_correct + 1
       state$i_exercise <- state$i_exercise + 1
       shinyjs::disable("correct")
@@ -159,7 +167,6 @@ server <- function(input, output, session) {
                             state$wl,
                             success = FALSE)
       state$n_wrong <- state$n_wrong + 1
-      state$dot_colour <- "red"
       state$i_exercise <- state$i_exercise + 1
       shinyjs::disable("correct")
       shinyjs::disable("wrong")
@@ -184,16 +191,15 @@ server <- function(input, output, session) {
     }
   })
 
-  # render the coloured dot #####
-  output$dot <- renderPlot({
-    ggplot2::ggplot() +
-      ggplot2::annotate("polygon",
-                        x = c(0, 2*pi), y =  c(1, 1),
-                        fill = rep(state$dot_colour, 2)) +
-      ggplot2::coord_polar() +
-      ggplot2::scale_y_continuous(limits = c(0, 1)) +
-      ggplot2::theme_void()
-  })
+  # reset focus after observers are finished executing
+  session$onFlushed(function() {
+      if (!is.null(refocus_to)) {
+        message("refocus to ", refocus_to)
+        shinyjs::js$refocus(refocus_to)
+        refocus_to <<- NULL
+      }
+    },
+    once = FALSE)
 
   # stop app when session ends
   session$onSessionEnded(function() {
