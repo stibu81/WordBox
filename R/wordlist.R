@@ -243,6 +243,19 @@ fix_wordlist <- function(wl, config) {
   if (is.numeric(wl$date1)) wl$date1 %<>% as.Date(origin = "1970-01-01")
   if (is.numeric(wl$date2)) wl$date2 %<>% as.Date(origin = "1970-01-01")
 
+  # replace problematic characters
+  repl <- c("\u2026" = "...",
+            "\u00ab" = "\"",
+            "\u2039" = "'",
+            "\u00bb" = "\"",
+            "\u203a" = "'",
+            "\u201e" = "\"",
+            "\u201c" = "\"")
+  wl %<>% dplyr::mutate(
+    dplyr::across(dplyr::starts_with("language"),
+                  ~stringr::str_replace_all(., repl))
+    )
+
   return(wl)
 
 }
