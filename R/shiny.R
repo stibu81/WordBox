@@ -152,9 +152,9 @@ create_quiz_ui <- function(state) {
         shiny::textOutput("solution"),
         shiny::br(),
         shiny::actionButton("correct", "Richtig",
-                            icon = icon("check-circle")),
+                            icon = shiny::icon("check-circle")),
         shiny::actionButton("wrong", "Falsch",
-                            icon = icon("times-circle"))
+                            icon = shiny::icon("times-circle"))
       )
     }
 }
