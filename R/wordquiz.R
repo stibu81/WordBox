@@ -203,6 +203,7 @@ draw_question <- function(quiz, wl, previous = NULL) {
                    question = wl[i_wl, cols$question, drop = TRUE],
                    answers = wl[quiz$answers[[i]], cols$answer, drop = TRUE],
                    group = wl[i_wl, "group", drop = TRUE],
+                   type = quiz$type[i],
                    box = wl[i_wl, cols$box, drop = TRUE])
 
   class(question) <- "wordquestion"

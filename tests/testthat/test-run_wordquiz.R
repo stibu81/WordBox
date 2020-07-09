@@ -3,7 +3,9 @@
 ref_question <- list(i_quiz = 1L, i_wl = 6L,
                      question = "date",
                      answers = c("Dattel", "Datum", "Verabredung"),
-                     group = "Unit2", box = 1)
+                     group = "Unit2",
+                     type = "single",
+                     box = 1)
 class(ref_question) <- "wordquestion"
 
 # prepare the quiz with type standard with just one word
