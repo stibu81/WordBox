@@ -16,9 +16,9 @@ test_that("test quiz preparation", {
   quiz1 <- prepare_quiz(wl, 1)
   expect_is(quiz1, "wordquiz")
   expect_identical(ncol(quiz1), 4L)
-  expect_identical(quiz1$index, 1:9)
-  expect_equal(quiz1$weight, rep(1.75, 9))
-  expect_identical(quiz1$type, c(rep("single", 8), "verb"))
+  expect_identical(quiz1$index, 1:10)
+  expect_equal(quiz1$weight, rep(1.75, 10))
+  expect_identical(quiz1$type, c(rep("single", 8), "verb", "verb"))
   expect_identical(get_quiz_cols(quiz1), ref_qc1)
   expect_identical(get_quiz_type(quiz1), "standard")
 
@@ -36,9 +36,9 @@ test_that("test quiz preparation with options", {
   quiz3 <- prepare_quiz(wl, "1", quiz_type = "training")
   expect_is(quiz3, "wordquiz")
   expect_identical(ncol(quiz3), 4L)
-  expect_identical(quiz3$index, 1:9)
-  expect_equal(quiz3$weight, rep(1, 9))
-  expect_identical(quiz3$type, c(rep("single", 8), "verb"))
+  expect_identical(quiz3$index, 1:10)
+  expect_equal(quiz3$weight, rep(1, 10))
+  expect_identical(quiz3$type, c(rep("single", 8), "verb", "verb"))
   expect_identical(get_quiz_cols(quiz3), ref_qc1)
   expect_identical(get_quiz_type(quiz3), "training")
 
@@ -65,16 +65,16 @@ test_that("check quiz preparation that doesn't include all words", {
   quiz5 <- prepare_quiz(wl2, 1)
   expect_is(quiz5, "wordquiz")
   expect_identical(ncol(quiz5), 4L)
-  expect_identical(quiz5$index, c(1:2, 7:9))
-  expect_equal(quiz5$weight, rep(1.75, 5))
-  expect_identical(quiz5$type, c(rep("single", 4), "verb"))
+  expect_identical(quiz5$index, c(1:2, 7:10))
+  expect_equal(quiz5$weight, rep(1.75, 6))
+  expect_identical(quiz5$type, c(rep("single", 4), "verb", "verb"))
   expect_identical(get_quiz_cols(quiz5), ref_qc1)
 })
 
 
 test_that("check quiz preparation with type newwords", {
   wl3 <- wl
-  wl3$box1[7:9] <- 2
+  wl3$box1[7:10] <- 2
   wl3$count1[3:7] <- c(1, 1, 1, 2, 2)
   quiz6 <- prepare_quiz(wl3, 1, quiz_type = "newwords")
   expect_is(quiz6, "wordquiz")
@@ -88,8 +88,8 @@ test_that("check quiz preparation with type newwords", {
 
 
 test_that("check quiz preparation with word limit", {
-  quiz7 <- prepare_quiz(wl, 1, n_words = 10)
-  expect_equal(quiz7$index, 1:9)
+  quiz7 <- prepare_quiz(wl, 1, n_words = 15)
+  expect_equal(quiz7$index, 1:10)
   quiz8 <- prepare_quiz(wl, 1, n_words = 4)
   expect_equal(nrow(quiz8), 4L)
   quiz9 <- prepare_quiz(wl, 1, groups = "Unit2", n_words = 3)

@@ -262,24 +262,69 @@ get_quiz_type <- function(quiz) {
 correct_answer <- function(answer, question,
                            rm_trailing_chars = "") {
 
+  answer %<>% trim_char(rm_trailing_chars = rm_trailing_chars)
   answers <- question$answers
 
-  # prepare answer:
-  # if requested, remove certain characters from the end
-  # note that some characters must be escaped
-  # (regex pattern is taken from Hmisc::escapeRegex
-  if (rm_trailing_chars != "") {
-    pattern <- strsplit(rm_trailing_chars, "")[[1]] %>%
-               gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", .) %>%
-                {paste0("(", paste(., collapse = "|"), paste0(") *$"))}
-    answer <- gsub(pattern, "", answer)
-    answers <- gsub(pattern, "", answers)
+  # how the answer is evaluated depends on the type of the question
+  if (question$type == "single") {
+    # for "single", simply test that the answer corresponds to one of
+    # the correct answers.
+    if (length(answer) > 1) {
+      warning("Only one answer must be provided for questions of ",
+              "type 'single'. Ignoring all but the first.")
+      answer <- answer[1]
+    }
+    answers %<>% trim_char()
+    out <- answer %in% answers
+  } else if (question$type == "verb") {
+    # for "verb", there are totally seven answers that must be checked.
+    # if there are multiple valid answers, the first element (infinitiv)
+    # is used to pick one. After that, the comparison is simply done
+    # element wise.
+
+    if (length(answer) != 7) {
+      warning("Exactly 7 answers must be provided for questions of ",
+              "type 'verb'. Omitting additional answers or ",
+              "filling missing answers by empty strings, respectively.")
+      answer <- answer[1:7]
+      answer[is.na(answer)] <- ""
+    }
+
+    # extract the valid answers and trim
+    answers %<>% stringr::str_remove_all("(^\\\\V\\()|(\\)$)") %>%
+      stringr::str_split(";") %>%
+      lapply(trim_char)
+
+    # find the best fitting infinitive form
+    infinitives <- vapply(answers, getElement, character(1), 1)
+    best_match <- utils::adist(answer[1], infinitives) %>%
+      as.vector() %>%
+      which.min()
+    answers <- answers[[best_match]]
+
+    # compare element-wise
+    out <- answer == answers
   }
 
-  # trim whitespace and collapse multiple whitespace
-  answer <- gsub(" +", " ", answer) %>%
-                trimws()
-  answers <- gsub(" +", " ", answers) %>%
-                trimws()
-  answer %in% answers
+  out
+}
+
+
+# trim whitespace, collapse multiple whitespace
+# and remove certain characters from
+# the end of each element in a character vector
+# note that some characters must be escaped
+# (regex pattern is taken from Hmisc::escapeRegex)
+trim_char <- function(x, rm_trailing_chars = "") {
+
+  x %<>% stringr::str_squish()
+
+  if (rm_trailing_chars != "") {
+    pattern <- stringr::str_split(rm_trailing_chars, "")[[1]] %>%
+      stringr::str_replace_all("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1") %>%
+      {paste0("\\s*(", paste(., collapse = "|"), paste0(")$"))}
+    x %<>% stringr::str_remove(pattern)
+  }
+
+  x
 }
