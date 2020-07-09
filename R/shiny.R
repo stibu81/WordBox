@@ -72,8 +72,7 @@ get_initial_state <- function() {
     show_answer = FALSE,
     n_correct = NULL,
     n_wrong = NULL,
-    icon = "",
-    refocus = 0
+    icon = ""
   )
 }
 
