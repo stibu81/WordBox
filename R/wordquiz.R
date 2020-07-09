@@ -58,12 +58,27 @@ prepare_quiz <- function(wl, direction,
                     count    = paste0("count", direction),
                     date     = paste0("date", direction))
 
+  # preparations for verbs: add column word_type which is
+  # "single" for simple words, and "verb" for verbs
+  wl %<>% dplyr::mutate(
+    word_type = dplyr::case_when(
+      stringr::str_detect(.data$language2, "^\\\\V") ~ "verb",
+      TRUE ~ "single"
+    )
+  )
+  # they are only supported in direction 1
+  # => filter them, if direction is 2
+  if (direction == 2) {
+    wl %<>% dplyr::filter(.data$word_type == "single")
+  }
+
   # create the wordquiz object depending on quiz_type
   if (quiz_type == "training") {
     # in training mode, all words are included with equal weight
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           weight = 1,
-                          group = wl$group)
+                          group = wl$group,
+                          type = wl$word_type)
   } else if (quiz_type == "standard") {
     # in standard mode, words with recent sucess are not quizzed
     # the other words are weighed depending on age and box
@@ -73,7 +88,8 @@ prepare_quiz <- function(wl, direction,
                           weight = compute_weight(wl[[quiz_cols$date]],
                                                   wl[[quiz_cols$box]],
                                                   wl),
-                          group = wl$group) %>%
+                          group = wl$group,
+                          type = wl$word_type) %>%
             dplyr::filter(.data$filter_date <= Sys.Date()) %>%
             dplyr::select(-"filter_date")
   } else if (quiz_type == "newwords") {
@@ -83,14 +99,18 @@ prepare_quiz <- function(wl, direction,
                           box = wl[[quiz_cols$box]],
                           count = wl[[quiz_cols$count]],
                           weight = 0,
-                          group = wl$group) %>%
+                          group = wl$group,
+                          type = wl$word_type) %>%
             dplyr::filter(.data$box == 1, .data$count < cfg_counts_new(wl)) %>%
             dplyr::select(-"box", -"count")
   }
 
   # add a column with the indices of all correct answers
+  # don't mix differente word types ("single", "verb")
   qs <- wl[[quiz_cols$question]]
-  quiz$answers <- lapply(quiz$index, function(i) which(qs == qs[i]))
+  wts <- wl$word_type
+  quiz$answers <- lapply(quiz$index,
+                         function(i) which(qs == qs[i] & wts == wts[i]))
 
   # filter by groups, if requested
   if (!is.null(groups)) {

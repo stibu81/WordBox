@@ -19,6 +19,7 @@ Imports: readr,
           shinyjs,
           rlang,
           jsonlite,
-          ggplot2
+          ggplot2,
+          stringr
 Suggests: 
     testthat (>= 2.1.0)
