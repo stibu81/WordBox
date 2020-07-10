@@ -291,9 +291,7 @@ correct_answer <- function(answer, question,
     }
 
     # extract the valid answers and trim
-    answers %<>% stringr::str_remove_all("(^\\\\V\\()|(\\)$)") %>%
-      stringr::str_split(";") %>%
-      lapply(trim_char)
+    answers %<>% extract_verb_answers()
 
     # find the best fitting infinitive form
     infinitives <- vapply(answers, getElement, character(1), 1)
@@ -327,4 +325,12 @@ trim_char <- function(x, rm_trailing_chars = "") {
   }
 
   x
+}
+
+
+# auxilliary function to extract the answers for a verb
+extract_verb_answers <- function(answers) {
+  answers %>% stringr::str_remove_all("(^\\\\V\\()|(\\)$)") %>%
+    stringr::str_split(";") %>%
+    lapply(trim_char)
 }

@@ -66,7 +66,14 @@ server <- function(input, output, session) {
   # dynamic UI for the quiz ######
   output$exerciseUI <- renderUI({
     refocus_to <<- "solution_in"
-    WordBox:::create_quiz_ui(state)
+    # mention variables that should cause redrawing of the UI
+    c(input$check, state$question)
+    # use isolate to avoid an infinite loop
+    isolate({
+      ui <- WordBox:::create_quiz_ui(state, session, input)
+      state$reset_ui <- FALSE
+    })
+    ui
   })
 
   # draw a new question #####
@@ -74,7 +81,6 @@ server <- function(input, output, session) {
   observeEvent(state$i_exercise, {
     if (state$running) {
       state$question <- draw_question(state$quiz, state$wl, state$question)
-      state$icon <- "ask"
       # save wordlist only if not in training mode
       if (get_quiz_type(state$quiz) != "training")
         write_wordlist(state$wl, state$wl_file, TRUE)
@@ -86,12 +92,17 @@ server <- function(input, output, session) {
         # reset to original state
         state$wl <- NULL
         state$running <- FALSE
+        state$reset_ui <- TRUE
         updateRadioButtons(session,
                            "direction",
                             choices = c(">" = "direction1",
                                         "<" = "direction2"))
         updateSelectInput(session, "group",
                           choices = NULL)
+      } else {
+        # prepare the icons
+        n_icon <- list(verb = 7, single = 1)
+        state$icon <- rep("ask", n_icon[[state$question$type]])
       }
     }
   })
@@ -105,20 +116,33 @@ server <- function(input, output, session) {
   observeEvent(input$check, {
     if (state$running && !state$show_answer) {
       if (input$mode == "written") {
-        success <- correct_answer(input$solution_in, state$question,
-              rm_trailing_chars = getOption("wordbox_rm_trailing_chars"))
+        if (state$question$type == "single") {
+          success <- correct_answer(
+            input$solution_in,
+            state$question,
+            rm_trailing_chars = getOption("wordbox_rm_trailing_chars"))
+        } else {
+          answers <- vapply(paste0("solution_in", c("", 1:6)),
+                            function(n) input[[n]],
+                            character(1))
+          success <- correct_answer(
+            answers,
+            state$question,
+            rm_trailing_chars = getOption("wordbox_rm_trailing_chars")
+          )
+        }
         # mark the word in the wordlist and the quiz
         state$wl <- mark_word(state$question,
                               state$quiz,
                               state$wl,
-                              success)
+                              all(success))
         state$quiz <- update_quiz(state$question,
                                 state$quiz,
                                 state$wl,
-                                success)
+                                all(success))
         state$icon <- c("nok", "ok")[success + 1]
-        state$n_correct <- state$n_correct + success
-        state$n_wrong <- state$n_wrong + !success
+        state$n_correct <- state$n_correct + all(success)
+        state$n_wrong <- state$n_wrong + !all(success)
         shinyjs::enable("gonext")
       } else {
         shinyjs::enable("correct")
@@ -133,7 +157,7 @@ server <- function(input, output, session) {
     if (state$show_answer) {
       state$show_answer <- FALSE
       state$i_exercise <- state$i_exercise + 1
-      updateTextInput(session, "solution_in", value = "")
+      state$reset_ui <- TRUE
       shinyjs::disable("gonext")
     }
   })
@@ -187,7 +211,14 @@ server <- function(input, output, session) {
   })
   output$solution <- renderText({
     if (state$show_answer) {
-      paste(unique(state$question$answers), collapse = "; ")
+      if (state$question$type == "single") {
+        paste(unique(state$question$answers), collapse = "; ")
+      } else {
+        unique(state$question$answers) %>%
+          WordBox:::extract_verb_answers() %>%
+          vapply(paste, character(1), collapse = ", ") %>%
+          paste(collapse = "; ")
+      }
     }
   })
 
