@@ -70,6 +70,7 @@ get_initial_state <- function() {
     question = NULL,
     i_exercise = 0,
     reset_ui = TRUE,
+    retry = FALSE,
     show_answer = FALSE,
     n_correct = NULL,
     n_wrong = NULL,

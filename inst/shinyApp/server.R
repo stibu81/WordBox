@@ -67,12 +67,17 @@ server <- function(input, output, session) {
   output$exerciseUI <- renderUI({
     if (state$running) {
       refocus_to <<- if (state$mode == "written") "solution_in" else "check"
-      # mention variables that should cause redrawing of the UI
-      c(input$check, state$question)
+      # redraw the UI whenever the icons change. This works, because
+      # the icon changes to "ask", when a new question is asked and
+      # to "ok", "nok", or "retry" when an answer is evaluated.
+      state$icon
       # use isolate to avoid an infinite loop
       isolate({
         ui <- WordBox:::create_quiz_ui(state, session, input)
-        state$reset_ui <- FALSE
+        # onyl set reset_ui to FALSE if an interface was successfully created
+        # this avoids keeping the contents if a new quiz is started in
+        # the same session
+        if (!is.null(ui)) state$reset_ui <- FALSE
       })
       ui
     }
@@ -116,6 +121,9 @@ server <- function(input, output, session) {
   # be redone! This is achieved by not running the check, if the
   # answer is shown.
   observeEvent(input$check, {
+    # flag to decide, whether the word should be marked or not
+    # this is used to allow retries, where the word is NOT marked
+    mark_word <- FALSE
     if (state$running && !state$show_answer) {
       if (input$mode == "written") {
         if (state$question$type == "single") {
@@ -123,6 +131,7 @@ server <- function(input, output, session) {
             input$solution_in,
             state$question,
             rm_trailing_chars = getOption("wordbox_rm_trailing_chars"))
+          mark_word <- TRUE
         } else {
           answers <- vapply(paste0("solution_in", c("", 1:6)),
                             function(n) input[[n]],
@@ -132,25 +141,36 @@ server <- function(input, output, session) {
             state$question,
             rm_trailing_chars = getOption("wordbox_rm_trailing_chars")
           )
+          # if there are one or two errors, allow for retry
+          # if this is not already a retry
+          if (sum(!success) %in% 1:2 && !state$retry) {
+            state$icon <- c("retry", "ok")[success + 1]
+            state$retry <- TRUE
+          } else {
+            mark_word <- TRUE
+          }
         }
         # mark the word in the wordlist and the quiz
-        state$wl <- mark_word(state$question,
-                              state$quiz,
-                              state$wl,
-                              all(success))
-        state$quiz <- update_quiz(state$question,
+        if (mark_word) {
+          state$wl <- mark_word(state$question,
                                 state$quiz,
                                 state$wl,
                                 all(success))
-        state$icon <- c("nok", "ok")[success + 1]
-        state$n_correct <- state$n_correct + all(success)
-        state$n_wrong <- state$n_wrong + !all(success)
-        shinyjs::enable("gonext")
+          state$quiz <- update_quiz(state$question,
+                                  state$quiz,
+                                  state$wl,
+                                  all(success))
+          state$icon <- c("nok", "ok")[success + 1]
+          state$n_correct <- state$n_correct + all(success)
+          state$n_wrong <- state$n_wrong + !all(success)
+          state$show_answer <- TRUE
+          shinyjs::enable("gonext")
+        }
       } else {
+        state$show_answer <- TRUE
         shinyjs::enable("correct")
         shinyjs::enable("wrong")
       }
-      state$show_answer <- TRUE
     }
   })
 
@@ -160,6 +180,7 @@ server <- function(input, output, session) {
       state$show_answer <- FALSE
       state$i_exercise <- state$i_exercise + 1
       state$reset_ui <- TRUE
+      state$retry <- FALSE
       shinyjs::disable("gonext")
     }
   })
@@ -178,6 +199,8 @@ server <- function(input, output, session) {
                               state$quiz,
                               state$wl,
                               success = TRUE)
+      # set the icon since this triggers redrawing the UI
+      state$icon <- "ok"
       state$n_correct <- state$n_correct + 1
       state$i_exercise <- state$i_exercise + 1
       shinyjs::disable("correct")
@@ -194,6 +217,8 @@ server <- function(input, output, session) {
                             success = FALSE)
       state$n_wrong <- state$n_wrong + 1
       state$i_exercise <- state$i_exercise + 1
+      # set the icon since this triggers redrawing the UI
+      state$icon <- "nok"
       shinyjs::disable("correct")
       shinyjs::disable("wrong")
     }
