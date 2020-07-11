@@ -65,15 +65,17 @@ server <- function(input, output, session) {
 
   # dynamic UI for the quiz ######
   output$exerciseUI <- renderUI({
-    refocus_to <<- "solution_in"
-    # mention variables that should cause redrawing of the UI
-    c(input$check, state$question)
-    # use isolate to avoid an infinite loop
-    isolate({
-      ui <- WordBox:::create_quiz_ui(state, session, input)
-      state$reset_ui <- FALSE
-    })
-    ui
+    if (state$running) {
+      refocus_to <<- if (state$mode == "written") "solution_in" else "check"
+      # mention variables that should cause redrawing of the UI
+      c(input$check, state$question)
+      # use isolate to avoid an infinite loop
+      isolate({
+        ui <- WordBox:::create_quiz_ui(state, session, input)
+        state$reset_ui <- FALSE
+      })
+      ui
+    }
   })
 
   # draw a new question #####
@@ -202,7 +204,13 @@ server <- function(input, output, session) {
 
   # text outputs #####
   output$current_box <- renderText(state$question$box)
-  output$question <- renderText(state$question$question)
+  output$question <- renderText({
+    # in oral mode, add a comment, if a verb needs to be conjugated
+    # state$running must be checked to avoid an error
+    paste(state$question$question,
+          if (state$running && state$mode == "oral" && state$question$type == "verb")
+            "(Konjugation)")
+    })
   output$current_group <- renderText(state$question$group)
   output$n_words <- renderText({nrow(state$quiz)})
   output$n_correct <- renderText(state$n_correct)
