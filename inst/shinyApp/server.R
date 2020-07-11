@@ -102,7 +102,7 @@ server <- function(input, output, session) {
         state$wl <- NULL
         state$running <- FALSE
         state$reset_ui <- TRUE
-        updateRadioButtons(session,
+        shinyWidgets::updateAwesomeRadio(session,
                            "direction",
                             choices = c(">" = "direction1",
                                         "<" = "direction2"))

@@ -90,7 +90,7 @@ prepare_quiz_gui <- function(session, state) {
   langs <- get_languages(wl)
   choices <- magrittr::set_names(paste0("direction", 1:2),
                                  paste0(langs, " > ", rev(langs)))
-  shiny::updateRadioButtons(session, "direction", choices = choices)
+  shinyWidgets::updateAwesomeRadio(session, "direction", choices = choices)
   shiny::updateSelectInput(session, "groups",
                            choices = get_groups(wl))
   shinyjs::enable("run")
