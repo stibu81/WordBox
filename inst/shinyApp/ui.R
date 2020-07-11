@@ -1,10 +1,20 @@
 ui <- fluidPage(
 
-  # icon colours
-  tags$style(".fa-times-circle {color:#FF0000}"),
-  tags$style(".fa-check-circle {color:#00FF00}"),
-  tags$style(".fa-question-circle {color:#0000FF}"),
-  tags$style(".fa-exclamation-triangle {color:#FFFF00}"),
+  theme = shinythemes::shinytheme("darkly"),
+
+  # shinythemes does not inlcude CSS for outlined buttons
+  # Copied from https://bootswatch.com/4/darkly/bootstrap.min.css
+  includeCSS("btn-outline.css"),
+
+  # icon colours taken from the bootstrap theme
+  # .btn-danger:hover, background-color
+  tags$style(".fa-times-circle {color:#e12e1c}"),
+  # .btn-success:hover, background-color
+  tags$style(".fa-check-circle {color:#009670}"),
+  # .btn-info:hover, background-color
+  tags$style(".fa-question-circle {color:#2384c6}"),
+  # .btn-warning:hover, background-color
+  tags$style(".fa-exclamation-triangle {color:#d4860b}"),
 
   # function to set focus on an element
   shinyjs::extendShinyjs(
@@ -27,7 +37,8 @@ ui <- fluidPage(
                   width = "300px"),
       actionButton("load",
                    "Laden",
-                   width = "100px"),
+                   width = "100px",
+                   class="btn btn-primary"),
       br(), br(),
       radioButtons("direction",
                   "Richtung ausw\u00e4hlen",
@@ -56,7 +67,8 @@ ui <- fluidPage(
       shinyjs::disabled(
         actionButton("run",
                      "Start",
-                     width = "100px")
+                     width = "100px",
+                     class="btn btn-primary")
       )
     ),
 

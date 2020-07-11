@@ -155,12 +155,14 @@ create_quiz_ui <- function(state, session, input) {
         shiny::tagList(
             shiny::tags$p(shiny::tags$b("Antwort")),
             create_text_input_row("", "", state$icon),
-            shiny::actionButton("check", "Pr\u00fcfen"),
+            shiny::actionButton("check", "Pr\u00fcfen",
+                                class = "btn btn-danger"),
             shiny::br(), shiny::br(),
             shiny::strong("L\u00f6sung"),
             shiny::textOutput("solution"),
             shiny::br(),
-            shiny::actionButton("gonext", "Weiter")
+            shiny::actionButton("gonext", "Weiter",
+                                class = "btn btn-info")
           )
       shiny::updateTextInput(session, "solution_in", value = store_inputs)
     } else {
@@ -180,12 +182,14 @@ create_quiz_ui <- function(state, session, input) {
           create_text_input_row(c(1, 4), c("ich", "wir"), state$icon[c(1, 4) + 1]),
           create_text_input_row(c(2, 5), c("du", "ihr"), state$icon[c(2, 5) + 1]),
           create_text_input_row(c(3, 6), c("er/sie", "sie"), state$icon[c(3, 6) + 1]),
-          shiny::actionButton("check", "Pr\u00fcfen"),
+          shiny::actionButton("check", "Pr\u00fcfen",
+                              class = "btn btn-danger"),
           shiny::br(), shiny::br(),
           shiny::strong("L\u00f6sung"),
           shiny::textOutput("solution"),
           shiny::br(),
-          shiny::actionButton("gonext", "Weiter")
+          shiny::actionButton("gonext", "Weiter",
+                              class = "btn btn-info")
         )
       for (i in seq_along(idx)) {
         shiny::updateTextInput(session,
@@ -196,14 +200,17 @@ create_quiz_ui <- function(state, session, input) {
   } else {
     ui <-
       shiny::tagList(
-        shiny::actionButton("check", "Pr\u00fcfen"),
+        shiny::actionButton("check", "Pr\u00fcfen",
+                            class = "btn btn-danger"),
         shiny::br(), shiny::br(),
         shiny::strong("L\u00f6sung"),
         shiny::textOutput("solution"),
         shiny::br(),
         shiny::actionButton("correct", "Richtig",
+                            class = "btn btn-outline-success",
                             icon = shiny::icon("check-circle")),
         shiny::actionButton("wrong", "Falsch",
+                            class = "btn btn-outline-danger",
                             icon = shiny::icon("times-circle"))
       )
   }
