@@ -94,7 +94,9 @@ server <- function(input, output, session) {
       if (is.null(state$question)) {
         showModal(
           modalDialog("Du hast alle Fragen beantwortet!",
-                      titel = "Information")
+                      title = "Information",
+                      footer = modalButton("OK"),
+                      easyClose = TRUE)
         )
         # reset to original state
         state$wl <- NULL
@@ -233,7 +235,8 @@ server <- function(input, output, session) {
     # in oral mode, add a comment, if a verb needs to be conjugated
     # state$running must be checked to avoid an error
     paste(state$question$question,
-          if (state$running && state$mode == "oral" && state$question$type == "verb")
+          if (!is.null(state$question) &&
+                state$mode == "oral" && state$question$type == "verb")
             "(Konjugation)")
     })
   output$current_group <- renderText(state$question$group)
