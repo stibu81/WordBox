@@ -257,7 +257,7 @@ create_text_input_row <- function(idx, pref = "", state = "") {
     if (icon_name == "") {
       NULL
     } else {
-      shiny::column(1, shiny::icon(icon_name))
+      shiny::column(1, shiny::icon(icon_name, class = "fa-2x"))
     }
   }
 
