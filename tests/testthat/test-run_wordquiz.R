@@ -3,7 +3,9 @@
 ref_question <- list(i_quiz = 1L, i_wl = 6L,
                      question = "date",
                      answers = c("Dattel", "Datum", "Verabredung"),
-                     group = "Unit2", box = 1)
+                     group = "Unit2",
+                     type = "single",
+                     box = 1)
 class(ref_question) <- "wordquestion"
 
 # prepare the quiz with type standard with just one word
@@ -12,6 +14,9 @@ wl$date2[-6] <- Sys.Date()
 wl$box2[1:4] <- 2
 quiz <- prepare_quiz(wl, 2)
 quiz2 <- prepare_quiz(wl, 2, "newwords")
+
+# prepare a quiz with the verb (Unit3)
+quiz3 <- prepare_quiz(wl, 1, groups = "Unit3")
 
 test_that("draw and answer a question", {
   question <- draw_question(quiz, wl)
@@ -24,7 +29,7 @@ test_that("draw and answer a question", {
 })
 
 
-test_that("check answers ", {
+test_that("check answers", {
   question <- draw_question(quiz, wl)
   expect_true(correct_answer("Dattel", question, rm_trailing_chars = "!$"))
   expect_true(correct_answer("Dattel$", question, rm_trailing_chars = "!$"))
@@ -33,6 +38,17 @@ test_that("check answers ", {
   expect_false(correct_answer("!Dattel", question, rm_trailing_chars = "!$"))
 })
 
+test_that("check answers for verb", {
+  question <- draw_question(quiz3, wl)
+  go <- c("to go", "go", "go", "goes", "go", "go", "go")
+  walk <- c("to walk", "walk", "walk", "walks", "walk", "walk", "walk")
+  expect_true(all(correct_answer(go, question)))
+  expect_true(all(correct_answer(walk, question)))
+  expect_identical(correct_answer(replace(go, 3, "wrong"), question),
+                   replace(rep(TRUE, 7), 3, FALSE))
+  expect_identical(correct_answer(replace(walk, 1, "to wlak"), question),
+                   replace(rep(TRUE, 7), 1, FALSE))
+})
 
 test_that("drawing questions using previous", {
   question <- draw_question(quiz2, wl)

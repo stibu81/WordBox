@@ -1,7 +1,7 @@
 Package: WordBox
 Type: Package
 Title: A Simple Vocabulary Trainer
-Version: 0.2.1.9008
+Version: 0.2.1.9011
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <slanz1137@gmail.com>
 Description: A simple vocabulary trainer in the form of a shiny app.
@@ -10,15 +10,18 @@ Description: A simple vocabulary trainer in the form of a shiny app.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports: readr,
           dplyr,
           tidyr,
           magrittr,
           shiny,
           shinyjs,
+          shinythemes,
+          shinyWidgets,
           rlang,
           jsonlite,
-          ggplot2
+          ggplot2,
+          stringr
 Suggests: 
     testthat (>= 2.1.0)

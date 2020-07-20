@@ -58,12 +58,27 @@ prepare_quiz <- function(wl, direction,
                     count    = paste0("count", direction),
                     date     = paste0("date", direction))
 
+  # preparations for verbs: add column word_type which is
+  # "single" for simple words, and "verb" for verbs
+  wl %<>% dplyr::mutate(
+    word_type = dplyr::case_when(
+      stringr::str_detect(.data$language2, "^\\\\V") ~ "verb",
+      TRUE ~ "single"
+    )
+  )
+  # they are only supported in direction 1
+  # => filter them, if direction is 2
+  if (direction == 2) {
+    wl %<>% dplyr::filter(.data$word_type == "single")
+  }
+
   # create the wordquiz object depending on quiz_type
   if (quiz_type == "training") {
     # in training mode, all words are included with equal weight
     quiz <- dplyr::tibble(index = 1:nrow(wl),
                           weight = 1,
-                          group = wl$group)
+                          group = wl$group,
+                          type = wl$word_type)
   } else if (quiz_type == "standard") {
     # in standard mode, words with recent sucess are not quizzed
     # the other words are weighed depending on age and box
@@ -73,7 +88,8 @@ prepare_quiz <- function(wl, direction,
                           weight = compute_weight(wl[[quiz_cols$date]],
                                                   wl[[quiz_cols$box]],
                                                   wl),
-                          group = wl$group) %>%
+                          group = wl$group,
+                          type = wl$word_type) %>%
             dplyr::filter(.data$filter_date <= Sys.Date()) %>%
             dplyr::select(-"filter_date")
   } else if (quiz_type == "newwords") {
@@ -83,14 +99,18 @@ prepare_quiz <- function(wl, direction,
                           box = wl[[quiz_cols$box]],
                           count = wl[[quiz_cols$count]],
                           weight = 0,
-                          group = wl$group) %>%
+                          group = wl$group,
+                          type = wl$word_type) %>%
             dplyr::filter(.data$box == 1, .data$count < cfg_counts_new(wl)) %>%
             dplyr::select(-"box", -"count")
   }
 
   # add a column with the indices of all correct answers
+  # don't mix differente word types ("single", "verb")
   qs <- wl[[quiz_cols$question]]
-  quiz$answers <- lapply(quiz$index, function(i) which(qs == qs[i]))
+  wts <- wl$word_type
+  quiz$answers <- lapply(quiz$index,
+                         function(i) which(qs == qs[i] & wts == wts[i]))
 
   # filter by groups, if requested
   if (!is.null(groups)) {
@@ -183,6 +203,7 @@ draw_question <- function(quiz, wl, previous = NULL) {
                    question = wl[i_wl, cols$question, drop = TRUE],
                    answers = wl[quiz$answers[[i]], cols$answer, drop = TRUE],
                    group = wl[i_wl, "group", drop = TRUE],
+                   type = quiz$type[i],
                    box = wl[i_wl, cols$box, drop = TRUE])
 
   class(question) <- "wordquestion"
@@ -241,24 +262,75 @@ get_quiz_type <- function(quiz) {
 correct_answer <- function(answer, question,
                            rm_trailing_chars = "") {
 
+  answer %<>% trim_char(rm_trailing_chars = rm_trailing_chars)
   answers <- question$answers
 
-  # prepare answer:
-  # if requested, remove certain characters from the end
-  # note that some characters must be escaped
-  # (regex pattern is taken from Hmisc::escapeRegex
-  if (rm_trailing_chars != "") {
-    pattern <- strsplit(rm_trailing_chars, "")[[1]] %>%
-               gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", .) %>%
-                {paste0("(", paste(., collapse = "|"), paste0(") *$"))}
-    answer <- gsub(pattern, "", answer)
-    answers <- gsub(pattern, "", answers)
+  # how the answer is evaluated depends on the type of the question
+  if (question$type == "single") {
+    # for "single", simply test that the answer corresponds to one of
+    # the correct answers.
+    if (length(answer) > 1) {
+      warning("Only one answer must be provided for questions of ",
+              "type 'single'. Ignoring all but the first.")
+      answer <- answer[1]
+    }
+    answers %<>% trim_char()
+    out <- answer %in% answers
+  } else if (question$type == "verb") {
+    # for "verb", there are totally seven answers that must be checked.
+    # if there are multiple valid answers, the first element (infinitiv)
+    # is used to pick one. After that, the comparison is simply done
+    # element wise.
+
+    if (length(answer) != 7) {
+      warning("Exactly 7 answers must be provided for questions of ",
+              "type 'verb'. Omitting additional answers or ",
+              "filling missing answers by empty strings, respectively.")
+      answer <- answer[1:7]
+      answer[is.na(answer)] <- ""
+    }
+
+    # extract the valid answers and trim
+    answers %<>% extract_verb_answers()
+
+    # find the best fitting infinitive form
+    infinitives <- vapply(answers, getElement, character(1), 1)
+    best_match <- utils::adist(answer[1], infinitives) %>%
+      as.vector() %>%
+      which.min()
+    answers <- answers[[best_match]]
+
+    # compare element-wise
+    out <- answer == answers
   }
 
-  # trim whitespace and collapse multiple whitespace
-  answer <- gsub(" +", " ", answer) %>%
-                trimws()
-  answers <- gsub(" +", " ", answers) %>%
-                trimws()
-  answer %in% answers
+  out
+}
+
+
+# trim whitespace, collapse multiple whitespace
+# and remove certain characters from
+# the end of each element in a character vector
+# note that some characters must be escaped
+# (regex pattern is taken from Hmisc::escapeRegex)
+trim_char <- function(x, rm_trailing_chars = "") {
+
+  x %<>% stringr::str_squish()
+
+  if (rm_trailing_chars != "") {
+    pattern <- stringr::str_split(rm_trailing_chars, "")[[1]] %>%
+      stringr::str_replace_all("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1") %>%
+      {paste0("\\s*(", paste(., collapse = "|"), paste0(")$"))}
+    x %<>% stringr::str_remove(pattern)
+  }
+
+  x
+}
+
+
+# auxilliary function to extract the answers for a verb
+extract_verb_answers <- function(answers) {
+  answers %>% stringr::str_remove_all("(^\\\\V\\()|(\\)$)") %>%
+    stringr::str_split(";") %>%
+    lapply(trim_char)
 }

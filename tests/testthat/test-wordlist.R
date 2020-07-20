@@ -13,7 +13,7 @@ wl <- read_wordlist(wl_file)
 test_that("read a wordlist file", {
   expect_is(wl, "wordlist")
   expect_identical(ncol(wl), 9L)
-  expect_identical(nrow(wl), 8L)
+  expect_identical(nrow(wl), 10L)
 })
 
 test_that("properties of a wordlist", {
