@@ -95,3 +95,15 @@ test_that("check quiz preparation with word limit", {
   quiz9 <- prepare_quiz(wl, 1, groups = "Unit2", n_words = 3)
   expect_equal(nrow(quiz9), 3L)
 })
+
+
+test_that("check quiz preparation with core words", {
+  quiz10 <- prepare_quiz(wl, 1, core_only = TRUE)
+  expect_equal(nrow(quiz10), 4L)
+  quiz11 <- prepare_quiz(wl, 1, core_only = TRUE, group = "Unit1")
+  expect_equal(nrow(quiz11), 2L)
+  quiz12 <- prepare_quiz(wl, 1, core_only = TRUE, quiz_type = "training")
+  expect_equal(nrow(quiz12), 4L)
+  quiz13 <- prepare_quiz(wl, 1, core_only = TRUE, quiz_type = "newwords")
+  expect_equal(nrow(quiz13), 4L)
+})
