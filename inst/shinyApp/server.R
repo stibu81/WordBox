@@ -48,7 +48,9 @@ server <- function(input, output, session) {
       state$quiz <- prepare_quiz(state$wl, direction,
                                  quiz_type = input$quiztype,
                                  groups = state$groups,
-                                 n_words = state$n_words)
+                                 n_words = state$n_words,
+                                 core_only = input$core_only,
+                                 exam_only = input$exam_only)
       state$i_exercise <- state$i_exercise + 1
       state$n_correct <- 0
       state$n_wrong <- 0
@@ -59,6 +61,8 @@ server <- function(input, output, session) {
               "\nMode: ", state$mode,
               "\nQuiztype: ", get_quiz_type(state$quiz),
               "\n# of words: ", state$n_words,
+              "\ncore only: ", input$core_only,
+              "\nexam only: ", input$exam_only,
               "\nGroups :", state$groups, "\n")
     }
   )

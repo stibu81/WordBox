@@ -25,6 +25,8 @@ following columns:
 \item{\code{language1}}{words in the first language}
 \item{\code{language2}}{words in the second langauge}
 \item{\code{group}}{name of the group that the words belong to}
+\item{\code{core}}{is the word part of the core vocabulary?}
+\item{\code{exam}}{is the word part of the current exam?}
 \item{\code{box1}}{the box in which the words are in the mode 1 > 2}
 \item{\code{count1}}{the number of consecutive successes in the
  current box in the mode 1 > 2}

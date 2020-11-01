@@ -10,7 +10,9 @@ prepare_quiz(
   direction,
   quiz_type = c("standard", "training", "newwords"),
   groups = NULL,
-  n_words = Inf
+  n_words = Inf,
+  core_only = FALSE,
+  exam_only = FALSE
 )
 }
 \arguments{
@@ -28,6 +30,12 @@ be quizzed. If omitted, all groups are included in the quiz.}
 
 \item{n_words}{numeric value giving the maximum number of words
 to be included in the quiz.}
+
+\item{core_only}{logical. Should the quiz only involve words
+that are part of the core vocabulary.}
+
+\item{exam_only}{logical. Should the quiz only involve words
+that are part of the current exam.}
 }
 \value{
 a \code{wordquiz} object

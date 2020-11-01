@@ -17,6 +17,8 @@
 #' \item{\code{language1}}{words in the first language}
 #' \item{\code{language2}}{words in the second langauge}
 #' \item{\code{group}}{name of the group that the words belong to}
+#' \item{\code{core}}{is the word part of the core vocabulary?}
+#' \item{\code{exam}}{is the word part of the current exam?}
 #' \item{\code{box1}}{the box in which the words are in the mode 1 > 2}
 #' \item{\code{count1}}{the number of consecutive successes in the
 #'  current box in the mode 1 > 2}
@@ -41,43 +43,52 @@ read_wordlist <- function(file, config_file = NULL) {
     stop("The file '", file, "' does not exist.")
 
   # read in the file and check its properties
-  # it should either have 3 or 7 columns
+  # the first n_base_col columns must always be present
+  # the additional n_add_col are optional and will be added
+  # by the function if they are missing.
   # the first two columns should always be the names
   # of the languages, the other columns should have
-  # fixed names
-  # if there are only 3 columns, the missing columns are
-  # added
-  raw <- suppressMessages(readr::read_csv(file)) %>%
+  # fixed names.
+  n_base_col <- 5
+  n_add_col <- 6
+  raw <- suppressMessages(readr::read_csv(file, na = "NA")) %>%
           dplyr::as_tibble()
 
-  if (ncol(raw) == 3) {
-    if (names(raw)[3] != get_wordlist_names()[3])
-      stop(file, " is not a valid wordlist file. ",
-           "The third columns must be called group.")
-    na_date <- as.Date(NA_character_, origin = "1970-01-01")
-    wordlist <- dplyr::mutate(raw,
-                              box1 = NA_integer_,
-                              count1 = NA_integer_,
-                              date1 = na_date,
-                              box2 = NA_integer_,
-                              count2 = NA_integer_,
-                              date2 = na_date)
-  } else if (ncol(raw) == 9) {
-    name_ok <- names(raw)[-(1:2)] == get_wordlist_names()[-(1:2)]
-    if (any(!name_ok))
-      stop(file, " is not a valid wordlist file. ",
-           "Invalid name in column(s) ",
-           paste(which(name_ok) + 2, collapse = ", "))
-    wordlist <- raw
-  } else {
+  # check the number of columns and the column names
+  n_col_in <- ncol(raw)
+  if (!n_col_in %in% (n_base_col + c(0, n_add_col))) {
     stop(file, " is not a valid wordlist file. ",
-         "It must have 3 or 9 columns.")
+         "It must have ", n_base_col, " or ",
+         n_base_col + n_add_col, " columns.")
+  }
+  name_ok <- names(raw)[3:n_col_in] == get_wordlist_names()[3:n_col_in]
+  if (any(!name_ok))
+    stop(file, " is not a valid wordlist file. ",
+         "Invalid name in column(s) ",
+         paste(which(!name_ok) + 2, collapse = ", "))
+
+  wordlist <-
+    if (n_col_in == n_base_col) {
+      na_date <- as.Date(NA_character_, origin = "1970-01-01")
+        dplyr::mutate(raw,
+          box1 = NA_integer_,
+          count1 = NA_integer_,
+          date1 = na_date,
+          box2 = NA_integer_,
+          count2 = NA_integer_,
+          date2 = na_date)
+    } else {
+      raw
   }
 
   # set language attribute, rename first two columns
   languages <- names(wordlist)[1:2] %>%
                 magrittr::set_names(paste0("language", 1:2))
   names(wordlist)[1:2] <- names(languages)
+
+  # convert columns core and exam to logical
+  wordlist %<>% dplyr::mutate(core = tolower(.data$core) == "x",
+                              exam = tolower(.data$exam) == "x")
 
   if (is.null(config_file)) {
     config_file <- get_default_config_file()
@@ -125,6 +136,12 @@ write_wordlist <- function(wl, file, overwrite = FALSE) {
     stop(file, " exists and overwrite is FALSE.")
 
   wl_write <- wl
+
+  # convert core and exam back to "x" and ""
+  values <- c("", "x")
+  wl_write %<>% dplyr::mutate(core = values[.data$core + 1],
+                              exam = values[.data$exam + 1])
+
   names(wl_write)[1:2] <- get_languages(wl)
   readr::write_csv(wl_write, file)
 
@@ -169,7 +186,7 @@ get_groups <- function(wl) {
 
 # Get the expected names of a wordlist object
 get_wordlist_names <- function() {
-  c("language1", "language2", "group",
+  c("language1", "language2", "group", "core", "exam",
     "box1", "count1", "date1",
     "box2", "count2", "date2")
 }
