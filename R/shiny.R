@@ -93,6 +93,7 @@ prepare_quiz_gui <- function(session, state) {
   shinyWidgets::updateAwesomeRadio(session, "direction", choices = choices)
   shiny::updateSelectInput(session, "groups", choices = get_groups(wl))
   shinyWidgets::updateAwesomeCheckbox(session, "core_only", value = FALSE)
+  shinyWidgets::updateAwesomeCheckbox(session, "exam_only", value = FALSE)
   shinyjs::enable("run")
 
   wl
