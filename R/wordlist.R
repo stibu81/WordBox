@@ -51,7 +51,7 @@ read_wordlist <- function(file, config_file = NULL) {
   # fixed names.
   n_base_col <- 5
   n_add_col <- 6
-  raw <- suppressMessages(readr::read_csv(file)) %>%
+  raw <- suppressMessages(readr::read_csv(file, na = "NA")) %>%
           dplyr::as_tibble()
 
   # check the number of columns and the column names
