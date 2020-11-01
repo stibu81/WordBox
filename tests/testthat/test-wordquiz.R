@@ -107,3 +107,14 @@ test_that("check quiz preparation with core words", {
   quiz13 <- prepare_quiz(wl, 1, core_only = TRUE, quiz_type = "newwords")
   expect_equal(nrow(quiz13), 4L)
 })
+
+test_that("check quiz preparation with exam words", {
+  quiz14 <- prepare_quiz(wl, 1, exam_only = TRUE)
+  expect_equal(nrow(quiz14), 6L)
+  quiz15 <- prepare_quiz(wl, 1, exam_only = TRUE, group = "Unit2")
+  expect_equal(nrow(quiz15), 3L)
+  quiz16 <- prepare_quiz(wl, 1, exam_only = TRUE, quiz_type = "training")
+  expect_equal(nrow(quiz16), 6L)
+  quiz17 <- prepare_quiz(wl, 1, exam_only = TRUE, quiz_type = "newwords")
+  expect_equal(nrow(quiz17), 6L)
+})

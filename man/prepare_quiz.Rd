@@ -11,7 +11,8 @@ prepare_quiz(
   quiz_type = c("standard", "training", "newwords"),
   groups = NULL,
   n_words = Inf,
-  core_only = FALSE
+  core_only = FALSE,
+  exam_only = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ to be included in the quiz.}
 
 \item{core_only}{logical. Should the quiz only involve words
 that are part of the core vocabulary.}
+
+\item{exam_only}{logical. Should the quiz only involve words
+that are part of the current exam.}
 }
 \value{
 a \code{wordquiz} object

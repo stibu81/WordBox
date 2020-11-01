@@ -12,6 +12,8 @@
 #'  be quizzed. If omitted, all groups are included in the quiz.
 #' @param core_only logical. Should the quiz only involve words
 #'  that are part of the core vocabulary.
+#' @param exam_only logical. Should the quiz only involve words
+#'  that are part of the current exam.
 #'
 #' @details
 #' Three types of quizzes can be generated:
@@ -42,7 +44,8 @@ prepare_quiz <- function(wl, direction,
                          quiz_type = c("standard", "training", "newwords"),
                          groups = NULL,
                          n_words = Inf,
-                         core_only = FALSE) {
+                         core_only = FALSE,
+                         exam_only = FALSE) {
 
   direction <- suppressWarnings(as.numeric(direction[1]))
   if (!direction %in% 1:2) {
@@ -82,7 +85,8 @@ prepare_quiz <- function(wl, direction,
                           weight = 1,
                           group = wl$group,
                           type = wl$word_type,
-                          core = wl$core)
+                          core = wl$core,
+                          exam = wl$exam)
   } else if (quiz_type == "standard") {
     # in standard mode, words with recent sucess are not quizzed
     # the other words are weighed depending on age and box
@@ -94,7 +98,8 @@ prepare_quiz <- function(wl, direction,
                                                   wl),
                           group = wl$group,
                           type = wl$word_type,
-                          core = wl$core) %>%
+                          core = wl$core,
+                          exam = wl$exam) %>%
             dplyr::filter(.data$filter_date <= Sys.Date()) %>%
             dplyr::select(-"filter_date")
   } else if (quiz_type == "newwords") {
@@ -106,7 +111,8 @@ prepare_quiz <- function(wl, direction,
                           weight = 0,
                           group = wl$group,
                           type = wl$word_type,
-                          core = wl$core) %>%
+                          core = wl$core,
+                          exam = wl$exam) %>%
             dplyr::filter(.data$box == 1, .data$count < cfg_counts_new(wl)) %>%
             dplyr::select(-"box", -"count")
   }
@@ -128,7 +134,10 @@ prepare_quiz <- function(wl, direction,
   if (core_only) {
     quiz %<>% dplyr::filter(.data$core)
   }
-  quiz %<>% dplyr::select(-"core")
+  if (exam_only) {
+    quiz %<>% dplyr::filter(.data$exam)
+  }
+  quiz %<>% dplyr::select(-"core", -"exam")
 
   # set the weights if quiz_type is newwords: n_new words
   # must get weight 1 such that they are quizzed first
