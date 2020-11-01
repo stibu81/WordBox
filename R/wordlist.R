@@ -18,6 +18,7 @@
 #' \item{\code{language2}}{words in the second langauge}
 #' \item{\code{group}}{name of the group that the words belong to}
 #' \item{\code{core}}{is the word part of the core vocabulary?}
+#' \item{\code{exam}}{is the word part of the current exam?}
 #' \item{\code{box1}}{the box in which the words are in the mode 1 > 2}
 #' \item{\code{count1}}{the number of consecutive successes in the
 #'  current box in the mode 1 > 2}
@@ -48,7 +49,7 @@ read_wordlist <- function(file, config_file = NULL) {
   # the first two columns should always be the names
   # of the languages, the other columns should have
   # fixed names.
-  n_base_col <- 4
+  n_base_col <- 5
   n_add_col <- 6
   raw <- suppressMessages(readr::read_csv(file)) %>%
           dplyr::as_tibble()
@@ -85,8 +86,9 @@ read_wordlist <- function(file, config_file = NULL) {
                 magrittr::set_names(paste0("language", 1:2))
   names(wordlist)[1:2] <- names(languages)
 
-  # convert column core to logical
-  wordlist %<>% dplyr::mutate(core = tolower(.data$core) == "x")
+  # convert columns core and exam to logical
+  wordlist %<>% dplyr::mutate(core = tolower(.data$core) == "x",
+                              exam = tolower(.data$exam) == "x")
 
   if (is.null(config_file)) {
     config_file <- get_default_config_file()
@@ -135,9 +137,10 @@ write_wordlist <- function(wl, file, overwrite = FALSE) {
 
   wl_write <- wl
 
-  # convert core back to "x" and ""
-  core_values <- c("", "x")
-  wl_write %<>% dplyr::mutate(core = core_values[.data$core + 1])
+  # convert core and exam back to "x" and ""
+  values <- c("", "x")
+  wl_write %<>% dplyr::mutate(core = values[.data$core + 1],
+                              exam = values[.data$exam + 1])
 
   names(wl_write)[1:2] <- get_languages(wl)
   readr::write_csv(wl_write, file)
@@ -183,7 +186,7 @@ get_groups <- function(wl) {
 
 # Get the expected names of a wordlist object
 get_wordlist_names <- function() {
-  c("language1", "language2", "group", "core",
+  c("language1", "language2", "group", "core", "exam",
     "box1", "count1", "date1",
     "box2", "count2", "date2")
 }

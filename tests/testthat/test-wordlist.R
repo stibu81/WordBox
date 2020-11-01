@@ -12,7 +12,7 @@ wl <- read_wordlist(wl_file)
 
 test_that("read a wordlist file", {
   expect_is(wl, "wordlist")
-  expect_identical(ncol(wl), 10L)
+  expect_identical(ncol(wl), 11L)
   expect_identical(nrow(wl), 10L)
 })
 
@@ -40,13 +40,13 @@ test_that("read invalid wordlist files", {
 
   wl_bad <- dplyr::rename(wl, bad_name1 = "group", bad_name2 = "box2")
   write_wordlist(wl_bad, "wl_bad.csv", overwrite = TRUE)
-  expect_error(read_wordlist("wl_bad.csv"), "Invalid name in column\\(s\\) 3, 8$")
+  expect_error(read_wordlist("wl_bad.csv"), "Invalid name in column\\(s\\) 3, 9$")
 
   wl_bad <- dplyr::select(wl, -"group", -"box2")
   write_wordlist(wl_bad, "wl_bad.csv", overwrite = TRUE)
   expect_error(read_wordlist("wl_bad.csv"), "It must have \\d+ or \\d+ columns")
 
-  wl_bad <- dplyr::select(wl, "language1", "language2", "core")
+  wl_bad <- dplyr::select(wl, "language1", "language2", "core", "exam")
   write_wordlist(wl_bad, "wl_bad.csv", overwrite = TRUE)
   expect_error(read_wordlist("wl_bad.csv"), "It must have \\d+ or \\d+ columns")
 

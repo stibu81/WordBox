@@ -1,11 +1,11 @@
-Deutsch,Englisch,group,core
-Bruder,brother,Unit1,x
-Schwester,sister,Unit1,x
-Jahreszeit,season,Unit1,
-Dattel,date,Unit1,
-Mond,moon,Unit2,x
-Datum,date,Unit2,
-würzen,season,Unit2,
-Verabredung,date,Unit2,
-gehen,\V(to go; go; go; goes; go; go; go),Unit3,x
-gehen,\V(to walk; walk; walk; walks; walk; walk; walk),Unit3,
+Deutsch,Englisch,group,core,exam
+Bruder,brother,Unit1,x,
+Schwester,sister,Unit1,x,
+Jahreszeit,season,Unit1,,x
+Dattel,date,Unit1,,x
+Mond,moon,Unit2,x,
+Datum,date,Unit2,,
+würzen,season,Unit2,,x
+Verabredung,date,Unit2,,x
+gehen,\V(to go; go; go; goes; go; go; go),Unit3,x,
+gehen,\V(to walk; walk; walk; walks; walk; walk; walk),Unit3,,
