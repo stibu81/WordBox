@@ -49,9 +49,11 @@ read_wordlist <- function(file, config_file = NULL) {
   # the first two columns should always be the names
   # of the languages, the other columns should have
   # fixed names.
+  # all columns are read as character and converted later
   n_base_col <- 5
   n_add_col <- 6
-  raw <- suppressMessages(readr::read_csv(file, na = "NA")) %>%
+  raw <- readr::read_csv(file, na = "NA",
+                         col_types = readr::cols(.default = "c")) %>%
           dplyr::as_tibble()
 
   # check the number of columns and the column names
@@ -71,14 +73,18 @@ read_wordlist <- function(file, config_file = NULL) {
     if (n_col_in == n_base_col) {
       na_date <- as.Date(NA_character_, origin = "1970-01-01")
         dplyr::mutate(raw,
-          box1 = NA_integer_,
-          count1 = NA_integer_,
+          box1 = NA_real_,
+          count1 = NA_real_,
           date1 = na_date,
-          box2 = NA_integer_,
-          count2 = NA_integer_,
+          box2 = NA_real_,
+          count2 = NA_real_,
           date2 = na_date)
     } else {
-      raw
+      raw %>%
+        dplyr::mutate_at(dplyr::vars(dplyr::matches("^(box|count)")),
+                         as.numeric) %>%
+        dplyr::mutate_at(dplyr::vars(dplyr::matches("^date")),
+                         as.Date)
   }
 
   # set language attribute, rename first two columns
@@ -143,7 +149,7 @@ write_wordlist <- function(wl, file, overwrite = FALSE) {
                               exam = values[.data$exam + 1])
 
   names(wl_write)[1:2] <- get_languages(wl)
-  readr::write_csv(wl_write, file)
+  readr::write_csv(wl_write, file, na = "")
 
   invisible(wl)
 }
