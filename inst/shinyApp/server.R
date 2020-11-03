@@ -54,6 +54,7 @@ server <- function(input, output, session) {
       state$i_exercise <- state$i_exercise + 1
       state$n_correct <- 0
       state$n_wrong <- 0
+      # changing the icon triggers redrawing of the quiz UI
       state$icon <- ""
       shinyjs::disable("run")
       message("running exercise from file ", state$wl_file,
