@@ -51,12 +51,17 @@ mark_word <- function(question, quiz, wl, success) {
         wl[i_wl, cols$count] <- 0
       }
     }
+    write_log(quiz, "correct answer for word:", question$question,
+              "(", question$group, ")")
+
   # apply failure: set counts to zero, move one box back
   } else {
     wl[i_wl, cols$count] <- 0
     if (question$box > 1) {
       wl[i_wl, cols$box] %<>% magrittr::subtract(1)
     }
+    write_log(quiz, "wrong answer for word:", question$question,
+              "(", question$group, ")")
   }
 
   return(wl)

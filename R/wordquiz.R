@@ -14,6 +14,10 @@
 #'  that are part of the core vocabulary.
 #' @param exam_only logical. Should the quiz only involve words
 #'  that are part of the current exam.
+#' @param log_file If a valid path is provided, the quiz will write
+#'  its log to the file. If the file exists and is a log file
+#'  produced by WordBox, new entries will be appended. A file
+#'  that was not produced by WordBox will not be modified.
 #'
 #' @details
 #' Three types of quizzes can be generated:
@@ -45,7 +49,8 @@ prepare_quiz <- function(wl, direction,
                          groups = NULL,
                          n_words = Inf,
                          core_only = FALSE,
-                         exam_only = FALSE) {
+                         exam_only = FALSE,
+                         log_file = NULL) {
 
   direction <- suppressWarnings(as.numeric(direction[1]))
   if (!direction %in% 1:2) {
@@ -160,6 +165,16 @@ prepare_quiz <- function(wl, direction,
   if (n_words < nrow(quiz)) {
     quiz <- dplyr::sample_n(quiz, n_words, weight = quiz$weight)
   }
+
+  # set the log file and write the messages about the new quiz
+  langs <- get_languages(wl)
+  quiz <- set_logfile(quiz, log_file)
+  write_log(quiz, "starting a new quiz from file", get_filename(wl))
+  write_log(quiz, "direction:", langs[direction], ">", rev(langs)[direction])
+  write_log(quiz, "quiz type:", quiz_type)
+  write_log(quiz, "# words:", nrow(quiz))
+  write_log(quiz, "groups:", paste(groups, collapse = ", "))
+  write_log(quiz, "core / exam only:", core_only, "/", exam_only)
 
   # add column names and quiz_type as attribute
   attr(quiz, "cols") <- quiz_cols

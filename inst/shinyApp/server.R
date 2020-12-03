@@ -50,7 +50,9 @@ server <- function(input, output, session) {
                                  groups = state$groups,
                                  n_words = state$n_words,
                                  core_only = input$core_only,
-                                 exam_only = input$exam_only)
+                                 exam_only = input$exam_only,
+                                 log_file = getOption("wordbox_log_file"))
+      WordBox:::write_log(state$quiz, "mode:", state$mode)
       state$i_exercise <- state$i_exercise + 1
       state$n_correct <- 0
       state$n_wrong <- 0
@@ -172,6 +174,10 @@ server <- function(input, output, session) {
           state$n_correct <- state$n_correct + all(success)
           state$n_wrong <- state$n_wrong + !all(success)
           state$show_answer <- TRUE
+          WordBox:::write_log(state$quiz, "total / correct / wrong:",
+                              state$n_correct + state$n_wrong, "/",
+                              state$n_correct, "/",
+                              state$n_wrong)
           shinyjs::enable("gonext")
         }
       } else {

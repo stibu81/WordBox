@@ -8,6 +8,7 @@ run_wordbox(
   dir = NULL,
   launch.browser = NULL,
   config_file = NULL,
+  log_file = NULL,
   show_errors = TRUE,
   n_words_default = 30,
   rm_trailing_chars = ""
@@ -28,6 +29,11 @@ which in RStudio opens the internal shiny viewer.}
 configuration file. If omitted, the default configuration is
 used. See \code{\link{read_config}} for details
 on the config file.}
+
+\item{log_file}{If a valid path is provided, the quiz will write
+its log to the file. If the file exists and is a log file
+produced by WordBox, new entries will be appended. A file
+that was not produced by WordBox will not be modified.}
 
 \item{show_errors}{should the UI show the number of errors
 that were made during a quiz.}

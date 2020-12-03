@@ -12,7 +12,8 @@ prepare_quiz(
   groups = NULL,
   n_words = Inf,
   core_only = FALSE,
-  exam_only = FALSE
+  exam_only = FALSE,
+  log_file = NULL
 )
 }
 \arguments{
@@ -36,6 +37,11 @@ that are part of the core vocabulary.}
 
 \item{exam_only}{logical. Should the quiz only involve words
 that are part of the current exam.}
+
+\item{log_file}{If a valid path is provided, the quiz will write
+its log to the file. If the file exists and is a log file
+produced by WordBox, new entries will be appended. A file
+that was not produced by WordBox will not be modified.}
 }
 \value{
 a \code{wordquiz} object

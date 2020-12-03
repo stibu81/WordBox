@@ -18,11 +18,13 @@
 #'  number of words per quiz. This value must lie between 5
 #'  and 95.
 #' @inheritParams correct_answer
+#' @inheritParams prepare_quiz
 #'
 #' @export
 
 run_wordbox <- function(dir = NULL, launch.browser = NULL,
                         config_file = NULL,
+                        log_file = NULL,
                         show_errors = TRUE,
                         n_words_default = 30,
                         rm_trailing_chars = "") {
@@ -46,7 +48,8 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL,
     options(wordbox_cfg_file = config_file,
             wordbox_show_errors = show_errors,
             wordbox_rm_trailing_chars = rm_trailing_chars,
-            wordbox_n_words_default = n_words_default)
+            wordbox_n_words_default = n_words_default,
+            wordbox_log_file = log_file)
 
     if (is.null(launch.browser)) {
         launch.browser <- getOption("shiny.launch.browser", interactive())
