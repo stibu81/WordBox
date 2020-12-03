@@ -85,16 +85,33 @@ prepare_quiz_gui <- function(session, state) {
   message("reading wordlist file ", state$wl_file,
           "\nwith ", if (is.null(cfg_file)) "default",
           " config file ", cfg_file, "\n")
-  wl <- read_wordlist(state$wl_file, cfg_file)
 
-  langs <- get_languages(wl)
-  choices <- magrittr::set_names(paste0("direction", 1:2),
-                                 paste0(langs, " > ", rev(langs)))
-  shinyWidgets::updateAwesomeRadio(session, "direction", choices = choices)
-  shiny::updateSelectInput(session, "groups", choices = get_groups(wl))
-  shinyWidgets::updateAwesomeCheckbox(session, "core_only", value = FALSE)
-  shinyWidgets::updateAwesomeCheckbox(session, "exam_only", value = FALSE)
-  shinyjs::enable("run")
+  wl <- tryCatch({
+    read_wordlist(state$wl_file, cfg_file)
+  }, error = function(e) {
+    shiny::showModal(
+      shiny::modalDialog(
+        "Das Lesen der Datei ", state$wl_file, " ist fehlgeschlagen.",
+        shiny::tags$p(), shiny::tags$p(),
+        "Fehlermeldung: ", shiny::tags$p(), e$message,
+        title = "Fehler",
+        footer = shiny::modalButton("OK"),
+        easyClose = TRUE
+      )
+    )
+    NULL
+  })
+
+  if (!is.null(wl)) {
+    langs <- get_languages(wl)
+    choices <- magrittr::set_names(paste0("direction", 1:2),
+                                   paste0(langs, " > ", rev(langs)))
+    shinyWidgets::updateAwesomeRadio(session, "direction", choices = choices)
+    shiny::updateSelectInput(session, "groups", choices = get_groups(wl))
+    shinyWidgets::updateAwesomeCheckbox(session, "core_only", value = FALSE)
+    shinyWidgets::updateAwesomeCheckbox(session, "exam_only", value = FALSE)
+    shinyjs::enable("run")
+  }
 
   wl
 }
