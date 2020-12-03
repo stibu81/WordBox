@@ -108,6 +108,7 @@ read_wordlist <- function(file, config_file = NULL) {
   wordlist %<>% fix_wordlist(config)
 
   # set attributes
+  attr(wordlist, "file") <- file
   attr(wordlist, "config") <- config
   attr(wordlist, "languages") <- languages
   class(wordlist) <- c("wordlist", class(wordlist))
@@ -189,6 +190,19 @@ get_groups <- function(wl) {
   return(sort(unique(wl$group)))
 }
 
+
+#' Get the File Name from which a Wordlist Was Read
+#'
+#' @param wl a \code{wordlist} object
+#'
+#' @return
+#' a character with the path to the wordlist file
+#'
+#' @export
+
+get_filename <- function(wl) {
+  attr(wl, "file")
+}
 
 # Get the expected names of a wordlist object
 get_wordlist_names <- function() {

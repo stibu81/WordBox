@@ -23,6 +23,7 @@ test_that("properties of a wordlist", {
   expect_identical(cfg_days(wl), c(1, 7, 30, 90))
   expect_identical(cfg_counts_new(wl), 2)
   expect_identical(cfg_n_new(wl), 3)
+  expect_identical(get_filename(wl), wl_file)
 })
 
 
@@ -30,6 +31,7 @@ test_that("write and read a wordlist file", {
   expect_identical(write_wordlist(wl, "test.csv"), wl)
   expect_error(write_wordlist(wl, "test.csv"), "exists and overwrite is FALSE")
   expect_identical(write_wordlist(wl, "test.csv", overwrite = TRUE), wl)
+  attr(wl, "file") <- "test.csv"
   expect_equal(read_wordlist("test.csv"), wl)
   unlink("test.csv")
 })
