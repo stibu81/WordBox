@@ -170,6 +170,7 @@ prepare_quiz <- function(wl, direction,
   langs <- get_languages(wl)
   quiz <- set_logfile(quiz, log_file)
   write_log(quiz, "starting a new quiz from file", get_filename(wl))
+  write_log(quiz, "# words in the wordlist:", nrow(wl))
   write_log(quiz, "direction:", langs[direction], ">", rev(langs)[direction])
   write_log(quiz, "quiz type:", quiz_type)
   write_log(quiz, "# words:", nrow(quiz))

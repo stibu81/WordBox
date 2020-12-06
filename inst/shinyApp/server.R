@@ -174,10 +174,11 @@ server <- function(input, output, session) {
           state$n_correct <- state$n_correct + all(success)
           state$n_wrong <- state$n_wrong + !all(success)
           state$show_answer <- TRUE
-          WordBox:::write_log(state$quiz, "total / correct / wrong:",
+          WordBox:::write_log(state$quiz, "total / correct / wrong / remaining:",
                               state$n_correct + state$n_wrong, "/",
                               state$n_correct, "/",
-                              state$n_wrong)
+                              state$n_wrong, "/",
+                              nrow(state$quiz))
           shinyjs::enable("gonext")
         }
       } else {
@@ -282,7 +283,7 @@ server <- function(input, output, session) {
 
   # stop app when session ends
   session$onSessionEnded(function() {
-        stopApp()
-    })
+    stopApp()
+  })
 
 }
