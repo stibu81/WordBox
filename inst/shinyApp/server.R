@@ -156,6 +156,7 @@ server <- function(input, output, session) {
           if (sum(!success) %in% 1:2 && !state$retry) {
             state$icon <- c("retry", "ok")[success + 1]
             state$retry <- TRUE
+            WordBox:::write_log(state$quiz, "allow retry")
           } else {
             mark_word <- TRUE
           }

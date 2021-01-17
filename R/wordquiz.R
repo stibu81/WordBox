@@ -243,6 +243,8 @@ draw_question <- function(quiz, wl, previous = NULL) {
                    type = quiz$type[i],
                    box = wl[i_wl, cols$box, drop = TRUE])
 
+  write_log(quiz, "quizzing word:", question$question, "(", question$group, ")")
+
   class(question) <- "wordquestion"
   return(question)
 
