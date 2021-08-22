@@ -52,9 +52,13 @@ read_wordlist <- function(file, config_file = NULL) {
   # all columns are read as character and converted later
   n_base_col <- 5
   n_add_col <- 6
-  raw <- readr::read_csv(file, na = "NA",
-                         col_types = readr::cols(.default = "c")) %>%
-          dplyr::as_tibble()
+  raw <- readr::read_csv(
+      file, na = "NA",
+      col_types = readr::cols(.default = "c"),
+      # don't read lazily because this locks the file on Windows systems
+      # and leads to problems when writing afterwards
+      lazy = FALSE) %>%
+    dplyr::as_tibble()
 
   # check the number of columns and the column names
   n_col_in <- ncol(raw)
