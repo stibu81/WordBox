@@ -4,8 +4,8 @@ Schwester,sister,Unit1,x,x
 Jahreszeit,season,Unit1,,x
 Dattel,date,Unit1,,x
 Mond,moon,Unit2,x,
-Datum,date,Unit2,,x
-würzen,season,Unit2,,x
-Verabredung,date,Unit2,,x
+Datum,date,,,x
+würzen,season,,,x
+Verabredung,date,,,x
 gehen,\V(to go; go; go; goes; go; go; go),Unit3,x,
 gehen,\V(to walk; walk; walk; walks; walk; walk; walk),Unit3,,

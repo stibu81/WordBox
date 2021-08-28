@@ -100,6 +100,17 @@ read_wordlist <- function(file, config_file = NULL) {
   wordlist %<>% dplyr::mutate(core = tolower(.data$core) == "x",
                               exam = tolower(.data$exam) == "x")
 
+  # impute missing values in column group: use the last non-missing value
+  # this strategy fails, if the first row has no group => check and fail
+  if (is.na(wordlist$group[1]) || wordlist$group[1] == "") {
+    stop("The group of the first entry must be defined!")
+  }
+  wordlist %<>%
+    dplyr::mutate(
+      group = dplyr::if_else(.data$group == "", NA_character_, .data$group)
+    ) %>%
+    tidyr::fill(.data$group, .direction = "down")
+
   if (is.null(config_file)) {
     config_file <- get_default_config_file()
   }
