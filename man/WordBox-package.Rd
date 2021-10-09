@@ -6,8 +6,6 @@
 \alias{WordBox-package}
 \title{WordBox: a Simple Vocabulary Trainer}
 \description{
-A simple vocabulary trainer in the form of a shiny app.
- The user can create his own word lists in the form of csv-files.
- The interface is in German.
+A simple vocabulary trainer in the form of a shiny app. The user can create his own word lists in the form of csv-files. The interface is in German.
 }
 \keyword{internal}
