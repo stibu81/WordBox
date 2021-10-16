@@ -1,7 +1,7 @@
 Package: WordBox
 Type: Package
 Title: A Simple Vocabulary Trainer
-Version: 0.2.1.9027
+Version: 0.2.1.9028
 Author: Stefan Lanz
 Maintainer: Stefan Lanz <slanz1137@gmail.com>
 Description: A simple vocabulary trainer in the form of a shiny app.

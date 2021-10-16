@@ -1,4 +1,6 @@
 # Tests for wordquiz objects
+# Note: many tests involving wordquiz objects are contained in
+# test-run_wordquiz.R, where a complete quiz is simulated.
 
 wl <- read_wordlist(get_wordlist_testfile())
 
@@ -84,10 +86,16 @@ test_that("check quiz preparation with type newwords", {
   expect_identical(quiz6$type, rep("single", 5))
   expect_identical(get_quiz_cols(quiz6), ref_qc1)
   expect_identical(get_quiz_type(quiz6), "newwords")
+
+  # special cases: no words, less words than n_new
+  quiz6a <- prepare_quiz(wl3[1:2, ], 1, quiz_type = "newwords")
+  expect_identical(quiz6a$weight, c(1, 1))
 })
 
 
 test_that("check quiz preparation with word limit", {
+  expect_error(prepare_quiz(wl, 1, n_words = 0),
+               "n_words must be larger than 0.")
   quiz7 <- prepare_quiz(wl, 1, n_words = 15)
   expect_equal(quiz7$index, 1:10)
   quiz8 <- prepare_quiz(wl, 1, n_words = 4)
@@ -118,3 +126,4 @@ test_that("check quiz preparation with exam words", {
   quiz17 <- prepare_quiz(wl, 1, exam_only = TRUE, quiz_type = "newwords")
   expect_equal(nrow(quiz17), 6L)
 })
+

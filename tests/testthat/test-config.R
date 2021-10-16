@@ -17,6 +17,9 @@ test_that("test reading of default config file", {
 
 test_that("test reading an invalid config file", {
 
+  expect_error(read_config("does_not_exist.json"),
+               "config file does_not_exist.json does not exist.")
+
   # read the raw test config file
   cfg_raw <- fromJSON(config_file)
 
@@ -50,4 +53,16 @@ test_that("test reading an invalid config file", {
   writeLines(jsonlite::toJSON(cfg_out), cfg_out_file)
   expect_error(read_config(cfg_out_file),
                "n_new must be a single integer")
+  cfg_out <- cfg_raw
+  cfg_out$boxes <- "a"
+  writeLines(jsonlite::toJSON(cfg_out), cfg_out_file)
+  expect_error(read_config(cfg_out_file),
+               "boxes must be a single integer")
+
+  # wrong number of values for days
+  cfg_out <- cfg_raw
+  cfg_out$days <- 1:(cfg_out$boxes + 1)
+  writeLines(jsonlite::toJSON(cfg_out), cfg_out_file)
+  expect_error(read_config(cfg_out_file),
+               "days must be an integer vector with length boxes")
 })

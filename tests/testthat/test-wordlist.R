@@ -26,6 +26,7 @@ test_that("properties of a wordlist", {
   expect_identical(cfg_counts_new(wl), 2)
   expect_identical(cfg_n_new(wl), 3)
   expect_identical(get_filename(wl), wl_file)
+  expect_identical(get_groups(wl), paste0("Unit", 1:3))
 })
 
 
@@ -63,4 +64,13 @@ test_that("read invalid wordlist files", {
   expect_error(read_wordlist("wl_bad.csv"), "group .* must be defined!")
 
   unlink("wl_bad.csv")
+})
+
+
+test_that("use inexistant config file", {
+  expect_warning(
+    wl2 <- read_wordlist(wl_file, config_file = "does_not_exist.json"),
+    "File does_not_exist.json does not exists. Falling back to default."
+  )
+  expect_identical(wl2, wl)
 })
