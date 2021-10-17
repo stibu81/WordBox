@@ -10,7 +10,7 @@
 coverage](https://codecov.io/gh/stibu81/WordBox/branch/master/graph/badge.svg)](https://codecov.io/gh/stibu81/WordBox?branch=master)
 <!-- badges: end -->
 
-WordBox is a simple word trainer written R using
+WordBox is a simple word trainer written in R using
 [shiny](https://shiny.rstudio.com/).
 
 ## Installation
