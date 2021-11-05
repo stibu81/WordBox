@@ -9,6 +9,7 @@ Description: A simple vocabulary trainer in the form of a shiny app.
  The interface is in German.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 RoxygenNote: 7.1.2
 Imports: readr,

@@ -15,7 +15,7 @@
 #' following columns:
 #' \describe{
 #' \item{\code{language1}}{words in the first language}
-#' \item{\code{language2}}{words in the second langauge}
+#' \item{\code{language2}}{words in the second language}
 #' \item{\code{group}}{name of the group that the words belong to}
 #' \item{\code{core}}{is the word part of the core vocabulary?}
 #' \item{\code{exam}}{is the word part of the current exam?}

@@ -46,7 +46,7 @@ and 95.}
 characters that should be removed if they appear at the
 end of an answer. This can be used to omit rejecting answers
 because a key next to Return is hit by accident. For a
-swiss keyboard, \code{rm_trailing_chars = "$"}
+Swiss keyboard, \code{rm_trailing_chars = "$"}
 is an appropriate choice.}
 }
 \description{

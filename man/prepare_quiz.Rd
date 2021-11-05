@@ -62,7 +62,10 @@ Three types of quizzes can be generated:
    are quizzed more often.}
   \item{training}{All words from all boxes are included in the
    quiz with equal probability weight.}
-  \item{newwords}{safd}
+  \item{newwords}{Quiz only new words (words in box 1 with less than two
+  correct answers). Questions are drawn from a list of three words only.
+  A word is removed from this list and replaced after it has been answered
+  correctly twice.}
 }
 The type of the quiz can be chosen by passing the appropriate
 value to \code{quiz_type}.

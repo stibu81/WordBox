@@ -35,7 +35,7 @@ single object with three fields:
    quizzed, after it has been correctly answered.}
   \item{\code{"counts_new"}}{a single integer. Words in box 1 with
    count less than \code{counts_new} are considered to be new and
-   are thus quized when \code{quiz_type = "newwords"} is used
+   are thus quizzed when \code{quiz_type = "newwords"} is used
    in \code{\link{prepare_quiz}}.}
   \item{\code{"n_new"}}{a single integer that defines how many
    words are quizzed at a time when \code{quiz_type = "newwords"}.}

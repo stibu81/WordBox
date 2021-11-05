@@ -32,7 +32,10 @@
 #'    are quizzed more often.}
 #'   \item{training}{All words from all boxes are included in the
 #'    quiz with equal probability weight.}
-#'   \item{newwords}{safd}
+#'   \item{newwords}{Quiz only new words (words in box 1 with less than two
+#'   correct answers). Questions are drawn from a list of three words only.
+#'   A word is removed from this list and replaced after it has been answered
+#'   correctly twice.}
 #' }
 #' The type of the quiz can be chosen by passing the appropriate
 #' value to \code{quiz_type}.
@@ -290,7 +293,7 @@ get_quiz_type <- function(quiz) {
 #'  characters that should be removed if they appear at the
 #'  end of an answer. This can be used to omit rejecting answers
 #'  because a key next to Return is hit by accident. For a
-#'  swiss keyboard, \code{rm_trailing_chars = "$"}
+#'  Swiss keyboard, \code{rm_trailing_chars = "$"}
 #'  is an appropriate choice.
 #'
 #' @return
