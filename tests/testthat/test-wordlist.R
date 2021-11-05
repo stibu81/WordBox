@@ -90,7 +90,7 @@ test_that("read wordlist with additional empty column", {
   wl_tmp <- withr::local_file("wl_tmp.csv")
 
   # 5 + 1 columns
-  wl_bad <- readr::read_lines(wl_file) %>%
+  wl_bad <- readr::read_lines(wl_file, lazy = FALSE) %>%
     paste0(",")
   readr::write_lines(wl_bad, wl_tmp)
   attr(wl, "file") <- wl_tmp
@@ -98,14 +98,14 @@ test_that("read wordlist with additional empty column", {
 
   # 11 + 3 columns
   write_wordlist(wl, wl_tmp, overwrite = TRUE)
-  wl_bad <- readr::read_lines(wl_tmp) %>%
+  wl_bad <- readr::read_lines(wl_tmp, lazy = FALSE) %>%
     paste0(",,,")
   readr::write_lines(wl_bad, wl_tmp)
   attr(wl, "file") <- wl_tmp
   expect_identical(read_wordlist(wl_tmp), wl)
 
   # bad column that is not empty
-  wl_bad <- readr::read_lines(wl_file) %>%
+  wl_bad <- readr::read_lines(wl_file, lazy = FALSE) %>%
     paste0(",")
   wl_bad[5] <- paste0(wl_bad[5], "error")
   readr::write_lines(wl_bad, wl_tmp)
