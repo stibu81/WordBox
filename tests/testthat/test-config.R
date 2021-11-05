@@ -24,7 +24,7 @@ test_that("test reading an invalid config file", {
   cfg_raw <- fromJSON(config_file)
 
   # tempfile to write config to
-  cfg_out_file <- tempfile("config", fileext = ".json")
+  cfg_out_file <- withr::local_file(tempfile("config", fileext = ".json"))
 
   # wrong number of boxes
   cfg_out <- cfg_raw

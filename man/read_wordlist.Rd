@@ -38,7 +38,7 @@ following columns:
 }
 
 The full names of the two languages are returned as attribute of
-the word list and can be obtained using
+the wordlist and can be obtained using
 \code{\link{get_languages}}.
 }
 \description{

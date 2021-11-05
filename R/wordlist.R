@@ -30,7 +30,7 @@
 #' }
 #'
 #' The full names of the two languages are returned as attribute of
-#' the word list and can be obtained using
+#' the wordlist and can be obtained using
 #' \code{\link{get_languages}}.
 #'
 #' @aliases wordlist
@@ -52,13 +52,29 @@ read_wordlist <- function(file, config_file = NULL) {
   # all columns are read as character and converted later
   n_base_col <- 5
   n_add_col <- 6
-  raw <- readr::read_csv(
+  raw <- suppressMessages(
+    readr::read_csv(
       file, na = "NA",
       col_types = readr::cols(.default = "c"),
+      trim_ws = TRUE,
       # don't read lazily because this locks the file on Windows systems
       # and leads to problems when writing afterwards
-      lazy = FALSE) %>%
+      lazy = FALSE)
+    ) %>%
     dplyr::as_tibble()
+
+  # sometimes, when editing a csv file, empty columns are added accidentaly
+  # on the right side. Identify and remove such empty columns.
+  bad_cols <- stringr::str_which(names(raw), "^\\.\\.\\.\\d+")
+  if (length(bad_cols) > 0) {
+    # if any of the probelmatic column is not empty, abort
+    is_col_empty <- vapply(raw[bad_cols], function(x) all(x == ""), logical(1))
+    if (any(!is_col_empty)) {
+      stop(file, " is not a valid wordlist file. ",
+         "It contains columns without header that are not empty.")
+    }
+    raw <- raw[-bad_cols]
+  }
 
   # check the number of columns and the column names
   n_col_in <- ncol(raw)
