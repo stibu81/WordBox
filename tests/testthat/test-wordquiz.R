@@ -127,3 +127,23 @@ test_that("check quiz preparation with exam words", {
   expect_equal(nrow(quiz17), 6L)
 })
 
+
+test_that("check correct_answer() with trailing characters", {
+  question <- list(answers = c("bonjour"), type = "single")
+  expect_true(correct_answer("bonjour", question))
+  expect_true(correct_answer("  bonjour  ", question))
+  expect_false(correct_answer("bonjour $", question))
+  expect_true(correct_answer("bonjour $", question, rm_trailing_chars = "$"))
+  expect_true(correct_answer("bonjour £ ", question, rm_trailing_chars = "$£"))
+  expect_false(correct_answer("bonjour £$ ", question, rm_trailing_chars = "$£"))
+})
+
+
+test_that("check correct_answer() with untypeable characters", {
+  question <- list(answers = c("Ça fait"), type = "single")
+  expect_true(correct_answer("Ça fait", question))
+  expect_true(correct_answer("ça fait", question))
+  expect_true(correct_answer(" ça fait  ", question))
+  question <- list(answers = c("Ça ça Ça"), type = "single")
+  expect_true(correct_answer("ça ça ça", question))
+})

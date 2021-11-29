@@ -304,8 +304,10 @@ get_quiz_type <- function(quiz) {
 correct_answer <- function(answer, question,
                            rm_trailing_chars = "") {
 
-  answer %<>% trim_char(rm_trailing_chars = rm_trailing_chars)
-  answers <- question$answers
+  answer %<>% trim_char(rm_trailing_chars = rm_trailing_chars) %>%
+    standardise_untypeable_characters()
+  answers <- question$answers %>%
+    standardise_untypeable_characters()
 
   # how the answer is evaluated depends on the type of the question
   if (question$type == "single") {
@@ -367,6 +369,15 @@ trim_char <- function(x, rm_trailing_chars = "") {
   }
 
   x
+}
+
+
+# some characters cannot be written capitalised on some
+# keyboards. => standardise these characters to not count missing
+# capitalisation as error.
+# as of now,
+standardise_untypeable_characters <- function(x) {
+  stringr::str_replace_all(x, "\u00c7", "\u00e7")
 }
 
 
