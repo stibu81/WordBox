@@ -1,7 +1,7 @@
 #' WordBox: a Simple Vocabulary Trainer
 #'
 #' @importFrom magrittr %>% %<>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @keywords internal
 
 "_PACKAGE"
