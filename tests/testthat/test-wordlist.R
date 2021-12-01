@@ -12,7 +12,7 @@ test_that("check that test file exists", {
 wl <- read_wordlist(wl_file)
 
 test_that("read a wordlist file", {
-  expect_is(wl, "wordlist")
+  expect_s3_class(wl, "wordlist")
   expect_identical(ncol(wl), 11L)
   expect_identical(nrow(wl), 10L)
   expect_true(!any(is.na(wl)))

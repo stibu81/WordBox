@@ -28,7 +28,7 @@ set_logfile <- function(quiz, logfile) {
   # to mark it as a valid WordBox log.
   wordbox_log_first_msg <- "##### WordBox Log File #####"
 
-  # if the file is NULL, now logfile is used
+  # if the file is NULL, no logfile is used
   if (is.null(logfile)) {
     use_logfile <- NULL
 
@@ -53,7 +53,11 @@ set_logfile <- function(quiz, logfile) {
           file = logfile,
           sep = "")
       logfile
-    }, error = function(e) {
+    },
+    # placing warning before error catches any warnings produced by cat(), but
+    # not the one produced by the error handler below.
+    warning = function() {},
+    error = function(e) {
       warning("The file ", logfile, " cannot be created with error message '",
               e$message, "'\nLogging is off.")
       NULL

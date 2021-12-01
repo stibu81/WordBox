@@ -11,7 +11,7 @@ config_file <- get_default_config_file()
 test_that("test reading of default config file", {
   expect_true(file.exists(config_file))
   cfg <- read_config(config_file)
-  expect_is(cfg, "list")
+  expect_type(cfg, "list")
   expect_identical(cfg, cfg_ref)
 })
 

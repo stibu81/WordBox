@@ -17,13 +17,17 @@ test_that("create quiz with and without log", {
 test_that("create log files with error", {
   withr::local_file(log_file)
   bad_log <- file.path(tempdir(), "dir_does_not_exist", "wordbox_test.log")
-  quiz <- prepare_quiz(wl, 2, log_file = bad_log) %>%
-            expect_warning("cannot be created.*Logging is off")
+  expect_warning(
+    quiz <- prepare_quiz(wl, 2, log_file = bad_log),
+    "cannot be created.*Logging is off"
+  )
   expect_null(get_logfile(quiz))
   expect_false(file.exists(log_file))
   writeLines("this is no wordbox log", log_file)
-  quiz <- prepare_quiz(wl, 2, log_file = log_file) %>%
-            expect_warning("exists, but it is not a WordBox log.*Logging is off")
+  expect_warning(
+    quiz <- prepare_quiz(wl, 2, log_file = log_file),
+    "exists, but it is not a WordBox log.*Logging is off"
+  )
   expect_null(get_logfile(quiz))
 })
 

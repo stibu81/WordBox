@@ -24,7 +24,7 @@ walk <- c("to walk", "walk", "walk", "walks", "walk", "walk", "walk")
 
 test_that("draw and answer a question", {
   question <- draw_question(quiz, wl)
-  expect_is(question, "wordquestion")
+  expect_s3_class(question, "wordquestion")
   expect_equal(question, ref_question)
   expect_true(correct_answer("Dattel", question))
   expect_true(correct_answer("Datum", question))
