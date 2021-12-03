@@ -1,0 +1,264 @@
+##### WordBox Log File #####
+2021-12-03 09:58:20 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 09:58:20 : # words in the wordlist: 10
+2021-12-03 09:58:20 : direction: Deutsch > Englisch
+2021-12-03 09:58:20 : quiz type: standard
+2021-12-03 09:58:20 : # words: 10
+2021-12-03 09:58:20 : groups:
+2021-12-03 09:58:20 : core / exam only: FALSE / FALSE
+2021-12-03 09:58:20 : mode: written
+2021-12-03 09:58:20 : quizzing word: Mond ( Unit2 )
+2021-12-03 09:58:41 : correct answer for word: Mond ( Unit2 )
+2021-12-03 09:58:41 : total / correct / wrong / remaining: 1 / 1 / 0 / 9
+2021-12-03 09:58:45 : quizzing word: Schwester ( Unit1 )
+2021-12-03 09:58:49 : correct answer for word: Schwester ( Unit1 )
+2021-12-03 09:58:49 : total / correct / wrong / remaining: 2 / 2 / 0 / 8
+2021-12-03 09:58:52 : quizzing word: gehen ( Unit3 )
+2021-12-03 09:59:06 : correct answer for word: gehen ( Unit3 )
+2021-12-03 09:59:06 : total / correct / wrong / remaining: 3 / 3 / 0 / 7
+2021-12-03 09:59:10 : quizzing word: gehen ( Unit3 )
+2021-12-03 09:59:17 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 09:59:17 : total / correct / wrong / remaining: 4 / 3 / 1 / 7
+2021-12-03 09:59:19 : quizzing word: würzen ( Unit2 )
+2021-12-03 09:59:22 : correct answer for word: würzen ( Unit2 )
+2021-12-03 09:59:22 : total / correct / wrong / remaining: 5 / 4 / 1 / 6
+2021-12-03 09:59:24 : quizzing word: Datum ( Unit2 )
+2021-12-03 09:59:27 : correct answer for word: Datum ( Unit2 )
+2021-12-03 09:59:27 : total / correct / wrong / remaining: 6 / 5 / 1 / 5
+2021-12-03 09:59:28 : quizzing word: Jahreszeit ( Unit1 )
+2021-12-03 09:59:29 : wrong answer for word: Jahreszeit ( Unit1 )
+2021-12-03 09:59:29 : total / correct / wrong / remaining: 7 / 5 / 2 / 5
+2021-12-03 09:59:30 : quizzing word: Dattel ( Unit1 )
+2021-12-03 09:59:31 : wrong answer for word: Dattel ( Unit1 )
+2021-12-03 09:59:31 : total / correct / wrong / remaining: 8 / 5 / 3 / 5
+2021-12-03 09:59:32 : quizzing word: Bruder ( Unit1 )
+2021-12-03 09:59:34 : correct answer for word: Bruder ( Unit1 )
+2021-12-03 09:59:34 : total / correct / wrong / remaining: 9 / 6 / 3 / 4
+2021-12-03 09:59:36 : quizzing word: Verabredung ( Unit2 )
+2021-12-03 10:00:47 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:00:47 : # words in the wordlist: 10
+2021-12-03 10:00:47 : direction: Deutsch > Englisch
+2021-12-03 10:00:47 : quiz type: newwords
+2021-12-03 10:00:47 : # words: 10
+2021-12-03 10:00:47 : groups:
+2021-12-03 10:00:47 : core / exam only: FALSE / FALSE
+2021-12-03 10:00:47 : mode: written
+2021-12-03 10:00:47 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:01:02 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:01:02 : total / correct / wrong / remaining: 1 / 0 / 1 / 10
+2021-12-03 10:01:09 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:01:28 : correct answer for word: gehen ( Unit3 )
+2021-12-03 10:01:28 : total / correct / wrong / remaining: 2 / 1 / 1 / 9
+2021-12-03 10:01:32 : quizzing word: Mond ( Unit2 )
+2021-12-03 10:01:36 : correct answer for word: Mond ( Unit2 )
+2021-12-03 10:01:36 : total / correct / wrong / remaining: 3 / 2 / 1 / 8
+2021-12-03 10:01:40 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:01:42 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:01:42 : total / correct / wrong / remaining: 4 / 2 / 2 / 8
+2021-12-03 10:01:43 : quizzing word: Jahreszeit ( Unit1 )
+2021-12-03 10:01:47 : correct answer for word: Jahreszeit ( Unit1 )
+2021-12-03 10:01:47 : total / correct / wrong / remaining: 5 / 3 / 2 / 8
+2021-12-03 10:01:48 : quizzing word: Dattel ( Unit1 )
+2021-12-03 10:01:50 : correct answer for word: Dattel ( Unit1 )
+2021-12-03 10:01:50 : total / correct / wrong / remaining: 6 / 4 / 2 / 8
+2021-12-03 10:01:51 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:01:53 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:01:53 : total / correct / wrong / remaining: 7 / 4 / 3 / 8
+2021-12-03 10:01:54 : quizzing word: Jahreszeit ( Unit1 )
+2021-12-03 10:01:58 : correct answer for word: Jahreszeit ( Unit1 )
+2021-12-03 10:01:58 : total / correct / wrong / remaining: 8 / 5 / 3 / 7
+2021-12-03 10:01:58 : quizzing word: Bruder ( Unit1 )
+2021-12-03 10:02:00 : wrong answer for word: Bruder ( Unit1 )
+2021-12-03 10:02:00 : total / correct / wrong / remaining: 9 / 5 / 4 / 7
+2021-12-03 10:02:01 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:02:03 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:02:04 : total / correct / wrong / remaining: 10 / 5 / 5 / 7
+2021-12-03 10:02:05 : quizzing word: Dattel ( Unit1 )
+2021-12-03 10:02:06 : correct answer for word: Dattel ( Unit1 )
+2021-12-03 10:02:06 : total / correct / wrong / remaining: 11 / 6 / 5 / 6
+2021-12-03 10:02:07 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:02:19 : allow retry
+2021-12-03 10:02:22 : correct answer for word: gehen ( Unit3 )
+2021-12-03 10:02:22 : total / correct / wrong / remaining: 12 / 7 / 5 / 6
+2021-12-03 10:02:23 : quizzing word: Bruder ( Unit1 )
+2021-12-03 10:02:27 : correct answer for word: Bruder ( Unit1 )
+2021-12-03 10:02:27 : total / correct / wrong / remaining: 13 / 8 / 5 / 6
+2021-12-03 10:02:29 : quizzing word: Schwester ( Unit1 )
+2021-12-03 10:02:31 : correct answer for word: Schwester ( Unit1 )
+2021-12-03 10:02:31 : total / correct / wrong / remaining: 14 / 9 / 5 / 5
+2021-12-03 10:02:32 : quizzing word: Verabredung ( Unit2 )
+2021-12-03 10:02:34 : correct answer for word: Verabredung ( Unit2 )
+2021-12-03 10:02:34 : total / correct / wrong / remaining: 15 / 10 / 5 / 5
+2021-12-03 10:02:36 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:02:41 : correct answer for word: gehen ( Unit3 )
+2021-12-03 10:02:41 : total / correct / wrong / remaining: 16 / 11 / 5 / 4
+2021-12-03 10:02:43 : quizzing word: Verabredung ( Unit2 )
+2021-12-03 10:02:44 : correct answer for word: Verabredung ( Unit2 )
+2021-12-03 10:02:44 : total / correct / wrong / remaining: 17 / 12 / 5 / 3
+2021-12-03 10:02:45 : quizzing word: Datum ( Unit2 )
+2021-12-03 10:02:47 : correct answer for word: Datum ( Unit2 )
+2021-12-03 10:02:47 : total / correct / wrong / remaining: 18 / 13 / 5 / 2
+2021-12-03 10:02:47 : quizzing word: Bruder ( Unit1 )
+2021-12-03 10:02:49 : correct answer for word: Bruder ( Unit1 )
+2021-12-03 10:02:49 : total / correct / wrong / remaining: 19 / 14 / 5 / 1
+2021-12-03 10:02:51 : quizzing word: würzen ( Unit2 )
+2021-12-03 10:02:55 : wrong answer for word: würzen ( Unit2 )
+2021-12-03 10:02:55 : total / correct / wrong / remaining: 20 / 14 / 6 / 1
+2021-12-03 10:02:56 : quizzing word: würzen ( Unit2 )
+2021-12-03 10:02:59 : correct answer for word: würzen ( Unit2 )
+2021-12-03 10:02:59 : total / correct / wrong / remaining: 21 / 15 / 6 / 1
+2021-12-03 10:03:00 : quizzing word: würzen ( Unit2 )
+2021-12-03 10:03:02 : correct answer for word: würzen ( Unit2 )
+2021-12-03 10:03:02 : total / correct / wrong / remaining: 22 / 16 / 6 / 0
+2021-12-03 10:03:32 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:03:32 : # words in the wordlist: 10
+2021-12-03 10:03:32 : direction: Deutsch > Englisch
+2021-12-03 10:03:32 : quiz type: standard
+2021-12-03 10:03:32 : # words: 0
+2021-12-03 10:03:32 : groups:
+2021-12-03 10:03:32 : core / exam only: FALSE / FALSE
+2021-12-03 10:03:32 : mode: written
+2021-12-03 10:04:04 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:04:04 : # words in the wordlist: 8
+2021-12-03 10:04:04 : direction: Englisch > Deutsch
+2021-12-03 10:04:04 : quiz type: standard
+2021-12-03 10:04:04 : # words: 8
+2021-12-03 10:04:04 : groups:
+2021-12-03 10:04:04 : core / exam only: FALSE / FALSE
+2021-12-03 10:04:04 : mode: written
+2021-12-03 10:04:04 : quizzing word: moon ( Unit2 )
+2021-12-03 10:04:07 : correct answer for word: moon ( Unit2 )
+2021-12-03 10:04:07 : total / correct / wrong / remaining: 1 / 1 / 0 / 7
+2021-12-03 10:04:09 : quizzing word: brother ( Unit1 )
+2021-12-03 10:04:13 : correct answer for word: brother ( Unit1 )
+2021-12-03 10:04:13 : total / correct / wrong / remaining: 2 / 2 / 0 / 6
+2021-12-03 10:04:13 : quizzing word: date ( Unit2 )
+2021-12-03 10:04:16 : correct answer for word: date ( Unit2 )
+2021-12-03 10:04:16 : total / correct / wrong / remaining: 3 / 3 / 0 / 5
+2021-12-03 10:04:17 : quizzing word: sister ( Unit1 )
+2021-12-03 10:04:20 : correct answer for word: sister ( Unit1 )
+2021-12-03 10:04:20 : total / correct / wrong / remaining: 4 / 4 / 0 / 4
+2021-12-03 10:04:21 : quizzing word: date ( Unit1 )
+2021-12-03 10:04:22 : wrong answer for word: date ( Unit1 )
+2021-12-03 10:04:22 : total / correct / wrong / remaining: 5 / 4 / 1 / 4
+2021-12-03 10:04:23 : quizzing word: season ( Unit2 )
+2021-12-03 10:04:29 : correct answer for word: season ( Unit2 )
+2021-12-03 10:04:29 : total / correct / wrong / remaining: 6 / 5 / 1 / 3
+2021-12-03 10:04:30 : quizzing word: date ( Unit2 )
+2021-12-03 10:04:33 : correct answer for word: date ( Unit2 )
+2021-12-03 10:04:33 : total / correct / wrong / remaining: 7 / 6 / 1 / 2
+2021-12-03 10:04:34 : quizzing word: date ( Unit1 )
+2021-12-03 10:04:39 : correct answer for word: date ( Unit1 )
+2021-12-03 10:04:39 : total / correct / wrong / remaining: 8 / 7 / 1 / 1
+2021-12-03 10:04:40 : quizzing word: season ( Unit1 )
+2021-12-03 10:04:42 : wrong answer for word: season ( Unit1 )
+2021-12-03 10:04:42 : total / correct / wrong / remaining: 9 / 7 / 2 / 1
+2021-12-03 10:04:43 : quizzing word: season ( Unit1 )
+2021-12-03 10:04:48 : correct answer for word: season ( Unit1 )
+2021-12-03 10:04:48 : total / correct / wrong / remaining: 10 / 8 / 2 / 0
+2021-12-03 10:05:11 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:05:11 : # words in the wordlist: 10
+2021-12-03 10:05:11 : direction: Deutsch > Englisch
+2021-12-03 10:05:11 : quiz type: standard
+2021-12-03 10:05:11 : # words: 5
+2021-12-03 10:05:11 : groups:
+2021-12-03 10:05:11 : core / exam only: FALSE / FALSE
+2021-12-03 10:05:11 : mode: oral
+2021-12-03 10:05:11 : quizzing word: Dattel ( Unit1 )
+2021-12-03 10:05:18 : wrong answer for word: Dattel ( Unit1 )
+2021-12-03 10:05:18 : total / correct / wrong / remaining: 1 / 0 / 1 / 4
+2021-12-03 10:05:18 : quizzing word: Mond ( Unit2 )
+2021-12-03 10:05:29 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:05:29 : # words in the wordlist: 10
+2021-12-03 10:05:29 : direction: Deutsch > Englisch
+2021-12-03 10:05:29 : quiz type: standard
+2021-12-03 10:05:29 : # words: 5
+2021-12-03 10:05:29 : groups:
+2021-12-03 10:05:29 : core / exam only: FALSE / FALSE
+2021-12-03 10:05:29 : mode: written
+2021-12-03 10:05:29 : quizzing word: Dattel ( Unit1 )
+2021-12-03 10:05:40 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:05:40 : # words in the wordlist: 10
+2021-12-03 10:05:40 : direction: Deutsch > Englisch
+2021-12-03 10:05:40 : quiz type: standard
+2021-12-03 10:05:40 : # words: 10
+2021-12-03 10:05:40 : groups:
+2021-12-03 10:05:40 : core / exam only: FALSE / FALSE
+2021-12-03 10:05:40 : mode: written
+2021-12-03 10:05:40 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:05:43 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:05:43 : total / correct / wrong / remaining: 1 / 0 / 1 / 10
+2021-12-03 10:05:44 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:05:46 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:05:46 : total / correct / wrong / remaining: 2 / 0 / 2 / 10
+2021-12-03 10:05:46 : quizzing word: würzen ( Unit2 )
+2021-12-03 10:05:49 : correct answer for word: würzen ( Unit2 )
+2021-12-03 10:05:49 : total / correct / wrong / remaining: 3 / 1 / 2 / 9
+2021-12-03 10:05:51 : quizzing word: Schwester ( Unit1 )
+2021-12-03 10:05:54 : correct answer for word: Schwester ( Unit1 )
+2021-12-03 10:05:54 : total / correct / wrong / remaining: 4 / 2 / 2 / 8
+2021-12-03 10:05:55 : quizzing word: Verabredung ( Unit2 )
+2021-12-03 10:05:59 : correct answer for word: Verabredung ( Unit2 )
+2021-12-03 10:05:59 : total / correct / wrong / remaining: 5 / 3 / 2 / 7
+2021-12-03 10:05:59 : quizzing word: Datum ( Unit2 )
+2021-12-03 10:06:03 : correct answer for word: Datum ( Unit2 )
+2021-12-03 10:06:03 : total / correct / wrong / remaining: 6 / 4 / 2 / 6
+2021-12-03 10:06:05 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:06:14 : allow retry
+2021-12-03 10:06:16 : correct answer for word: gehen ( Unit3 )
+2021-12-03 10:06:16 : total / correct / wrong / remaining: 7 / 5 / 2 / 5
+2021-12-03 10:06:17 : quizzing word: Dattel ( Unit1 )
+2021-12-03 10:06:20 : correct answer for word: Dattel ( Unit1 )
+2021-12-03 10:06:20 : total / correct / wrong / remaining: 8 / 6 / 2 / 4
+2021-12-03 10:06:21 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:06:23 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:06:23 : total / correct / wrong / remaining: 9 / 6 / 3 / 4
+2021-12-03 10:06:24 : quizzing word: Jahreszeit ( Unit1 )
+2021-12-03 10:06:26 : correct answer for word: Jahreszeit ( Unit1 )
+2021-12-03 10:06:26 : total / correct / wrong / remaining: 10 / 7 / 3 / 3
+2021-12-03 10:06:27 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:06:29 : wrong answer for word: gehen ( Unit3 )
+2021-12-03 10:06:29 : total / correct / wrong / remaining: 11 / 7 / 4 / 3
+2021-12-03 10:06:30 : quizzing word: Bruder ( Unit1 )
+2021-12-03 10:06:34 : correct answer for word: Bruder ( Unit1 )
+2021-12-03 10:06:34 : total / correct / wrong / remaining: 12 / 8 / 4 / 2
+2021-12-03 10:06:35 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:53:31 : starting a new quiz from file /home/slanz/Documents/private/Hobby/Programmieren/R/packages/WordBox/inst/testfiles/wordlist.csv
+2021-12-03 10:53:31 : # words in the wordlist: 10
+2021-12-03 10:53:31 : direction: Deutsch > Englisch
+2021-12-03 10:53:31 : quiz type: training
+2021-12-03 10:53:31 : # words: 10
+2021-12-03 10:53:31 : groups:
+2021-12-03 10:53:31 : core / exam only: FALSE / FALSE
+2021-12-03 10:53:31 : mode: oral
+2021-12-03 10:53:31 : quizzing word: Schwester ( Unit1 )
+2021-12-03 10:53:34 : correct answer for word: Schwester ( Unit1 )
+2021-12-03 10:53:34 : total / correct / wrong / remaining: 1 / 1 / 0 / 9
+2021-12-03 10:53:34 : quizzing word: gehen ( Unit3 )
+2021-12-03 10:53:37 : correct answer for word: gehen ( Unit3 )
+2021-12-03 10:53:37 : total / correct / wrong / remaining: 2 / 2 / 0 / 8
+2021-12-03 10:53:37 : quizzing word: Verabredung ( Unit2 )
+2021-12-03 10:53:39 : wrong answer for word: Verabredung ( Unit2 )
+2021-12-03 10:53:39 : total / correct / wrong / remaining: 3 / 2 / 1 / 8
+2021-12-03 10:53:39 : quizzing word: würzen ( Unit2 )
+2021-12-03 10:53:40 : wrong answer for word: würzen ( Unit2 )
+2021-12-03 10:53:40 : total / correct / wrong / remaining: 4 / 2 / 2 / 8
+2021-12-03 10:53:40 : quizzing word: Dattel ( Unit1 )
+2021-12-03 10:53:41 : correct answer for word: Dattel ( Unit1 )
+2021-12-03 10:53:41 : total / correct / wrong / remaining: 5 / 3 / 2 / 7
+2021-12-03 10:53:41 : quizzing word: Verabredung ( Unit2 )
+2021-12-03 10:53:42 : correct answer for word: Verabredung ( Unit2 )
+2021-12-03 10:53:42 : total / correct / wrong / remaining: 6 / 4 / 2 / 6
+2021-12-03 10:53:42 : quizzing word: Bruder ( Unit1 )
+2021-12-03 10:53:43 : wrong answer for word: Bruder ( Unit1 )
+2021-12-03 10:53:43 : total / correct / wrong / remaining: 7 / 4 / 3 / 6
+2021-12-03 10:53:43 : quizzing word: Datum ( Unit2 )
+2021-12-03 10:53:44 : correct answer for word: Datum ( Unit2 )
+2021-12-03 10:53:44 : total / correct / wrong / remaining: 8 / 5 / 3 / 5
+2021-12-03 10:53:44 : quizzing word: Mond ( Unit2 )
+2021-12-03 10:53:45 : wrong answer for word: Mond ( Unit2 )
+2021-12-03 10:53:45 : total / correct / wrong / remaining: 9 / 5 / 4 / 5
+2021-12-03 10:53:45 : quizzing word: würzen ( Unit2 )
+2021-12-03 10:53:46 : correct answer for word: würzen ( Unit2 )
+2021-12-03 10:53:46 : total / correct / wrong / remaining: 10 / 6 / 4 / 4
+2021-12-03 10:53:46 : quizzing word: Mond ( Unit2 )
