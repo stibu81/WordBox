@@ -219,6 +219,11 @@ server <- function(input, output, session) {
       state$icon <- "ok"
       state$n_correct <- state$n_correct + 1
       state$i_exercise <- state$i_exercise + 1
+      WordBox:::write_log(state$quiz, "total / correct / wrong / remaining:",
+                          state$n_correct + state$n_wrong, "/",
+                          state$n_correct, "/",
+                          state$n_wrong, "/",
+                          nrow(state$quiz))
       shinyjs::disable("correct")
       shinyjs::disable("wrong")
     }
@@ -233,6 +238,11 @@ server <- function(input, output, session) {
                             success = FALSE)
       state$n_wrong <- state$n_wrong + 1
       state$i_exercise <- state$i_exercise + 1
+      WordBox:::write_log(state$quiz, "total / correct / wrong / remaining:",
+                          state$n_correct + state$n_wrong, "/",
+                          state$n_correct, "/",
+                          state$n_wrong, "/",
+                          nrow(state$quiz))
       # set the icon since this triggers redrawing the UI
       state$icon <- "nok"
       shinyjs::disable("correct")
