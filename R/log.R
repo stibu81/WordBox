@@ -1,4 +1,4 @@
-# Functions for loggin during a quiz
+# Functions for logging during a quiz
 
 write_log <- function(quiz, ...) {
 
