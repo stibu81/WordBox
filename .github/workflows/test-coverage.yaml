@@ -29,5 +29,5 @@ jobs:
       - name: Test coverage
         run: |
           Sys.setenv(NOT_CRAN = "true")
-          covr::codecov(line_exclusions = "R/shiny.R", function_exclusions = "^plot_"))
+          covr::codecov(line_exclusions = "R/shiny.R", function_exclusions = "^plot_")
         shell: Rscript {0}
