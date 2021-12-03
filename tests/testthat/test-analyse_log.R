@@ -1,10 +1,12 @@
 library(dplyr, warn.conflicts = FALSE)
+library(readr, warn.conflicts = FALSE)
 
 n_log_rows <- 8
 ref_log <- tibble(
   file = "wordlist.csv",
   direction = rep("Deutsch > Englisch", n_log_rows) %>%
-                replace(4, "Englisch > Deutsch"),
+                replace(4, "Englisch > Deutsch") %>%
+                replace(1, "Deutsch > Französisch"),
   type = c("standard", "newwords", "standard", "standard", "standard",
            "standard", "standard", "training"),
   mode = rep("written", n_log_rows) %>%
@@ -25,6 +27,32 @@ ref_log <- tibble(
 test_that("test analyse_log()", {
   log_file <- system.file("testfiles/wordbox.log", package = "WordBox")
   expect_true(file.exists(log_file))
-  log <- analyse_log(log_file)
-  expect_equal(log, ref_log)
+  expect_equal(analyse_log(log_file), ref_log)
+})
+
+
+test_that("test analyse_log() with different encoding", {
+  win_file <- withr::local_file("win_encoding")
+  log_file <- system.file("testfiles/wordbox.log", package = "WordBox")
+  log_raw <- read_lines(log_file)
+  log_win <- iconv(log_raw, "UTF-8", "Windows-1252")
+  # cannot use write_lines() which will still write UTF-8
+  writeLines(log_win, win_file)
+  expect_equal(analyse_log(win_file), ref_log)
+})
+
+
+test_that("test analyse_log() with an encoding that cannot be guessed", {
+  bad_file <- withr::local_file("bad_encoding")
+  writeBin("\xe324b\xad54c", bad_file)
+  expect_error(analyse_log(bad_file),
+               "The encoding of the file bad_encoding could not be determined.")
+})
+
+
+test_that("test analyse_log() with an invalid file", {
+  bad_file <- withr::local_file("not_a_log")
+  write_lines("this is not a WordBox log", bad_file)
+  expect_error(analyse_log(bad_file),
+               "not_a_log is not a valid WordBox log file.")
 })

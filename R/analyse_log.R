@@ -15,7 +15,7 @@ analyse_log <- function(file) {
   # guess the encoding, if not successful, use UTF-8
   guess_enc <- readr::guess_encoding(file)
   enc <- if (nrow(guess_enc) == 0) {
-    "UTF-8"
+    stop("The encoding of the file ", file, " could not be determined.")
   } else {
     guess_enc$encoding[1]
   }
