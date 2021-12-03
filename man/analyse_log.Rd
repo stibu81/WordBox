@@ -2,12 +2,31 @@
 % Please edit documentation in R/analyse_log.R
 \name{analyse_log}
 \alias{analyse_log}
+\alias{plot_quiz_per_date}
 \title{Analyse the Log}
 \usage{
 analyse_log(file)
+
+plot_quiz_per_date(
+  log,
+  y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
+  colour = c("file", "direction", "type", "mode"),
+  interactive = rlang::is_installed("plotly")
+)
 }
 \arguments{
 \item{file}{path to the log file}
+
+\item{log}{a tibble of quiz data created by `analyse_log()`}
+
+\item{y}{the variable to be used for the y-axis}
+
+\item{colour}{the variable used for colour}
+
+\item{interactive}{create an interactive plot? This requires `plotly` and
+is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
+the user, the function will ask to install `plotly` if no existing
+installation is found.}
 }
 \value{
 a tibble with one row per quiz

@@ -16,6 +16,7 @@ Imports:
     readr,
     dplyr,
     tidyr,
+    rlang,
     magrittr,
     shiny,
     shinyjs,
@@ -23,7 +24,9 @@ Imports:
     shinyWidgets,
     jsonlite,
     stringr
-Suggests: 
+Suggests:
+    ggplot2,
+    plotly,
     covr,
     testthat (>= 3.0.0),
     withr

@@ -94,6 +94,54 @@ analyse_one_quiz <- function(ql) {
 }
 
 
+#' @param log a tibble of quiz data created by `analyse_log()`
+#' @param y the variable to be used for the y-axis
+#' @param colour the variable used for colour
+#' @param interactive create an interactive plot? This requires `plotly` and
+#'  is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
+#'  the user, the function will ask to install `plotly` if no existing
+#'  installation is found.
+#'
+#' @rdname analyse_log
+#' @export
+
+plot_quiz_per_date <- function(log,
+                               y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
+                               colour = c("file", "direction", "type", "mode"),
+                               interactive = rlang::is_installed("plotly")) {
+
+  rlang::check_installed("ggplot2")
+
+  y <- match.arg(y) %>%
+    rlang::sym()
+  colour <- match.arg(colour) %>%
+    rlang::sym()
+
+  p <- log %>%
+    # if no words were quizzed, the duration is 0. Remove these lines
+    dplyr::filter(.data$duration > 0) %>%
+    dplyr::mutate(date = as.Date(.data$start)) %>%
+    dplyr::group_by(.data$date, !!colour) %>%
+    dplyr::summarise(duration = sum(.data$duration),
+                     n_quizzed = sum(.data$n_quizzed),
+                     n_correct = sum(.data$n_correct),
+                     n_wrong = sum(.data$n_wrong)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = .data$date,
+                                 y = !!y,
+                                 fill = !!colour)) +
+    ggplot2::geom_col() +
+    ggplot2::scale_fill_brewer(palette = "Set1")
+
+  if (interactive) {
+    rlang::check_installed("plotly")
+    p <- plotly::ggplotly(p)
+  }
+
+  p
+
+}
+
+
 extract_dttm <- function(x) {
   x %>%
     stringr::str_extract("\\d{4}-\\d{2}-\\d{2} +\\d{2}:\\d{2}:\\d{2}") %>%
