@@ -78,6 +78,19 @@ analyse_one_quiz <- function(ql) {
     unlist() %>%
     as.numeric()
 
+  words_per_group <- ql %>%
+    # the word with unit is listed twice: once when it is quizzed ("quizzing word")
+    # and once after it was answered ("correct/wrong answer for word").
+    # => keep only the lines for answered words to avoid counting twice.
+    stringr::str_subset("answer for word:") %>%
+    stringr::str_trim() %>%
+    # the word may contain brackets and the pattern has to make sure that only
+    # the last word in brackets on each line is kept.
+    stringr::str_extract("(?<=\\()[^())]*(?=\\)$)") %>%
+    stringr::str_trim() %>%
+    table() %>%
+    as.list()
+
   dplyr::tibble(
     file = q_file,
     direction = direction,
@@ -89,7 +102,8 @@ analyse_one_quiz <- function(ql) {
     n_quizzed = tcwr[1],
     n_correct = tcwr[2],
     n_wrong = tcwr[3],
-    n_remaining = tcwr[4]
+    n_remaining = tcwr[4],
+    words_per_group = list(words_per_group)
   )
 }
 
@@ -105,10 +119,11 @@ analyse_one_quiz <- function(ql) {
 #' @rdname analyse_log
 #' @export
 
-plot_quiz_per_date <- function(log,
-                               y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
-                               colour = c("file", "direction", "type", "mode"),
-                               interactive = rlang::is_installed("plotly")) {
+plot_quiz_per_date <- function(
+  log,
+  y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
+  colour = c("file", "direction", "type", "mode", "group"),
+  interactive = rlang::is_installed("plotly")) {
 
   rlang::check_installed("ggplot2")
 
@@ -117,15 +132,32 @@ plot_quiz_per_date <- function(log,
   colour <- match.arg(colour) %>%
     rlang::sym()
 
-  p <- log %>%
-    # if no words were quizzed, the duration is 0. Remove these lines
-    dplyr::filter(.data$duration > 0) %>%
-    dplyr::mutate(date = as.Date(.data$start)) %>%
-    dplyr::group_by(.data$date, !!colour) %>%
-    dplyr::summarise(duration = sum(.data$duration),
-                     n_quizzed = sum(.data$n_quizzed),
-                     n_correct = sum(.data$n_correct),
-                     n_wrong = sum(.data$n_wrong)) %>%
+  # data preparation for colour = "group" is different than for the other variables.
+  plot_data <- if (colour == "group") {
+    # only n_quizzed can be used on the y axis
+    y <- rlang::sym("n_quizzed")
+    dplyr::bind_cols(
+        dplyr::filter(log, lengths(log$words_per_group) > 0) %>%
+          dplyr::transmute(date = as.Date(.data$start)),
+        dplyr::bind_rows(log$words_per_group)
+      ) %>%
+      tidyr::pivot_longer(-.data$date,
+                          names_to = "group",
+                          values_to = "n_quizzed",
+                          values_drop_na = TRUE)
+  } else {
+    log %>%
+      # if no words were quizzed, the duration is 0. Remove these lines
+      dplyr::filter(.data$duration > 0) %>%
+      dplyr::mutate(date = as.Date(.data$start)) %>%
+      dplyr::group_by(.data$date, !!colour) %>%
+      dplyr::summarise(duration = sum(.data$duration),
+                       n_quizzed = sum(.data$n_quizzed),
+                       n_correct = sum(.data$n_correct),
+                       n_wrong = sum(.data$n_wrong))
+  }
+
+  p <-  plot_data %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$date,
                                  y = !!y,
                                  fill = !!colour)) +

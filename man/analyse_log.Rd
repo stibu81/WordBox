@@ -10,7 +10,7 @@ analyse_log(file)
 plot_quiz_per_date(
   log,
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
-  colour = c("file", "direction", "type", "mode"),
+  colour = c("file", "direction", "type", "mode", "group"),
   interactive = rlang::is_installed("plotly")
 )
 }

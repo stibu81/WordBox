@@ -21,7 +21,15 @@ ref_log <- tibble(
   n_correct = c(6, 16, NA, 8, 0, NA, 8, 6),
   n_wrong = .data$n_quizzed - .data$n_correct,
   # computing n_remaining as n_words - n_correct does not work for type "newword"
-  n_remaining = c(4, 0, NA, 0, 4, NA, 2, 4)
+  n_remaining = c(4, 0, NA, 0, 4, NA, 2, 4),
+  words_per_group = list(list(Unit1 = 4L, Unit2 = 3L, Unit3 = 2L),
+                         list(Unit1 = 8L, Unit2 = 7L, Unit3 = 7L),
+                         list(),
+                         list(Unit1 = 6L, Unit2 = 4L), list(Unit1 = 1L),
+                         list(),
+                         list(Unit1 = 4L, Unit2 = 3L, Unit3 = 5L),
+                         list(Unit1 = 3L, Unit2 = 6L, Unit3 = 1L)
+                         )
 )
 
 test_that("test analyse_log()", {
