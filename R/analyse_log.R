@@ -223,11 +223,15 @@ get_plot_lab <- function(x) {
     "direction" = "Direction",
     "type" = "Type",
     "mode" = "Mode",
-    "group" = "Group"
+    "group" = "Group",
+    "box" = "Box",
+    "n_words" = "# Words"
   )
 
   # x may be a symbol => convert to character
-  x <- as.character(x)
+  x <- as.character(x) %>%
+    # box and date may come with an 1 or 2 at the end => remove it
+    stringr::str_remove("\\d$")
   if (!x %in% names(lab_translations)) {
     warning("no translation for variable ", x)
     NA_character_

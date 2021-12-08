@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyse_wordlist.R
 \name{plot_wordlist_counts}
 \alias{plot_wordlist_counts}
-\title{Plot a wordlist}
+\title{Plot a Wordlist}
 \usage{
 plot_wordlist_counts(
   wl,
@@ -28,6 +28,9 @@ is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
 the user, the function will ask to install `plotly` if no existing
 installation is found.}
 }
+\value{
+A `ggplot2` or `plotly` plot.
+}
 \description{
-Plot a wordlist
+Plot a Wordlist
 }

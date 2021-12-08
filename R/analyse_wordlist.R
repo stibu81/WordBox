@@ -1,4 +1,4 @@
-#' Plot a wordlist
+#' Plot a Wordlist
 #'
 #' @param wl a \code{wordlist} object
 #' @param direction which direction to analyse. This can be given as an integer
@@ -6,6 +6,9 @@
 #'  indicating the query language as it is stored in the \code{wordlist}.
 #' @param x the variable to be used for the x-axis
 #' @inheritParams plot_quiz_per_date
+#'
+#' @return
+#' A `ggplot2` or `plotly` plot.
 #'
 #' @export
 
@@ -32,7 +35,12 @@ plot_wordlist_counts <- function(wl,
     }
   }
 
-  wl %<>%
+  x <- match.arg(x) %>%
+    prepare_wl_plot_var(direction)
+  colour <- match.arg(colour) %>%
+    prepare_wl_plot_var(direction)
+
+  plot_data <- wl %>%
     # convert the box columns to character to make them discrete for the plot
     dplyr::mutate(dplyr::across(dplyr::starts_with("box"), as.character)) %>%
     # set date 1900-01-01 to NA since this is the initial date
@@ -40,26 +48,41 @@ plot_wordlist_counts <- function(wl,
                                 ~dplyr::if_else(.x == as.Date("1900-01-01"),
                                                 as.Date(NA_character_),
                                                 .x))
-                  )
-
-  x <- match.arg(x) %>%
-    prepare_wl_plot_var(direction)
-  colour <- match.arg(colour) %>%
-    prepare_wl_plot_var(direction)
+                  ) %>%
+    dplyr::count(!!x, !!colour, name = "n_words") %>%
+    dplyr::mutate(
+      tooltip = paste0(
+        get_plot_lab(x), ": ", !!x, "\n",
+        if (colour != x) paste0(get_plot_lab(colour), ": ", !!colour, "\n"),
+        get_plot_lab("n_words"), ": ", .data$n_words
+      )
+    )
 
   # only use a legend, if colour and x are NOT the same
   use_legend <- if (x != colour) "legend" else "none"
 
-  p <- wl %>%
-    # remove all rows with missing values in one of the values that will be
-    # inside an aesthetic mapping to avoid ggplot2 warnings
-    dplyr::filter(!is.na(!!x), !is.na(!!colour)) %>%
-    ggplot2::ggplot(ggplot2::aes(x = !!x,
-                                 fill = !!colour)) +
-    ggplot2::geom_bar(position = "stack") +
-    ggplot2::scale_fill_brewer(palette = "Set1", guide = use_legend) +
-    ggplot2::labs(x = stringr::str_remove(x, "\\d"),
-                  fill = stringr::str_remove(colour, "\\d"))
+  title <- paste("Wordlist:", get_filename(wl) %>% basename(), ",",
+                 get_languages(wl)[direction], ">", get_languages(wl)[-direction])
+
+  # don't show warning because of "inofficial" text aesthetic
+  suppressWarnings(
+    p <- plot_data %>%
+      # remove all rows with missing values in one of the values that will be
+      # inside an aesthetic mapping to avoid ggplot2 warnings
+      dplyr::filter(!is.na(!!x), !is.na(!!colour)) %>%
+      ggplot2::ggplot(ggplot2::aes(x = !!x,
+                                   y = .data$n_words,
+                                   fill = !!colour,
+                                   text = .data$tooltip)) +
+      ggplot2::geom_col(position = "stack") +
+      ggplot2::scale_fill_brewer(palette = "Set1", guide = use_legend) +
+      ggplot2::labs(
+        title = title,
+        x = get_plot_lab(x),
+        fill = get_plot_lab(colour),
+        y = get_plot_lab("n_words")
+      )
+  )
 
   # if groups are on the x-axis, rotate the labels because they can be long
   # and there may be many.
@@ -71,7 +94,7 @@ plot_wordlist_counts <- function(wl,
 
   if (interactive) {
     rlang::check_installed("plotly")
-    p <- plotly::ggplotly(p)
+    p <- plotly::ggplotly(p, tooltip = "text")
     # ggplotly() has a colour legend, even if the plot has none
     # => remove manually if needed
     if (use_legend == "none")
