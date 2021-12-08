@@ -1,12 +1,13 @@
-#' Analyse the Log
+#' Analyse the Log and Plot Quiz History
 #'
 #' Read in and analyse the log file that is written by the WordBox shiny
-#' app.
+#' app. Create a plot of quiz history with various options.
 #'
 #' @param file path to the log file
 #'
 #' @return
-#' a tibble with one row per quiz
+#' a tibble with one row per quiz for `analyse_log()`. A `ggplot2` or `plotly`
+#' plot for `plot_quiz_per_date()`.
 #'
 #' @export
 
@@ -144,7 +145,14 @@ plot_quiz_per_date <- function(
       tidyr::pivot_longer(-.data$date,
                           names_to = "group",
                           values_to = "n_quizzed",
-                          values_drop_na = TRUE)
+                          values_drop_na = TRUE) %>%
+      dplyr::mutate(
+        tooltip = paste0(
+          "Group: ", .data$group, "\n",
+          "Date: ", as.character(.data$date), "\n",
+          "# Quizzed: ", .data$n_quizzed
+        )
+      )
   } else {
     log %>%
       # if no words were quizzed, the duration is 0. Remove these lines
@@ -154,19 +162,39 @@ plot_quiz_per_date <- function(
       dplyr::summarise(duration = sum(.data$duration),
                        n_quizzed = sum(.data$n_quizzed),
                        n_correct = sum(.data$n_correct),
-                       n_wrong = sum(.data$n_wrong))
+                       n_wrong = sum(.data$n_wrong)) %>%
+      dplyr::mutate(
+        tooltip = paste0(
+          as.character(colour), ": ", !!colour, "\n",
+          "Date: ", as.character(.data$date), "\n",
+          "Duration: ", round(.data$duration, 1), " min.\n",
+          "# Quizzed: ", .data$n_quizzed, "\n",
+          "# Correct: ", .data$n_correct, "\n",
+          "# Wrong: ", .data$n_wrong
+        )
+      )
   }
 
-  p <-  plot_data %>%
-    ggplot2::ggplot(ggplot2::aes(x = .data$date,
-                                 y = !!y,
-                                 fill = !!colour)) +
-    ggplot2::geom_col() +
-    ggplot2::scale_fill_brewer(palette = "Set1")
+  # don't show warning because of "unofficial" text aesthetic
+  suppressWarnings(
+    p <-  plot_data %>%
+      ggplot2::ggplot(ggplot2::aes(x = .data$date,
+                                   y = !!y,
+                                   fill = !!colour,
+                                   text = .data$tooltip)) +
+      ggplot2::geom_col() +
+      ggplot2::scale_fill_brewer(palette = "Set1") +
+      ggplot2::labs(
+        title = "Quiz History",
+        x = get_plot_lab("date"),
+        y = get_plot_lab(y),
+        fill = get_plot_lab(colour)
+      )
+  )
 
   if (interactive) {
     rlang::check_installed("plotly")
-    p <- plotly::ggplotly(p)
+    p <- plotly::ggplotly(p, tooltip = "text")
   }
 
   p
@@ -182,3 +210,28 @@ extract_dttm <- function(x) {
 }
 
 
+# get labels for plot variables
+get_plot_lab <- function(x) {
+
+  lab_translations <- c(
+    "duration" = "Duration",
+    "n_quizzed" = "# Quizzed",
+    "n_correct" = "# Correct",
+    "n_wrong" = "# Wrong",
+    "date" = "Date",
+    "file" = "File",
+    "direction" = "Direction",
+    "type" = "Type",
+    "mode" = "Mode",
+    "group" = "Group"
+  )
+
+  # x may be a symbol => convert to character
+  x <- as.character(x)
+  if (!x %in% names(lab_translations)) {
+    warning("no translation for variable ", x)
+    NA_character_
+  } else {
+    lab_translations[x]
+  }
+}

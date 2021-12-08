@@ -3,7 +3,7 @@
 \name{analyse_log}
 \alias{analyse_log}
 \alias{plot_quiz_per_date}
-\title{Analyse the Log}
+\title{Analyse the Log and Plot Quiz History}
 \usage{
 analyse_log(file)
 
@@ -29,9 +29,10 @@ the user, the function will ask to install `plotly` if no existing
 installation is found.}
 }
 \value{
-a tibble with one row per quiz
+a tibble with one row per quiz for `analyse_log()`. A `ggplot2` or `plotly`
+plot for `plot_quiz_per_date()`.
 }
 \description{
 Read in and analyse the log file that is written by the WordBox shiny
-app.
+app. Create a plot of quiz history with various options.
 }
