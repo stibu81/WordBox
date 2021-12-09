@@ -229,13 +229,13 @@ get_plot_lab <- function(x) {
   )
 
   # x may be a symbol => convert to character
-  x <- as.character(x) %>%
+  xp <- as.character(x) %>%
     # box and date may come with an 1 or 2 at the end => remove it
     stringr::str_remove("\\d$")
-  if (!x %in% names(lab_translations)) {
+  if (!xp %in% names(lab_translations)) {
     warning("no translation for variable ", x)
     NA_character_
   } else {
-    lab_translations[x]
+    unname(lab_translations[xp])
   }
 }
