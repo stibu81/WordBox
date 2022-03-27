@@ -284,6 +284,7 @@ cfg_n_new <- function(wl) {
 
 
 # Make a wordlist compatible with the configuration
+# Fix a number of problems
 
 fix_wordlist <- function(wl, config) {
 
@@ -319,6 +320,9 @@ fix_wordlist <- function(wl, config) {
     dplyr::across(dplyr::starts_with("language"),
                   ~stringr::str_replace_all(., repl))
     )
+
+  # remove lines where word fields are empty
+  wl %<>% dplyr::filter(.data$language1 != "" & .data$language2 != "")
 
   return(wl)
 

@@ -112,3 +112,14 @@ test_that("read wordlist with additional empty column", {
   expect_error(read_wordlist(wl_tmp),
                "It contains columns without header that are not empty.")
 })
+
+
+test_that("read wordlist with additional empty rows", {
+  wl_tmp <- withr::local_file("wl_tmp.csv")
+
+  wl_bad <- readr::read_lines(wl_file, lazy = FALSE) %>%
+    c(",,,,", "a,,,,", ",a,,,", ",,a,,", ",,,x,", ",,,,x")
+  readr::write_lines(wl_bad, wl_tmp)
+  attr(wl, "file") <- wl_tmp
+  expect_identical(read_wordlist(wl_tmp), wl)
+})
