@@ -147,10 +147,17 @@ prepare_quiz <- function(wl, direction,
   }
   quiz %<>% dplyr::select(-"core", -"exam")
 
+  # reduce the number of words in the quiz to the requested number
+  # add a small number to the weights to ensure that they are all positive
+  # this is required for quiztype "newwords" where all the weights are zero.
+  if (n_words < nrow(quiz)) {
+    quiz <- dplyr::sample_n(quiz, n_words, weight = quiz$weight + 1e-6)
+  }
+
   # set the weights if quiz_type is newwords: n_new words
   # must get weight 1 such that they are quizzed first
   # this can't be done before, because filtering for groups
-  # must happen first
+  # and number of words must happen first
   if (quiz_type == "newwords") {
     n_new <- cfg_n_new(wl)
     n_quiz <- nrow(quiz)
@@ -162,11 +169,6 @@ prepare_quiz <- function(wl, direction,
       i <- sample(1:n_quiz, n_new)
     }
     quiz$weight[i] <- 1
-  }
-
-  # reduce the number of words in the quiz to the requested number
-  if (n_words < nrow(quiz)) {
-    quiz <- dplyr::sample_n(quiz, n_words, weight = quiz$weight)
   }
 
   # set the log file and write the messages about the new quiz
