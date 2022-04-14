@@ -69,10 +69,13 @@ test_that("test analyse_log() with an invalid file", {
 test_that("test get_plot_lab()", {
   expect_equal(get_plot_lab("date"), "Date")
   expect_equal(get_plot_lab("date1"), "Date")
+  expect_equal(get_plot_lab("date", "en"), "Date")
+  expect_equal(get_plot_lab("date", "de"), "Datum")
   expect_equal(get_plot_lab("box2"), "Box")
   expect_equal(get_plot_lab("n_correct"), "# Correct")
   expect_equal(get_plot_lab("abc"), NA_character_) %>%
     expect_warning("no translation for variable abc")
   expect_equal(get_plot_lab("abc1"), NA_character_) %>%
     expect_warning("no translation for variable abc1")
+  expect_error(get_plot_lab("date", "fr"), "should be one of")
 })

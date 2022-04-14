@@ -16,6 +16,7 @@ plot_wordlist_counts <- function(wl,
                                  direction = 1,
                                  x = c("date", "box", "group"),
                                  colour = c("box", "group"),
+                                 language = c("en", "de"),
                                  interactive = rlang::is_installed("plotly")) {
 
   rlang::check_installed("ggplot2")
@@ -39,6 +40,7 @@ plot_wordlist_counts <- function(wl,
     prepare_wl_plot_var(direction)
   colour <- match.arg(colour) %>%
     prepare_wl_plot_var(direction)
+  language <- match.arg(language)
 
   plot_data <- wl %>%
     # convert the box columns to character to make them discrete for the plot
@@ -52,9 +54,10 @@ plot_wordlist_counts <- function(wl,
     dplyr::count(!!x, !!colour, name = "n_words") %>%
     dplyr::mutate(
       tooltip = paste0(
-        get_plot_lab(x), ": ", !!x, "\n",
-        if (colour != x) paste0(get_plot_lab(colour), ": ", !!colour, "\n"),
-        get_plot_lab("n_words"), ": ", .data$n_words
+        get_plot_lab(x, language), ": ", !!x, "\n",
+        if (colour != x)
+          paste0(get_plot_lab(colour, language), ": ", !!colour, "\n"),
+        get_plot_lab("n_words", language), ": ", .data$n_words
       )
     )
 
@@ -78,9 +81,9 @@ plot_wordlist_counts <- function(wl,
       ggplot2::scale_fill_brewer(palette = "Set1", guide = use_legend) +
       ggplot2::labs(
         title = title,
-        x = get_plot_lab(x),
-        fill = get_plot_lab(colour),
-        y = get_plot_lab("n_words")
+        x = get_plot_lab(x, language),
+        fill = get_plot_lab(colour, language),
+        y = get_plot_lab("n_words", language)
       )
   )
 

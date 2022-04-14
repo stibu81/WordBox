@@ -112,6 +112,7 @@ analyse_one_quiz <- function(ql) {
 #' @param log a tibble of quiz data created by `analyse_log()`
 #' @param y the variable to be used for the y-axis
 #' @param colour the variable used for colour
+#' @param language language for the plot labels
 #' @param interactive create an interactive plot? This requires `plotly` and
 #'  is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
 #'  the user, the function will ask to install `plotly` if no existing
@@ -124,6 +125,7 @@ plot_quiz_per_date <- function(
   log,
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
   colour = c("file", "direction", "type", "mode", "group"),
+  language = c("en", "de"),
   interactive = rlang::is_installed("plotly")) {
 
   rlang::check_installed("ggplot2")
@@ -132,6 +134,7 @@ plot_quiz_per_date <- function(
     rlang::sym()
   colour <- match.arg(colour) %>%
     rlang::sym()
+  language <- match.arg(language)
 
   # data preparation for colour = "group" is different than for the other variables.
   plot_data <- if (colour == "group") {
@@ -186,9 +189,9 @@ plot_quiz_per_date <- function(
       ggplot2::scale_fill_brewer(palette = "Set1") +
       ggplot2::labs(
         title = "Quiz History",
-        x = get_plot_lab("date"),
-        y = get_plot_lab(y),
-        fill = get_plot_lab(colour)
+        x = get_plot_lab("date", language),
+        y = get_plot_lab(y, language),
+        fill = get_plot_lab(colour, language)
       )
   )
 
@@ -211,22 +214,41 @@ extract_dttm <- function(x) {
 
 
 # get labels for plot variables
-get_plot_lab <- function(x) {
+get_plot_lab <- function(x, language = c("en", "de")) {
 
-  lab_translations <- c(
-    "duration" = "Duration",
-    "n_quizzed" = "# Quizzed",
-    "n_correct" = "# Correct",
-    "n_wrong" = "# Wrong",
-    "date" = "Date",
-    "file" = "File",
-    "direction" = "Direction",
-    "type" = "Type",
-    "mode" = "Mode",
-    "group" = "Group",
-    "box" = "Box",
-    "n_words" = "# Words"
-  )
+  language <- match.arg(language)
+
+  lab_translations <- if (language == "en")  {
+    c(
+      "duration" = "Duration",
+      "n_quizzed" = "# Quizzed",
+      "n_correct" = "# Correct",
+      "n_wrong" = "# Wrong",
+      "date" = "Date",
+      "file" = "File",
+      "direction" = "Direction",
+      "type" = "Type",
+      "mode" = "Mode",
+      "group" = "Group",
+      "box" = "Box",
+      "n_words" = "# Words"
+    )
+  } else {
+    c(
+      "duration" = "Dauer",
+      "n_quizzed" = "# W\u00f6rter",
+      "n_correct" = "# richtige Antworten",
+      "n_wrong" = "# falsche Antworten",
+      "date" = "Datum",
+      "file" = "Datei",
+      "direction" = "Richtung",
+      "type" = "Quizart",
+      "mode" = "Modus",
+      "group" = "Gruppe",
+      "box" = "Box",
+      "n_words" = "# W\u00f6rter"
+    )
+  }
 
   # x may be a symbol => convert to character
   xp <- as.character(x) %>%

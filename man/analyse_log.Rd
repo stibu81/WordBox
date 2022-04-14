@@ -11,6 +11,7 @@ plot_quiz_per_date(
   log,
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
   colour = c("file", "direction", "type", "mode", "group"),
+  language = c("en", "de"),
   interactive = rlang::is_installed("plotly")
 )
 }
@@ -22,6 +23,8 @@ plot_quiz_per_date(
 \item{y}{the variable to be used for the y-axis}
 
 \item{colour}{the variable used for colour}
+
+\item{language}{language for the plot labels}
 
 \item{interactive}{create an interactive plot? This requires `plotly` and
 is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
