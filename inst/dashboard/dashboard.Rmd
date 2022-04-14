@@ -1,0 +1,146 @@
+---
+title: "WordBox Log-Analyse"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(plotly)
+library(WordBox)
+
+# read the log
+log_file <- getOption("wordbox_log_file")
+log_data <- if (!is.null(log_file)) analyse_log(log_file)
+
+# get the list of wordlist files
+wordbox_dir <- getOption("wordbox_dir")
+wordlist_files <- if (!is.null(wordbox_dir)) {
+  list.files(wordbox_dir, pattern = "\\.csv$", full.names = TRUE) %>%
+    normalizePath()
+}
+
+# wl must be reactive, because reading a wordlist must trigger plotting
+wl <- reactiveVal()
+```
+
+```{r}
+# choosing a plot_type effects the inputs
+observeEvent(input$plot_type, {
+  if (input$plot_type == "log_file") {
+    updateSelectizeInput(
+      session = session,
+      "direction",
+      choices = c()
+    )
+    updateSelectizeInput(
+      session = session,
+      "data",
+      "y-Achse:",
+      choices = c("Dauer" = "duration",
+                  "Anzahl Wörter" = "n_quizzed",
+                  "Anzahl richtige Antworten" = "n_correct",
+                  "Anzahl falsche Antworten" = "n_wrong")
+      )
+    updateSelectizeInput(
+      session = session,
+      "colour",
+       choices = c("Datei" = "file",
+                   "Richtung" = "direction",
+                   "Quiztyp" = "type",
+                   "Quizmodus" = "mode",
+                     "Gruppe" = "group")
+      )
+  } else {
+    wl(read_wordlist(input$plot_type))
+    langs <- get_languages(wl())
+    directions <- setNames(1:2, paste0(langs, " > ", rev(langs)))
+    updateSelectizeInput(
+      session = session,
+      "direction",
+      choices = directions
+    )
+    updateSelectizeInput(
+      session = session,
+      "data",
+      "x-Achse:",
+      choices = c("Datum" = "date",
+                  "Box" = "box",
+                  "Gruppe" = "group")
+      )
+    updateSelectizeInput(
+      session = session,
+      "colour",
+       choices = c("Box" = "box",
+                   "Gruppe" = "group")
+      )
+  }
+})
+```
+
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+plot_types <- if (!is.null(log_file)) c("Wordbox-Log" = "log_file")
+if (length(wordlist_files) > 0) {
+  wordlist_names <- wordlist_files %>%
+    basename() %>%
+    stringr::str_remove("\\.csv$")
+  plot_types <- c(plot_types, setNames(wordlist_files, wordlist_names))
+}
+
+selectizeInput("plot_type",
+               "Ansicht:",
+               choices = plot_types)
+# the other inputs are preset for the log analysis plot
+selectizeInput("direction", 
+               "Richtung:",
+               choices = c())
+selectizeInput("data",
+               "y-Achse:",
+               choices = c("Dauer" = "duration",
+                           "Anzahl Wörter" = "n_quizzed",
+                           "Anzahl richtige Antworten" = "n_correct",
+                           "Anzahl falsche Antworten" = "n_wrong"))
+selectizeInput("colour",
+               "Farbe:",
+               choices = c("Datei" = "file",
+                           "Richtung" = "direction",
+                           "Quiztyp" = "type",
+                           "Quizmodus" = "mode",
+                           "Gruppe" = "group"))
+```
+
+
+Column
+-----------------------------------------------------------------------
+
+###
+
+```{r}
+renderPlotly({
+  if (input$plot_type == "log_file" && input$data != "date") {
+    plot_quiz_per_date(log_data,
+                       y = input$data,
+                       colour = input$colour,
+                       language = "de",
+                       interactive = TRUE)
+  } else if (!is.null(wl()) && input$direction != "" && input$data != "duration") {
+    message(input$direction)
+    plot_wordlist_counts(wl(),
+                         direction = as.numeric(input$direction),
+                         x = input$data,
+                         colour = input$colour,
+                         language = "de",
+                         interactive = TRUE)
+  }
+})
+```

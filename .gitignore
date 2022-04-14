@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# ignore the build dashboard
+inst/dashboard/*.html
