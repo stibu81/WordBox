@@ -282,7 +282,7 @@ server <- function(input, output, session) {
     }
   })
 
-  # reset focus after observers are finished executing
+  # reset focus after observers are finished executing #####
   session$onFlushed(function() {
       if (!is.null(refocus_to)) {
         message("refocus to ", refocus_to)
@@ -292,7 +292,26 @@ server <- function(input, output, session) {
     },
     once = FALSE)
 
-  # stop app when session ends
+  # open dashboard #####
+  # the dashboard cannot be run from within the running shiny app
+  # => use system() and Rscript to run it in a new session
+  # use this helper function to make sure the code also works if an option is NULL
+  null_or_string <- function(opt) {
+    val <- getOption(opt)
+    if (is.null(val)) "NULL" else paste0("'", val, "'")
+  }
+  observeEvent(input$dashboard, {
+    message("using pandoc ", rmarkdown::pandoc_exec())
+    system(
+      paste0("Rscript -e \"WordBox::run_wordbox_dashboard(",
+             "log_file = ", null_or_string("wordbox_log_file"), ", ",
+             "wordbox_dir = ", null_or_string("wordbox_dir"), ", ",
+             "launch.browser = TRUE)\""),
+      wait = FALSE
+    )
+  })
+
+  # stop app when session ends #####
   session$onSessionEnded(function() {
     stopApp()
   })

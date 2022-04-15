@@ -38,7 +38,7 @@ ui <- fluidPage(
       actionButton("load",
                    "Laden",
                    width = "100px",
-                   class="btn btn-primary"),
+                   class = "btn btn-primary"),
       br(), br(),
       shinyWidgets::awesomeRadio("direction",
                                  "Richtung ausw\u00e4hlen",
@@ -71,11 +71,19 @@ ui <- fluidPage(
                   max = 95,
                   step = 5,
                   value = getOption("wordbox_n_words_default")),
-      shinyjs::disabled(
-        actionButton("run",
-                     "Start",
-                     width = "100px",
-                     class="btn btn-primary")
+      fluidRow(
+        column(8,
+               shinyjs::disabled(
+                 actionButton("run",
+                              "Start",
+                              width = "100px",
+                              class = "btn btn-primary")
+               )),
+        column(4,
+               actionLink("dashboard",
+                          "Dashboard",
+                          class = "btn text-info")
+        )
       )
     ),
 
