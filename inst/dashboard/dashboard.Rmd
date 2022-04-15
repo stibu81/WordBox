@@ -35,11 +35,6 @@ observeEvent(input$plot_type, {
   if (input$plot_type == "log_file") {
     updateSelectizeInput(
       session = session,
-      "direction",
-      choices = c()
-    )
-    updateSelectizeInput(
-      session = session,
       "data",
       "y-Achse:",
       choices = c("Dauer" = "duration",
@@ -57,14 +52,6 @@ observeEvent(input$plot_type, {
                      "Gruppe" = "group")
       )
   } else {
-    wl(read_wordlist(input$plot_type))
-    langs <- get_languages(wl())
-    directions <- setNames(1:2, paste0(langs, " > ", rev(langs)))
-    updateSelectizeInput(
-      session = session,
-      "direction",
-      choices = directions
-    )
     updateSelectizeInput(
       session = session,
       "data",
@@ -100,10 +87,20 @@ if (length(wordlist_files) > 0) {
 selectizeInput("plot_type",
                "Ansicht:",
                choices = plot_types)
+# only show the selection box for direction if a wordlist is selected
+renderUI({
+  if (input$plot_type != "log_file") {
+      wl(read_wordlist(input$plot_type))
+      langs <- get_languages(wl())
+      directions <- setNames(1:2, paste0(langs, " > ", rev(langs)))
+      selectizeInput(
+        "direction",
+        "Richtung:",
+        choices = directions
+      )
+  }
+})
 # the other inputs are preset for the log analysis plot
-selectizeInput("direction", 
-               "Richtung:",
-               choices = c())
 selectizeInput("data",
                "y-Achse:",
                choices = c("Dauer" = "duration",
