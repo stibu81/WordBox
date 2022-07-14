@@ -16,6 +16,7 @@ plot_wordlist_counts <- function(wl,
                                  direction = 1,
                                  x = c("date", "box", "group"),
                                  colour = c("box", "group"),
+                                 date_range = NULL,
                                  language = c("en", "de"),
                                  interactive = rlang::is_installed("plotly")) {
 
@@ -60,6 +61,12 @@ plot_wordlist_counts <- function(wl,
         get_plot_lab("n_words", language), ": ", .data$n_words
       )
     )
+
+  if (as.character(x) %in% c("date1", "date2") && !is.null(date_range)) {
+    if (is.character(date_range)) date_range <- as.Date(date_range)
+    plot_data <- plot_data %>%
+      dplyr::filter(dplyr::between(!!x, date_range[1], date_range[2]))
+  }
 
   # only use a legend, if colour and x are NOT the same
   use_legend <- if (x != colour) "legend" else "none"
@@ -113,6 +120,8 @@ plot_wordlist_counts <- function(wl,
 #' @param y the variable to be used for the y-axis
 #' @param colour the variable used for colour
 #' @param language language for the plot labels
+#' @param date_range date vector of length to giving the data range to be
+#'  plotted. If omitted, all the data is plotted.
 #' @param interactive create an interactive plot? This requires `plotly` and
 #'  is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
 #'  the user, the function will ask to install `plotly` if no existing
@@ -125,6 +134,7 @@ plot_quiz_per_date <- function(
   log,
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
   colour = c("file", "direction", "type", "mode", "group"),
+  date_range = NULL,
   language = c("en", "de"),
   interactive = rlang::is_installed("plotly")) {
 
@@ -178,9 +188,15 @@ plot_quiz_per_date <- function(
       )
   }
 
+  if (!is.null(date_range)) {
+    if (is.character(date_range)) date_range <- as.Date(date_range)
+    plot_data <- plot_data %>%
+      dplyr::filter(dplyr::between(.data$date, date_range[1], date_range[2]))
+  }
+
   # don't show warning because of "unofficial" text aesthetic
   suppressWarnings(
-    p <-  plot_data %>%
+    p <- plot_data %>%
       ggplot2::ggplot(ggplot2::aes(x = .data$date,
                                    y = !!y,
                                    fill = !!colour,

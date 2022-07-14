@@ -114,6 +114,15 @@ selectizeInput("colour",
                            "Quiztyp" = "type",
                            "Quizmodus" = "mode",
                            "Gruppe" = "group"))
+
+dateRangeInput("date_range",
+               "Datum:",
+               start = Sys.Date() - 180,
+               end = Sys.Date(),
+               language = "de",
+               format = "dd.mm.yyyy",
+               separator = "-",
+               weekstart = 1)
 ```
 
 
@@ -129,6 +138,7 @@ renderPlotly({
                        y = input$data,
                        colour = input$colour,
                        language = "de",
+                       date_range = input$date_range,
                        interactive = TRUE)
   } else if (!is.null(wl()) && input$direction != "" && input$data != "duration") {
     message(input$direction)
@@ -136,6 +146,7 @@ renderPlotly({
                          direction = as.numeric(input$direction),
                          x = input$data,
                          colour = input$colour,
+                         date_range = input$date_range,
                          language = "de",
                          interactive = TRUE)
   }

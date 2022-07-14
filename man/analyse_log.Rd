@@ -11,6 +11,7 @@ plot_quiz_per_date(
   log,
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
   colour = c("file", "direction", "type", "mode", "group"),
+  date_range = NULL,
   language = c("en", "de"),
   interactive = rlang::is_installed("plotly")
 )
@@ -23,6 +24,9 @@ plot_quiz_per_date(
 \item{y}{the variable to be used for the y-axis}
 
 \item{colour}{the variable used for colour}
+
+\item{date_range}{date vector of length to giving the data range to be
+plotted. If omitted, all the data is plotted.}
 
 \item{language}{language for the plot labels}
 

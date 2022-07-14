@@ -9,6 +9,7 @@ plot_wordlist_counts(
   direction = 1,
   x = c("date", "box", "group"),
   colour = c("box", "group"),
+  date_range = NULL,
   language = c("en", "de"),
   interactive = rlang::is_installed("plotly")
 )
@@ -23,6 +24,9 @@ indicating the query language as it is stored in the \code{wordlist}.}
 \item{x}{the variable to be used for the x-axis}
 
 \item{colour}{the variable used for colour}
+
+\item{date_range}{date vector of length to giving the data range to be
+plotted. If omitted, all the data is plotted.}
 
 \item{language}{language for the plot labels}
 
