@@ -155,7 +155,7 @@ plot_quiz_per_date <- function(
           dplyr::transmute(date = as.Date(.data$start)),
         dplyr::bind_rows(log$words_per_group)
       ) %>%
-      tidyr::pivot_longer(-.data$date,
+      tidyr::pivot_longer(-"date",
                           names_to = "group",
                           values_to = "n_quizzed",
                           values_drop_na = TRUE) %>%

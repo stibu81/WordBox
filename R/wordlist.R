@@ -125,7 +125,7 @@ read_wordlist <- function(file, config_file = NULL) {
     dplyr::mutate(
       group = dplyr::if_else(.data$group == "", NA_character_, .data$group)
     ) %>%
-    tidyr::fill(.data$group, .direction = "down")
+    tidyr::fill("group", .direction = "down")
 
   if (is.null(config_file)) {
     config_file <- get_default_config_file()
