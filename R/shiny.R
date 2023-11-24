@@ -29,8 +29,6 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL,
                         n_words_default = 30,
                         rm_trailing_chars = "") {
 
-    rlang::check_installed("shinythemes")
-
     if (is.null(dir) || !dir.exists(dir)) {
         stop("an existing directory must be provided.")
     }

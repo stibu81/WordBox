@@ -1,10 +1,6 @@
 ui <- fluidPage(
 
-  theme = shinythemes::shinytheme("darkly"),
-
-  # shinythemes does not inlcude CSS for outlined buttons
-  # Copied from https://bootswatch.com/4/darkly/bootstrap.min.css
-  includeCSS("btn-outline.css"),
+  theme = bslib::bs_theme(version = 5, preset = "darkly", font_scale = 0.82),
 
   # icon colours taken from the bootstrap theme
   # .btn-danger:hover, background-color
@@ -32,7 +28,7 @@ ui <- fluidPage(
     # Sidebar with inputs ######
     sidebarPanel(
       selectInput("wordlist_file",
-                  "W\u00f6rterliste laden",
+                  tags$b("W\u00f6rterliste laden"),
                   "kein Verzeichnis ausgew\u00e4hlt",
                   width = "300px"),
       actionButton("load",
@@ -41,15 +37,15 @@ ui <- fluidPage(
                    class = "btn btn-primary"),
       br(), br(),
       shinyWidgets::awesomeRadio("direction",
-                                 "Richtung ausw\u00e4hlen",
+                                 tags$b("Richtung ausw\u00e4hlen"),
                                  c(">" = "direction1",
                                    "<" = "direction2")),
       shinyWidgets::awesomeRadio("mode",
-                                 "Modus ausw\u00e4hlen",
+                                 tags$b("Modus ausw\u00e4hlen"),
                                  c("schriftlich" = "written",
                                    "m\u00fcndlich" = "oral")),
       shinyWidgets::awesomeRadio("quiztype",
-                                 "Quizart ausw\u00e4hlen:",
+                                 tags$b("Quizart ausw\u00e4hlen:"),
                                  choices = c("Normal" = "standard",
                                              "Training" = "training",
                                              "Neue W\u00f6rter" = "newwords")),
@@ -61,12 +57,12 @@ ui <- fluidPage(
                                     "Pr\u00fcfungsvorbereitung",
                                     value = FALSE),
       selectInput("groups",
-                  "Gruppen ausw\u00e4hlen",
+                  tags$b("Gruppen ausw\u00e4hlen"),
                   choices = NULL,
                   multiple = TRUE,
                   width = "300px"),
       sliderInput("n_words",
-                  "Anzahl W\u00f6rter",
+                  tags$b("Anzahl W\u00f6rter"),
                   min = 5,
                   max = 95,
                   step = 5,
