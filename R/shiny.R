@@ -29,6 +29,10 @@ run_wordbox <- function(dir = NULL, launch.browser = NULL,
                         n_words_default = 30,
                         rm_trailing_chars = "") {
 
+    # note: is listed under Suggests to avoid an R CMD check note
+    # => ensure installation here
+    rlang::check_installed("bslib")
+
     if (is.null(dir) || !dir.exists(dir)) {
         stop("an existing directory must be provided.")
     }
