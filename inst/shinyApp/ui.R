@@ -4,13 +4,13 @@ ui <- fluidPage(
 
   # icon colours taken from the bootstrap theme
   # .btn-danger:hover, background-color
-  tags$style(".fa-times-circle {color:#e12e1c}"),
+  tags$style(".fa-circle-xmark {color:#e12e1c}"),
   # .btn-success:hover, background-color
-  tags$style(".fa-check-circle {color:#009670}"),
+  tags$style(".fa-circle-check {color:#009670}"),
   # .btn-info:hover, background-color
-  tags$style(".fa-question-circle {color:#2384c6}"),
+  tags$style(".fa-circle-question {color:#2384c6}"),
   # .btn-warning:hover, background-color
-  tags$style(".fa-exclamation-triangle {color:#d4860b}"),
+  tags$style(".fa-triangle-exclamation {color:#d4860b}"),
 
   # function to set focus on an element
   shinyjs::extendShinyjs(
