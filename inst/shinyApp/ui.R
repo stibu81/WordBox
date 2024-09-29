@@ -110,10 +110,12 @@ ui <- fluidPage(
                br(), br())
       ),
       fluidRow(
-        strong("Aufgabe"),
-        textOutput("question"),
-        br(),
-        uiOutput("exerciseUI")
+        column(8,
+          strong("Aufgabe"),
+          textOutput("question"),
+          br(), br(),
+          uiOutput("exerciseUI")
+        )
       )
     )
   )
