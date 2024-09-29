@@ -67,7 +67,7 @@ server <- function(input, output, session) {
               "\n# of words: ", state$n_words,
               "\ncore only: ", input$core_only,
               "\nexam only: ", input$exam_only,
-              "\nGroups :", state$groups, "\n")
+              "\nGroups: ", paste(state$groups, collapse = ", "), "\n")
     }
   )
 
