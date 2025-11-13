@@ -315,7 +315,8 @@ fix_wordlist <- function(wl, config) {
             "\u00bb" = "\"",
             "\u203a" = "'",
             "\u201e" = "\"",
-            "\u201c" = "\"")
+            "\u201c" = "\"",
+            "\u2019" = "'")
   wl %<>% dplyr::mutate(
     dplyr::across(dplyr::starts_with("language"),
                   ~stringr::str_replace_all(., repl))
