@@ -56,12 +56,18 @@ plot_wordlist_counts <- function(wl,
                                                 .x))
                   )
   
-  # if requested, move new words to their own box
+  # if requested, move new words to their own box.
+  # convert to factor to ensure that all boxes are plotted in the right order
+  col_box <- paste0("box", direction)
   if (new_words_as_box) {
     is_new_word <- is_new_word(plot_data, wl, direction)
-    col_box <- paste0("box", direction)
     plot_data[is_new_word, col_box] <- "Neu"
-    plot_data[col_box] <- factor(plot_data[[col_box]]) %>% stats::relevel("Neu")
+    # make sure, "New" is the first level
+    plot_data[col_box] <- plot_data[[col_box]] %>% 
+      factor(levels = c("Neu", 1:cfg_boxes(wl)))
+  } else {
+    plot_data[col_box] <- plot_data[[col_box]] %>% 
+      factor(levels = 1:cfg_boxes(wl))
   }
   
   plot_data <- plot_data %>%
@@ -87,6 +93,21 @@ plot_wordlist_counts <- function(wl,
   title <- paste("Wordlist:", get_filename(wl) %>% basename(), ",",
                  get_languages(wl)[direction], ">", get_languages(wl)[-direction])
 
+  # to make sure that all boxes are shown in the colour legend, we add a row
+  # for each missing box. Note that ggplot2 offers better ways to achieve this,
+  # but these are not respected by ggplotly().
+  if (col_box %in% names(plot_data)) {
+    all_boxes <- levels(plot_data[[col_box]])
+    missing_boxes <- setdiff(all_boxes, plot_data[[col_box]])
+    if (length(missing_boxes) > 0) {
+      new_rows <- plot_data[rep(1, length(missing_boxes)), ]
+      new_rows[col_box] <- factor(missing_boxes, levels = all_boxes)
+      new_rows$n_words <- 0
+      new_rows$tooltip <- ""
+      plot_data <- dplyr::bind_rows(plot_data, new_rows)
+    }
+  }
+  
   # don't show warning because of "inofficial" text aesthetic
   suppressWarnings(
     p <- plot_data %>%
@@ -111,8 +132,9 @@ plot_wordlist_counts <- function(wl,
   # and there may be many.
   if (x == "group") {
     p <- p +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
-                                                         hjust = 1))
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+      )
   }
 
   if (interactive) {
@@ -126,7 +148,7 @@ plot_wordlist_counts <- function(wl,
 
   p
 
-}
+  }
 
 
 #' @param log a tibble of quiz data created by `analyse_log()`
