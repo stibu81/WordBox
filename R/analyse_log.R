@@ -78,6 +78,7 @@ analyse_one_quiz <- function(ql) {
     stringr::str_split("/") %>%
     unlist() %>%
     as.numeric()
+  if (length(tcwr) == 0) tcwr <- rep(0, 4)
 
   words_per_group <- ql %>%
     # the word with unit is listed twice: once when it is quizzed ("quizzing word")
