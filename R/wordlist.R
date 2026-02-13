@@ -328,3 +328,13 @@ fix_wordlist <- function(wl, config) {
   return(wl)
 
 }
+
+
+# Check whether words are new words in a worldlist or data frame
+
+is_new_word <- function(df, wl, direction = c("", "1", "2")) {
+  direction <- as.character(direction)
+  direction <- match.arg(direction)
+  df[[paste0("box", direction)]] == 1 &
+    df[[paste0("count", direction)]] < cfg_counts_new(wl)
+}

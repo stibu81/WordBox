@@ -10,7 +10,9 @@ run_wordbox_dashboard <- function(log_file = NULL,
                                   wordbox_dir = NULL,
                                   launch.browser = NULL) {
 
-  rlang::check_installed(c("ggplot2", "plotly", "rmarkdown", "flexdashboard"))
+  rlang::check_installed(
+    c("ggplot2", "plotly", "rmarkdown", "flexdashboard", "shinyWidgets")
+  )
 
   if (is.null(log_file) && is.null(wordbox_dir)) {
     stop("At least one of log_file and wordlist_dir must be provided.")

@@ -121,7 +121,7 @@ prepare_quiz <- function(wl, direction,
                           type = wl$word_type,
                           core = wl$core,
                           exam = wl$exam) %>%
-            dplyr::filter(.data$box == 1, .data$count < cfg_counts_new(wl)) %>%
+            dplyr::filter(is_new_word(., wl)) %>%
             dplyr::select(-"box", -"count")
   }
 

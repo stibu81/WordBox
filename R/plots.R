@@ -5,6 +5,8 @@
 #'  (1: query left column; 2: query right column) or as a character string
 #'  indicating the query language as it is stored in the \code{wordlist}.
 #' @param x the variable to be used for the x-axis
+#' @param new_words_as_box should words classified as new words be shown
+#'  as a separate box?
 #' @inheritParams plot_quiz_per_date
 #'
 #' @return
@@ -17,6 +19,7 @@ plot_wordlist_counts <- function(wl,
                                  x = c("date", "box", "group"),
                                  colour = c("box", "group"),
                                  date_range = NULL,
+                                 new_words_as_box = FALSE,
                                  language = c("en", "de"),
                                  interactive = rlang::is_installed("plotly")) {
 
@@ -51,7 +54,17 @@ plot_wordlist_counts <- function(wl,
                                 ~dplyr::if_else(.x == as.Date("1900-01-01"),
                                                 as.Date(NA_character_),
                                                 .x))
-                  ) %>%
+                  )
+  
+  # if requested, move new words to their own box
+  if (new_words_as_box) {
+    is_new_word <- is_new_word(plot_data, wl, direction)
+    col_box <- paste0("box", direction)
+    plot_data[is_new_word, col_box] <- "Neu"
+    plot_data[col_box] <- factor(plot_data[[col_box]]) %>% stats::relevel("Neu")
+  }
+  
+  plot_data <- plot_data %>%
     dplyr::count(!!x, !!colour, name = "n_words") %>%
     dplyr::mutate(
       tooltip = paste0(
@@ -140,7 +153,8 @@ plot_quiz_per_date <- function(
   date_range = NULL,
   date_aggregation = c("day", "week", "month", "year", "all"),
   language = c("en", "de"),
-  interactive = rlang::is_installed("plotly")) {
+  interactive = rlang::is_installed("plotly")
+) {
 
   rlang::check_installed("ggplot2")
 

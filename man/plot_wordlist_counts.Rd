@@ -10,6 +10,7 @@ plot_wordlist_counts(
   x = c("date", "box", "group"),
   colour = c("box", "group"),
   date_range = NULL,
+  new_words_as_box = FALSE,
   language = c("en", "de"),
   interactive = rlang::is_installed("plotly")
 )
@@ -27,6 +28,9 @@ indicating the query language as it is stored in the \code{wordlist}.}
 
 \item{date_range}{date vector of length to giving the data range to be
 plotted. If omitted, all the data is plotted.}
+
+\item{new_words_as_box}{should words classified as new words be shown
+as a separate box?}
 
 \item{language}{language for the plot labels}
 

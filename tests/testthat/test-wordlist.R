@@ -123,3 +123,24 @@ test_that("read wordlist with additional empty rows", {
   attr(wl, "file") <- wl_tmp
   expect_identical(read_wordlist(wl_tmp), wl)
 })
+
+
+test_that("is_new_word() works", {
+  wl <- tibble(
+    box1 = c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3),
+    count1 = c(0, 1, 2, 3, 0, 1, 2, 0, 1, 2),
+    box2 = c(2, 2, 2, 1, 1, 1, 1, 3, 3, 3),
+    count2 = c(0, 1, 2, 0, 1, 2, 3, 0, 1, 2)
+  )
+  attr(wl, "config") <- list(counts_new = 2)
+  expect_equal(is_new_word(wl, wl, "1"),
+               c(TRUE, TRUE, rep(FALSE, 8)))
+  expect_equal(is_new_word(wl, wl, "2"),
+               c(rep(FALSE, 3), TRUE, TRUE, rep(FALSE, 5)))
+  expect_equal(is_new_word(wl, wl, 1),
+               c(TRUE, TRUE, rep(FALSE, 8)))
+  wl <- wl %>% rename(box = box2, count = count2)
+  expect_equal(is_new_word(wl, wl),
+               c(rep(FALSE, 3), TRUE, TRUE, rep(FALSE, 5)))
+  expect_error(is_new_word(wl, wl, "3"))
+})

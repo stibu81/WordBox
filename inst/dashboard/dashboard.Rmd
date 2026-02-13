@@ -11,6 +11,7 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(shiny)
+library(shinyWidgets)
 library(plotly)
 library(WordBox)
 
@@ -49,7 +50,7 @@ observeEvent(input$plot_type, {
                    "Richtung" = "direction",
                    "Quiztyp" = "type",
                    "Quizmodus" = "mode",
-                     "Gruppe" = "group")
+                   "Gruppe" = "group")
       )
   } else {
     updateSelectizeInput(
@@ -115,6 +116,16 @@ selectizeInput("colour",
                            "Quizmodus" = "mode",
                            "Gruppe" = "group"))
 
+# defining new words as their own box makes only sense if a wordlist is selected
+renderUI({
+  if (input$plot_type != "log_file") {
+    materialSwitch("new_words_as_box",
+                   "Neue Wörter als Box",
+                   value = FALSE,
+                   status = "primary") 
+  }
+})
+
 dateRangeInput("date_range",
                "Datum:",
                start = Sys.Date() - 180,
@@ -160,6 +171,7 @@ renderPlotly({
                          direction = as.numeric(input$direction),
                          x = input$data,
                          colour = input$colour,
+                         new_words_as_box = input$new_words_as_box,
                          date_range = input$date_range,
                          language = "de",
                          interactive = TRUE)
