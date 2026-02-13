@@ -18,6 +18,7 @@ Imports:
     tidyr,
     rlang,
     magrittr,
+    lubridate,
     shiny,
     shinyjs,
     shinyWidgets,

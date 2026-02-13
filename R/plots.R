@@ -122,6 +122,9 @@ plot_wordlist_counts <- function(wl,
 #' @param language language for the plot labels
 #' @param date_range date vector of length to giving the data range to be
 #'  plotted. If omitted, all the data is plotted.
+#' @param date_aggregation character indicating the level at which the
+#'  data should be aggregated. One of "day" (default), "week", "month", "year"
+#'  and "all" (aggregate over the full time range).
 #' @param interactive create an interactive plot? This requires `plotly` and
 #'  is set to `TRUE` by default, if `plotly` is installed. If set to `TRUE` by
 #'  the user, the function will ask to install `plotly` if no existing
@@ -135,6 +138,7 @@ plot_quiz_per_date <- function(
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
   colour = c("file", "direction", "type", "mode", "group"),
   date_range = NULL,
+  date_aggregation = c("day", "week", "month", "year", "all"),
   language = c("en", "de"),
   interactive = rlang::is_installed("plotly")) {
 
@@ -144,15 +148,32 @@ plot_quiz_per_date <- function(
     rlang::sym()
   colour <- match.arg(colour) %>%
     rlang::sym()
+  date_aggregation <- match.arg(date_aggregation)
   language <- match.arg(language)
+  
+  # filter by data before all other preparation steps
+  if (!is.null(date_range)) {
+    if (is.character(date_range)) date_range <- as.Date(date_range)
+    log <- log %>%
+      dplyr::filter(dplyr::between(.data$start, date_range[1], date_range[2]))
+  }
+
+  # prepare the date aggregation by rounding the dates to the appropriate values
+  if (date_aggregation == "all") {
+    log <- log %>% dplyr::mutate(date = max(as.Date(.data$start)))
+  } else {
+    log <- log %>% 
+      dplyr::mutate(
+        date = lubridate::floor_date(as.Date(.data$start), date_aggregation)
+      )
+  }
 
   # data preparation for colour = "group" is different than for the other variables.
   plot_data <- if (colour == "group") {
     # only n_quizzed can be used on the y axis
     y <- rlang::sym("n_quizzed")
     dplyr::bind_cols(
-        dplyr::filter(log, lengths(log$words_per_group) > 0) %>%
-          dplyr::transmute(date = as.Date(.data$start)),
+        dplyr::filter(log, lengths(log$words_per_group) > 0),
         dplyr::bind_rows(log$words_per_group)
       ) %>%
       tidyr::pivot_longer(-"date",
@@ -170,7 +191,6 @@ plot_quiz_per_date <- function(
     log %>%
       # if no words were quizzed, the duration is 0. Remove these lines
       dplyr::filter(.data$duration > 0) %>%
-      dplyr::mutate(date = as.Date(.data$start)) %>%
       dplyr::group_by(.data$date, !!colour) %>%
       dplyr::summarise(duration = sum(.data$duration),
                        n_quizzed = sum(.data$n_quizzed),
@@ -186,12 +206,6 @@ plot_quiz_per_date <- function(
           "# Wrong: ", .data$n_wrong
         )
       )
-  }
-
-  if (!is.null(date_range)) {
-    if (is.character(date_range)) date_range <- as.Date(date_range)
-    plot_data <- plot_data %>%
-      dplyr::filter(dplyr::between(.data$date, date_range[1], date_range[2]))
   }
 
   # don't show warning because of "unofficial" text aesthetic

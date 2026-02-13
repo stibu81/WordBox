@@ -100,7 +100,7 @@ renderUI({
       )
   }
 })
-# the other inputs are preset for the log analysis plot
+
 selectizeInput("data",
                "y-Achse:",
                choices = c("Dauer" = "duration",
@@ -123,6 +123,19 @@ dateRangeInput("date_range",
                format = "dd.mm.yyyy",
                separator = "-",
                weekstart = 1)
+
+# only show the date aggregation if the log is selected
+renderUI({
+  if (input$plot_type == "log_file") {
+    selectizeInput("date_aggregation",
+                  "Datumsaggregation:",
+                  choices = c("Tag" = "day",
+                              "Woche" = "week",
+                              "Monat" = "month",
+                              "Jahr" = "year",
+                              "Alle" = "all"))
+  }
+})
 ```
 
 
@@ -139,6 +152,7 @@ renderPlotly({
                        colour = input$colour,
                        language = "de",
                        date_range = input$date_range,
+                       date_aggregation = input$date_aggregation,
                        interactive = TRUE)
   } else if (!is.null(wl()) && input$direction != "" && input$data != "duration") {
     message(input$direction)

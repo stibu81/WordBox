@@ -12,6 +12,7 @@ plot_quiz_per_date(
   y = c("duration", "n_quizzed", "n_correct", "n_wrong"),
   colour = c("file", "direction", "type", "mode", "group"),
   date_range = NULL,
+  date_aggregation = c("day", "week", "month", "year", "all"),
   language = c("en", "de"),
   interactive = rlang::is_installed("plotly")
 )
@@ -27,6 +28,10 @@ plot_quiz_per_date(
 
 \item{date_range}{date vector of length to giving the data range to be
 plotted. If omitted, all the data is plotted.}
+
+\item{date_aggregation}{character indicating the level at which the
+data should be aggregated. One of "day" (default), "week", "month", "year"
+and "all" (aggregate over the full time range).}
 
 \item{language}{language for the plot labels}
 
