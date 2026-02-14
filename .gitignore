@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 
-# ignore the build dashboard
+# ignore the built dashboard
 inst/dashboard/*.html

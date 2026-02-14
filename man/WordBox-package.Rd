@@ -6,6 +6,8 @@
 \alias{WordBox-package}
 \title{WordBox: a Simple Vocabulary Trainer}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 A simple vocabulary trainer in the form of a shiny app. The user can create his own word lists in the form of csv-files. The interface is in German.
 }
 \keyword{internal}

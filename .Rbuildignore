@@ -4,3 +4,6 @@
 ^README\.Rmd$
 ^\.github$
 ^codecov\.yml$
+^inst/dashboard/dashboard.html$
+^man/figures/create_sticker.R$
+^man/figures/wordbox.png$
