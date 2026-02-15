@@ -12,6 +12,9 @@ ui <- fluidPage(
   # .btn-warning:hover, background-color
   tags$style(".fa-triangle-exclamation {color:#d4860b}"),
 
+  # insert favicon
+  tags$link(rel="icon", href="favicon-96x96.png"),
+
   # function to set focus on an element
   shinyjs::extendShinyjs(
     text = "shinyjs.refocus = function(e_id) {
@@ -22,7 +25,11 @@ ui <- fluidPage(
 
   shinyjs::useShinyjs(),
 
-  titlePanel("WordBox Vokabeltrainer"),
+  titlePanel(h3("WordBox Vokabeltrainer",
+             img(src = "logo.png",
+                 style = "position:absolute; right:20px; top:5px",
+                 height = 120)),
+              windowTitle = "WordBox"),
 
   sidebarLayout(
     # Sidebar with inputs ######
