@@ -1,0 +1,15 @@
+/* move the logo to the right side, taken from
+  https://stackoverflow.com/a/63434992/4303162 by Jumble */
+.navbar-logo img {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+/* navbbar height */
+.navbar {
+  min-height: 51px !important;
+}
+/* background for the box with the plot */
+.chart-wrapper {
+  background-color: #ffffff !important;
+}

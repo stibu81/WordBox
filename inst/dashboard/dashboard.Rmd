@@ -5,8 +5,20 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
-    theme: cerulean
+    css: wordbox.css
+    theme: 
+      version: 5
+      bootswatch: cerulean
+      bg: "#faf2e2"
+      fg: "#51463c" 
+      primary: "#51463c"
+      navbar-bg: "#f0bd7d"
+    logo: logo_small.png
 ---
+
+<!-- set the favicon -->
+<link rel="icon" href="favicon-96x96.png"/>
+
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
