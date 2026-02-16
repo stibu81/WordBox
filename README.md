@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/stibu81/WordBox/workflows/R-CMD-check/badge.svg)](https://github.com/stibu81/WordBox/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/stibu81/WordBox/branch/master/graph/badge.svg)](https://codecov.io/gh/stibu81/WordBox?branch=master)
+coverage](https://codecov.io/gh/stibu81/WordBox/graph/badge.svg)](https://app.codecov.io/gh/stibu81/WordBox)
 <!-- badges: end -->
 
 WordBox is a simple word trainer written in R using
